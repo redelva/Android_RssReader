@@ -1,0 +1,273 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">RSS Reader</string>
+    <string name="app_author">Lu Guoqing</string>
+    <string name="title_blog_detail">Blog Detail</string>    
+    <string name="title_list_detail">Blog List</string>
+    <string name="title_login_detail">Use Google account to login</string>
+    <string name="empty"/>	
+    <string name="action_settings">Settings</string>
+    <string name="readsetting">Read Settings</string>
+    <string name="settings">Settings</string>    
+    <string name="friends">Friends</string>
+    <string name="google">Google</string>
+    <string name="offlinedownload">Download</string>
+    <string name="add">Subscribe</string>
+    <string name="logout">Logout</string>
+    <string name="logout_msg">Logout will clean all cached blogs, images and history from this device.</string>
+    <string name="logouting_msg">Loging out, it will take sometime to clean files.</string>
+    <string name="invite">Invite Friends</string>
+    <string name="list_empty_view">No items to display</string>
+    
+    <string name="home">Home</string>
+    <string name="all">All</string>
+    <string name="recommend">Recommend</string>
+    <string name="unread">Unread</string>
+    <string name="star">Star</string>
+    <string name="gallery">Gallery</string>    
+    <string name="setting">Settings</string>
+    <string name="search">Search</string>
+   	<!--<string name="download">Download</string>-->    
+    <string name="more">More</string>
+    
+    <!-- 双击退出-->
+	<string name="com_dialog_title_quit">Confirm exit</string>
+    <string name="com_btn_ok">OK</string>
+    <string name="com_btn_cancel">Cancel</string>
+    <string name="sys_ask_quit_app">Do you wanna quit app?</string>
+    
+    <!-- 上下文菜单 -->
+    <string name="markAllitem">Mark all as read</string>
+	<string name="setasgallery">Set as gallery</string>
+	<string name="download">Offline download</string>
+	<string name="unsubscribe">Unsubscribe</string>
+	<string name="moveitem">Move</string>
+	<string name="rename">Rename</string>
+	
+	<!-- 时间显示 -->
+    <string name="min">min ago</string>
+	<string name="year">year ago</string>
+	<string name="month">month ago</string>
+	<string name="day">days ago</string>
+	<string name="hour">hours ago</string>
+	<string name="second">seconds ago</string>
+
+	<!-- 设置状态 -->
+	<string name="blog_setstar">Mark as Star</string>
+	<string name="blog_setunstar">Mark as Unstar</string>
+	<string name="blog_setread">Mark as Read</string>
+	<string name="blog_setunread">Mark as Unread</string>
+	<string name="blog_clicktoview">Click to view</string>
+	<string name="blog_videooptimize">Video not optimize for mobile platform</string>
+   	<string name="blog_fontmsg">Please place fonts file in folder Fonts of RssReader under sd card</string>	
+    
+   	<!--下拉刷新-->
+	<string name="pull_to_refresh_more_label">Load more</string>
+    <string name="pull_to_refresh_pull_label">Pull to refresh...</string>
+    <string name="pull_to_refresh_release_label">Release to refresh...</string>
+    <string name="pull_to_refresh_refreshing_label">Refreshing...</string>
+    <string name="pull_to_refresh_tap_label">Tap to refresh...</string>
+    
+    <string name="xlistview_header_hint_normal">Refresh</string>
+    <string name="xlistview_header_hint_ready">Release to load</string>
+    <string name="xlistview_header_hint_loading">Refreshing...</string>
+    <string name="xlistview_header_last_time">Last update time：</string>
+    <string name="xlistview_footer_hint_normal">Pull to refresh</string>
+    <string name="xlistview_footer_hint_ready">Release to refresh</string>
+    
+    <string name="blog_setunread">set unread</string>
+   	<string name="blog_setstar">add star</string>
+   	<string name="blog_setread">set read</string>
+   	<string name="blog_setunstar">set unstar</string>
+
+	<!--离线下载-->
+	<string name="dialog_offline_bar_title">Offline download options</string>
+	<string name="dialog_select_content_label">Category：</string>
+	<string name="dialog_select_blog_content">Content</string>
+	<string name="dialog_select_blog_description">Brief</string>
+	<string name="dialog_select_category_label">Feeds：</string>
+	<string name="dialog_select_all_blog">All</string>
+	<string name="dialog_select_lastest_blog">Latest</string>
+	<string name="dialog_select_nums_label">Count：</string>
+	<string name="dialog_select_nums">Download number</string>
+	<string name="dialog_select_nums_tips">You had selectd {0} items</string>
+	<string name="dialog_btn_start_download">Start download</string>
+	<string name="dialog_no_select_download">Please choose category</string>
+	<string name="dialog_no_select_target">Please choose feed</string>
+	<string name="offline_notification_done">Download complete</string>
+	<string name="offline_notification_doing">Downloading complete</string>
+	<string name="offline_notification_start_toast">Start download content</string>
+	<string name="offline_notification_end_toast">Download complete,{0}</string>
+		
+	<!--设置相关-->
+	<string name="sync_title">Sync</string>
+	<string name="sync_desc">Content cache and load count</string>
+	<string name="sync_on_start">Refresh on start</string>
+	<string name="sync_start_autorefresh">Auot refresh after start</string>
+	<string name="sync_start_nonerefresh">Manual refresh after start</string>
+	<string name="sync_vibrate">Vibrate after refresh</string>
+	<string name="sync_nonevibrate">No vibrate after refresh</string>
+	<string name="sync_shake">Shake to refresh</string>
+	<string name="sync_sound">Display sound for pull down</string>
+	<string name="sync_sounddesc">Display special sound when finish refresh</string>	
+	<string name="sync_shake_enable">Enable shake to refresh</string>
+	<string name="sync_shake_disable">Disable shake to refresh</string>	
+	
+	<string name="cache">Local cache</string>
+	<string name="cache_desc">Related to local contents</string>
+	<string name="cache_number">Defult request items count</string>
+	<string name="cache_number_default">30</string>
+	<string name="cache_numberdesc">It will cost more time to load more items</string>	
+	<string name="cache_image">Image cache</string>
+	<string name="cache_imagesummary">Cache image to sd card</string>		
+	<string name="cache_network">Network</string>
+	<string name="cache_wifi">Cache only wifi</string>
+	<string name="cache_3g">2G/3G</string>
+	
+	<string name="download">Download</string>
+	<string name="download_desc">Download Strategy</string>
+	<string name="download_enable">Enable download</string>
+	<string name="download_wifi">Only enable under wifi</string>
+	<string name="download_3g">2G/3G network</string>
+	<string name="download_police">Strategy</string>
+	<string name="download_policedesc">Choose proper strategy for download</string>
+	<string name="download_period">Download period</string>
+	<string name="download_perioddesc">Period for download, eg 6 hours</string>
+	<string name="download_time">Exact time</string>
+	<string name="download_timedesc">Exact time for download, eg before leave office</string>
+	<string name="download_police_default">1</string>
+	<string name="download_period_default">3</string>
+	    
+	<string name="operation">Operate</string>
+	<string name="operation_desc">Related to read settings</string>
+	<string name="operation_openasread">Open to mark as read</string>
+	<string name="operation_open_as_read">Confirm before mark all as read</string>
+	<string name="operation_rotation">Rotation</string>
+	<string name="operation_seperatevideo">Seperate Video</string>
+	<string name="operation_defaulticon">Default icon</string>
+		
+	<string name="format">Format</string>
+	<string name="format_desc">Set line height, font size and font</string>
+	<string name="format_type">Content Render Type</string>
+	<string name="format_type_default">2</string>
+	<string name="format_typedesc">Choose right render type to get better read experience</string>
+	<string name="format_font">Font size</string>
+	<string name="format_font_default">14</string>
+	<string name="format_fontdesc">You can use pinch to change font size</string>
+	<string name="format_line">Line height</string>
+	<string name="format_line_default">150</string>
+	<string name="format_linedesc">Better line height, better read feeling</string>	
+	
+	<string name="view">View</string>
+	<string name="view_desc">Settings around channels, tabs and image mode</string>		
+	<string name="view_showallchannel">Show all channels</string>
+	<string name="view_showunreadchannel">Only show unread channels</string>
+	<string name="view_showallitem">Show all blogs</string>
+	<string name="view_showunreaditem">Only show unread blogs</string>
+	<string name="view_noimage">None image mode</string>
+	<string name="view_imgnumdesc">Image count in Gallery</string>
+	<string name="view_fullscreen">Full screen</string>
+	<string name="view_imgnum_default">10</string>
+	<string name="view_lang_default">zh-CN</string>
+	<string name="view_lang">Language</string>
+	
+	<string name="content_errortitle">Sorry for this error</string>
+	<string name="content_errorcontent">Can not generate content or error happen</string>
+	<string name="content_errorload">Please click screen to reload</string>
+	<string name="content_savetolibrary">Successfully save to gallery</string>
+	<string name="content_shareto">Share to</string>
+	<string name="content_nonextitem">No next item</string>
+	<string name="content_nopreviousitem">No previous item</string>
+	<string name="content_loading">Loading</string>
+	
+	<string name="list_refreshtime">Refresh</string>
+	<string name="list_loadingmore">Loading more</string>
+	
+	<string name="recommend_title1">The Verge</string>
+	<string name="recommend_url1">feed/http://www.theverge.com/rss/full.xml</string>
+	<string name="recommend_title2">The New York Times</string>
+	<string name="recommend_url2">feed/http://www.nytimes.com/services/xml/rss/nyt/HomePage.xml</string>
+	<string name="recommend_title3">500px</string>
+	<string name="recommend_url3">feed/http://feed.500px.com/500px-editors</string>
+	<string name="recommend_title4">smitten kitchen</string>
+	<string name="recommend_url4">feed/http://feeds.feedburner.com/smittenkitchen</string>
+	<string name="recommend_title5">Daring Fireball</string>
+	<string name="recommend_url5">feed/http://daringfireball.net/index.xml</string>
+	<string name="recommend_title6">Android and Me</string>
+	<string name="recommend_url6">feed/http://androidandme.com/feed/</string>
+	<string name="recommend_title7">Roger Ebert\'s Journal</string>
+	<string name="recommend_url7">feed/http://blogs.suntimes.com/ebert/atom.xml</string>
+	<string name="recommend_title8">Vimeo Staff Pick</string>
+	<string name="recommend_url8">feed/http://vimeo.com/channels/staffpicks/videos/rss</string>
+	<string name="recommend_title9">Reuters</string>
+	<string name="recommend_url9">feed/http://feeds.reuters.com/reuters/topNews?irpc=69</string>
+	<string name="recommend_title10">TechCrunch</string>
+	<string name="recommend_url10">feed/http://feeds.feedburner.com/Techcrunch</string>
+	
+	<string name="recommend_add">Recommend feeds</string>
+	
+	<string name="yes">Yes</string>
+	<string name="no">No</string>
+	<string name="cancel">Cancel</string>
+	<string name="close">Close</string>
+	
+	<string name="feed_markallasread">Mark all as read</string>
+	<string name="feed_root">Root</string>
+	<string name="feed_moveto">Move to</string>
+	<string name="feed_rename">Renmae as </string>
+	
+	<string name="login_title">Login</string>
+	<string name="login_msg">Loading login page</string>
+	<string name="login_authing">authorizing</string>
+	
+	<string name="cache_clean">Clean cahched Image</string>
+	<string name="cache_msg">Current cache image size is %s, click to clean</string>
+	<string name="cache_size">Cache size</string>
+	<string name="cache_size_default">200</string>
+	
+	<string name="main_loadingdata">Loading data</string>
+	<string name="main_exit">Repress back to exit app</string>
+	
+	<string name="main_search">Please enter keywords</string>
+	<string name="main_add">Please enter url or keywords</string>
+	<string name="main_subscribe">Already added</string>
+	<string name="main_alreadysubscribe">Subscribed</string>
+	
+	<string name="feedly_failedtogetprofile">Faild to get profile</string>
+	<string name="feedly_successtogetprofile">Success to get profile</string>
+	<string name="feedly_failedtogettags">Failed to get tags</string>
+	<string name="feedly_successtogettags">Success to get tags</string>
+	<string name="feedly_failedtogetsubscriptions">Failed to get subscriptions</string>
+	<string name="feedly_successtogetsubscriptions">Success to get subscriptions</string>    
+	<string name="feedly_failedtogetunreadcounts">Faild to get unread count</string>
+	<string name="feedly_successtogetunreadcounts">Success to get unread count</string>
+	<string name="feedly_failedtogetsortorder">Failed to get order</string>
+	<string name="feedly_successtogetsortorder">Success to get order</string>
+	<string name="feedly_failedsynctofeedly">Failed to sync to Feedly server</string>
+	<string name="feedly_successsynctofeedly">Success sync to Feedly server</string>
+	<string name="feedly_failedupdatestatus">Failed to update status</string>
+	<string name="feedly_successupdatestatus">Success to update status</string>
+	<string name="feedly_failedtogetblogs">Faild to get blogs</string>
+	<string name="feedly_successtogetblogs">Success to get blogs</string>
+	<string name="feedly_waitformoreblogs">Waiting for load more blogs</string>
+	<string name="feedly_sessionexpire">Authorize expire</string>
+	<string name="feedly_failedaddsubscription">Failed to add feeds</string>
+	<string name="feedly_successaddsubscription">Success to add feeds</string>
+	<string name="feedly_failedmovefolder">Failed move to %s</string>
+	<string name="feedly_successmovefolder">Success move to %s</string>
+	<string name="feedly_failedsearch">Failed to search</string>
+	<string name="feedly_successsearch">Success to search</string>
+	
+	<string name="download_complete">complete</string>
+	<string name="download_start">Start syncing from server</string>
+	<string name="download_blogstart">Start download blog content</string>
+	<string name="download_blogcomplete">Finish blog syncing</string>
+	<string name="download_failed">Faied to sync</string>
+	
+	<string name="widget_choosechannel">Please choose feed to show in widget:</string>
+	<string name="widget_youhadchosed">You had choose</string>
+	<string name="widget_ok">Ok</string>
+	<string name="widget_page">Page %s</string>
+		
+</resources>

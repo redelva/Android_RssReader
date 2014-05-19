@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="cache_number_list">
+        <item >30 items</item>
+        <item >50 items</item>
+        <item >100 items</item>
+    </string-array>
+    <string-array name="cache_number_list_values">
+        <item >30</item>
+        <item >50</item>
+        <item >100</item>
+    </string-array>
+    <string-array name="image_number_list">
+        <item >10 images</item>
+        <item >20 images</item>
+        <item >30 images</item>
+    </string-array>
+    <string-array name="image_number_list_values">
+        <item >10</item>
+        <item >20</item>
+        <item >30</item>
+    </string-array>
+    <string-array name="cache_size_list">
+        <item >100MB</item>
+        <item >200MB</item>
+        <item >300MB</item>
+    </string-array>
+    <string-array name="cache_size_list_values">
+        <item >100</item>
+        <item >200</item>
+        <item >300</item>
+    </string-array>
+    <string-array name="format_type_list">
+        <item >Full Content</item>
+        <item >Simple Content</item>
+        <item >Pure Text</item>
+    </string-array>
+    <string-array name="format_type_list_values">
+        <item >1</item>
+        <item >2</item>
+        <item >3</item>
+    </string-array>
+    <string-array name="format_line_list">
+        <item >Small</item>
+        <item >Defaut</item>
+        <item >Big</item>
+        <item >Max</item>
+    </string-array>
+    <string-array name="format_line_list_values">
+        <item >120</item>
+        <item >150</item>
+        <item >180</item>
+        <item >200</item>
+    </string-array>
+    <string-array name="format_font_list">
+        <item >Small</item>
+        <item >Defaut</item>
+        <item >Big</item>
+        <item >Max</item>
+    </string-array>
+    <string-array name="format_font_list_values">
+        <item >11</item>
+        <item >14</item>
+        <item >17</item>
+        <item >20</item>
+    </string-array>
+    <string-array name="download_police_list">
+        <item>Close</item>
+        <item>Perodic</item>
+        <item>Exact</item>
+        <item>Both</item>
+    </string-array>
+    <string-array name="download_police_list_values">
+        <item>0</item>
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+    </string-array>
+    <string-array name="download_period_list">
+        <item>3hour</item>
+        <item>4hour</item>
+        <item>5hour</item>
+        <item>6hour</item>
+    </string-array>
+    <string-array name="download_period_list_values">
+        <item>3</item>
+        <item>4</item>
+        <item>5</item>
+        <item>6</item>
+    </string-array>
+    <string-array name="lang_list">
+        <item>中文</item>
+        <item>English</item>        
+    </string-array>
+    <string-array name="lang_list_values">
+        <item>zh_CN</item>
+        <item>en</item>        
+    </string-array>
+</resources>

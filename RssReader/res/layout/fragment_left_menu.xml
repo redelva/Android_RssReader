@@ -1,0 +1,213 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView 
+    android:background="@color/tools_box_bg"
+    android:scrollbars ="none" 
+    android:layout_width ="match_parent" 
+    android:layout_height ="match_parent"
+  	xmlns:android ="http://schemas.android.com/apk/res/android" >
+    <LinearLayout 
+        android:orientation="vertical" 
+        android:id ="@+id/llRoot"
+        android:layout_width ="match_parent" 
+        android:layout_height ="wrap_content" >
+
+        <com.lgq.rssreader.controls.RoundedImageView
+            android:id="@+id/headImageView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical|center_horizontal"
+            android:layout_margin="25.0dip"
+            android:layout_marginTop="75.0dip"
+            android:adjustViewBounds="true"
+            android:maxHeight="200dip"
+            android:maxWidth="200dip"
+            android:src="@drawable/head_default_yixin" />
+        
+        <!-- <View android:background ="#ff1c1c1b" android:layout_width ="fill_parent" android:layout_height ="1.3299866dip" />
+        <View android:background ="#ff474745" android:layout_width ="fill_parent" android:layout_height ="1.0px" /> -->        
+
+        <TextView 
+            android:textSize ="16.0sp" 
+            android:textColor ="#ffccccc6"
+            android:layout_gravity ="center_horizontal" 
+            android:id ="@+id/nickNameTextView"
+            android:layout_width ="wrap_content" 
+            android:layout_height ="wrap_content"
+            android:layout_marginTop = "10.0dip" />
+        
+        <TextView 
+            android:textSize ="12.0sp" 
+            android:textColor ="#ff999994"
+            android:gravity ="center" 
+            android:layout_gravity ="bottom|center" 
+            android:id ="@+id/logout" 
+            android:background ="@drawable/tools_box_invite_btn_selector" 
+            android:layout_width= "wrap_content"
+            android:layout_height ="wrap_content" 
+            android:layout_marginTop = "10.0dip"
+            android:text ="@string/logout" />
+        
+        <TextView 
+            android:textSize ="12.0sp" 
+            android:textColor ="#ffa8a8a3"
+            android:layout_gravity ="center_horizontal" 
+            android:id ="@+id/yixinCodeTextView"   
+            android:layout_width ="wrap_content" 
+            android:layout_height ="wrap_content"
+            android:layout_marginLeft = "10.0dip" 
+            android:layout_marginTop = "6.0dip"
+            android:layout_marginRight = "10.0dip" 
+            android:layout_marginBottom = "10.0dip" />
+        
+      
+        <RelativeLayout 
+            android:background="@drawable/tool_box_fragment_bg_selector"
+            android:layout_width="fill_parent" 
+            android:layout_height="65.0dip"            
+            android:id="@+id/google" >
+    		<TextView 
+    		    android:textSize="16.0sp" 
+    		    android:textStyle="bold" 
+    		    android:textColor="#ffccccc6" 
+    		    android:gravity="center"     		    
+    		    android:layout_width="wrap_content" 
+    		    android:layout_height="wrap_content" 
+    		    android:layout_marginLeft="21.0dip"
+    		    android:singleLine="true" 
+    		    android:text="@string/google" 
+    		    android:drawablePadding="20.0dip" 
+    		    android:layout_centerVertical="true" 
+    		    android:layout_centerInParent="true"/>
+    		<ImageView   
+    		    android:layout_width="wrap_content" 
+    		    android:layout_height="wrap_content" 
+    		    android:layout_marginLeft="10.0dip"  
+    		    android:src="@drawable/tool_box_fragment_yixin_icon" 
+    		    android:layout_alignParentLeft="true" 
+    		    android:layout_centerVertical="true"
+				android:contentDescription="@string/empty"/>
+		</RelativeLayout>
+		
+        <RelativeLayout 
+            android:id="@+id/download"
+    		android:background="@drawable/tool_box_fragment_bg_selector"  android:layout_width="fill_parent" android:layout_height="65.0dip">
+    		<TextView 
+    		    android:textSize="16.0sp" 
+    		    android:textStyle="bold" 
+    		    android:textColor="#ffccccc6" 
+    		    android:gravity="center"     		    
+    		    android:layout_width="wrap_content" 
+    		    android:layout_height="wrap_content" 
+    		    android:layout_marginLeft="21.0dip" 
+    		    android:text="@string/offlinedownload" 
+    		    android:singleLine="true" 
+    		    android:drawablePadding="20.0dip" 
+    		    android:layout_centerVertical="true" 
+    		    android:layout_centerInParent="true"/>
+    		<ImageView
+    		    android:layout_width="wrap_content" 
+    		    android:layout_height="wrap_content" 
+    		    android:layout_marginLeft="10.0dip"  
+    		    android:src="@drawable/tool_box_download_icon" 
+    		    android:layout_alignParentLeft="true" 
+    		    android:layout_centerVertical="true" 
+    		    android:contentDescription="@string/empty"/>
+		</RelativeLayout>
+		
+        <RelativeLayout 
+            android:background="@drawable/tool_box_fragment_bg_selector"
+            android:layout_width="fill_parent" 
+            android:layout_height="65.0dip"            
+            android:id="@+id/add" >
+    		<TextView 
+    		    android:textSize="16.0sp" 
+    		    android:textStyle="bold" 
+    		    android:textColor="#ffccccc6" 
+    		    android:gravity="center"     		    
+    		    android:layout_width="wrap_content" 
+    		    android:layout_height="wrap_content" 
+    		    android:layout_marginLeft="21.0dip"
+    		    android:singleLine="true" 
+    		    android:text="@string/add" 
+    		    android:drawablePadding="20.0dip" 
+    		    android:layout_centerVertical="true" 
+    		    android:layout_centerInParent="true"/>
+    		<ImageView   
+    		    android:layout_width="wrap_content" 
+    		    android:layout_height="wrap_content" 
+    		    android:layout_marginLeft="10.0dip"  
+    		    android:src="@drawable/tool_box_fragment_add_icon" 
+    		    android:layout_alignParentLeft="true" 
+    		    android:layout_centerVertical="true"
+				android:contentDescription="@string/empty"/>
+		</RelativeLayout>
+		
+        <RelativeLayout
+            android:id="@+id/search" 
+            android:background="@drawable/tool_box_fragment_bg_selector"  
+            android:layout_width="fill_parent" 
+            android:layout_height="65.0dip">
+    		<TextView 
+    		    android:textSize="16.0sp" 
+    		    android:textStyle="bold" 
+    		    android:textColor="#ffccccc6" 
+    		    android:gravity="center"     		    
+    		    android:layout_width="wrap_content" 
+    		    android:layout_height="wrap_content" 
+    		    android:layout_marginLeft="21.0dip" 
+    		    android:text="@string/search" 
+    		    android:singleLine="true" 
+    		    android:drawablePadding="20.0dip" 
+    		    android:layout_centerVertical="true" 
+    		    android:layout_centerInParent="true"/>
+    		<ImageView
+    		    android:layout_width="wrap_content" 
+    		    android:layout_height="wrap_content" 
+    		    android:layout_marginLeft="10.0dip"  
+    		    android:src="@drawable/tool_box_fragment_search_icon" 
+    		    android:layout_alignParentLeft="true" 
+    		    android:layout_centerVertical="true"
+    		    android:contentDescription="@string/empty"/>
+		</RelativeLayout>
+		
+        <RelativeLayout
+            android:id="@+id/settings" 
+            android:background="@drawable/tool_box_fragment_bg_selector"  
+            android:layout_width="fill_parent" 
+            android:layout_height="65.0dip">
+    		<TextView 
+    		    android:textSize="16.0sp" 
+    		    android:textStyle="bold" 
+    		    android:textColor="#ffccccc6" 
+    		    android:gravity="center"     		    
+    		    android:layout_width="wrap_content" 
+    		    android:layout_height="wrap_content" 
+    		    android:layout_marginLeft="21.0dip" 
+    		    android:text="@string/settings" 
+    		    android:singleLine="true" 
+    		    android:drawablePadding="20.0dip" 
+    		    android:layout_centerVertical="true" 
+    		    android:layout_centerInParent="true"/>
+    		<ImageView
+    		    android:layout_width="wrap_content" 
+    		    android:layout_height="wrap_content" 
+    		    android:layout_marginLeft="10.0dip"  
+    		    android:src="@drawable/tool_box_fragment_settings_icon" 
+    		    android:layout_alignParentLeft="true" 
+    		    android:layout_centerVertical="true"
+    		    android:contentDescription="@string/empty"/>
+		</RelativeLayout>
+    </LinearLayout >
+</ScrollView>
+
+<!-- 
+<fragment xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/blog_list"
+    android:name="com.lgq.rssreader.FeedListFragment"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_marginLeft="16dp"
+    android:layout_marginRight="16dp"
+    tools:context=".BlogListActivity"
+    tools:layout="@android:layout/list_content" /> -->

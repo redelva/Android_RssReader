@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android" >    
+    <item
+        android:id="@+id/menu_fav"
+        android:icon="@drawable/fav"
+        android:showAsAction="ifRoom|withText"
+        android:title="Email"/>
+    <item
+        android:id="@+id/menu_read"
+        android:icon="@drawable/read"
+        android:showAsAction="ifRoom|withText"
+        android:title="Search"/>
+    <item
+        android:id="@+id/menu_mail"
+        android:icon="@drawable/email"
+        android:showAsAction="ifRoom|withText"
+        android:title="Tag"/>
+    <item
+        android:id="@+id/menu_share"
+        android:icon="@drawable/share"
+        android:showAsAction="ifRoom|withText"
+        android:title="Refresh"/>
+    <item
+        android:id="@+id/menu_refresh"
+        android:icon="@drawable/reload"
+        android:showAsAction="ifRoom|withText"
+        android:title="Refresh"/>
+</menu>

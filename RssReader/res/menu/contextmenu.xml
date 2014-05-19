@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+	<item android:id="@+id/markAllitem" android:title="@string/markAllitem" />
+	<item android:id="@+id/setasgallery" android:title="@string/setasgallery" />
+	<item android:id="@+id/download" android:title="@string/download" />
+	<item android:id="@+id/unsubscribe" android:title="@string/unsubscribe" />
+	<item android:id="@+id/moveitem" android:title="@string/moveitem" />
+	<item android:id="@+id/rename" android:title="@string/rename" />
+</menu>

@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" android:title="@string/settings">
+    <PreferenceCategory android:title="@string/sync_title" android:summary="@string/sync_desc">
+        <CheckBoxPreference android:key="sync_on_start" android:title="@string/sync_on_start" android:summaryOn="@string/sync_start_autorefresh" android:summaryOff="@string/sync_start_nonerefresh" android:defaultValue="true"/>
+        <CheckBoxPreference android:key="sync_vibrate" android:title="@string/sync_vibrate" android:summaryOn="@string/sync_vibrate" android:summaryOff="@string/sync_nonevibrate" android:defaultValue="true"/>
+        <CheckBoxPreference android:key="sync_sound" android:title="@string/sync_sound" android:defaultValue="true" android:summary="@string/sync_sounddesc"/>
+        <CheckBoxPreference android:key="sync_shake" android:title="@string/sync_shake" android:summaryOn="@string/sync_shake_enable" android:summaryOff="@string/sync_shake_disable" android:defaultValue="false"/>
+    </PreferenceCategory>
+    <PreferenceCategory android:title="@string/cache" android:summary="@string/cache_desc">
+        <ListPreference android:title="@string/cache_number" android:key="cache_numbers" android:summary="@string/cache_numberdesc" android:entries="@array/image_number_list" android:entryValues="@array/image_number_list_values" android:defaultValue="@string/cache_number_default"/>
+        <CheckBoxPreference android:key="cache_image" android:title="@string/cache_image" android:summary="@string/cache_imagesummary" android:defaultValue="false"/>
+        <CheckBoxPreference android:key="cache_wifi" android:title="@string/cache_wifi" android:summaryOn="@string/cache_wifi" android:summaryOff="@string/cache_3g" android:defaultValue="false"/>
+        <ListPreference android:key="cache_size" android:title="@string/cache_size" android:summaryOn="@string/cache_size" android:entries="@array/cache_size_list" android:entryValues="@array/cache_size_list_values" android:defaultValue="@string/cache_size_default"/>
+    </PreferenceCategory>
+    <PreferenceCategory android:title="@string/operation" android:summary="@string/operation_desc">
+        <CheckBoxPreference android:key="operation_openasread" android:title="@string/operation_openasread" android:defaultValue="true"/>
+        <CheckBoxPreference android:key="operation_confirmallread" android:title="@string/operation_open_as_read" android:defaultValue="true"/>
+        <CheckBoxPreference android:key="operation_roration" android:title="@string/operation_rotation" android:defaultValue="false"/>
+        <CheckBoxPreference android:key="operation_seperatevideo" android:title="@string/operation_seperatevideo" android:defaultValue="true"/>
+        <CheckBoxPreference android:key="oepration_defaulticon" android:title="@string/operation_defaulticon" android:defaultValue="false"/>        
+    </PreferenceCategory>    
+    <PreferenceCategory android:title="@string/download" android:summary="@string/download_desc">        
+        <ListPreference android:title="@string/download_police" android:key="download_police" android:summary="@string/download_policedesc" android:entries="@array/download_police_list" android:entryValues="@array/download_police_list_values" android:defaultValue="@string/download_police_default"/>
+        <CheckBoxPreference android:key="download_wifi" android:title="@string/download_wifi" android:summaryOn="@string/download_wifi" android:summaryOff="@string/download_3g" android:defaultValue="true"/>        
+        <ListPreference android:title="@string/download_period" android:key="download_period" android:summary="@string/download_perioddesc" android:entries="@array/download_period_list" android:entryValues="@array/download_period_list_values" android:defaultValue="@string/download_period_default"/>
+        <EditTextPreference android:defaultValue="17:00" android:title="@string/download_time" android:key="download_time" android:summary="@string/download_timedesc" android:dialogLayout="@layout/preference_timepicker"/>
+    </PreferenceCategory>
+    <PreferenceCategory android:title="@string/format" android:summary="@string/format_desc">
+        <ListPreference android:title="@string/format_type" android:key="format_type" android:summary="@string/format_typedesc" android:entries="@array/format_type_list" android:entryValues="@array/format_type_list_values" android:defaultValue="@string/format_type_default"/>
+        <ListPreference android:title="@string/format_font" android:key="format_fontsize" android:summary="@string/format_fontdesc" android:entries="@array/format_font_list" android:entryValues="@array/format_font_list_values" android:defaultValue="@string/format_font_default"/>
+        <ListPreference android:title="@string/format_line" android:key="format_line" android:summary="@string/format_linedesc" android:entries="@array/format_line_list" android:entryValues="@array/format_line_list_values" android:defaultValue="@string/format_line_default"/>
+    </PreferenceCategory>
+    <PreferenceCategory android:title="@string/view" android:summary="@string/view_desc">
+        <CheckBoxPreference android:key="view_showallchannel" android:summaryOn="@string/view_showallchannel" android:title="@string/view_showallchannel" android:summaryOff="@string/view_showunreadchannel" android:defaultValue="true"/>
+        <CheckBoxPreference android:key="view_showallitem" android:title="@string/view_showallitem" android:summaryOn="@string/view_showallitem" android:summaryOff="@string/view_showunreaditem" android:defaultValue="true"/>
+        <CheckBoxPreference android:key="view_noimage" android:title="@string/view_noimage" android:defaultValue="false"/>
+        <CheckBoxPreference android:key="view_fullscreen" android:title="@string/view_fullscreen" android:defaultValue="false"/>
+        <ListPreference android:key="view_imgnum" android:title="@string/view_imgnumdesc" android:entries="@array/image_number_list" android:entryValues="@array/image_number_list_values" android:defaultValue="@string/view_imgnum_default"/>
+        <ListPreference android:key="view_lang" android:title="@string/view_lang" android:entries="@array/lang_list" android:entryValues="@array/lang_list_values" android:defaultValue="@string/view_lang_default"/>
+    </PreferenceCategory>
+</PreferenceScreen>

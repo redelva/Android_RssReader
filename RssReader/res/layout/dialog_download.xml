@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:id="@+id/dialog"
+	android:orientation="vertical"
+	android:layout_width="fill_parent"
+	android:layout_height="fill_parent"	
+	android:padding="10dp">
+	
+	<LinearLayout android:orientation="horizontal"
+        android:layout_width="fill_parent"
+		android:layout_height="wrap_content">
+		<TextView android:layout_width="wrap_content" 
+	    android:layout_height="wrap_content"
+	    android:textColor="@color/white"
+		android:text="@string/dialog_select_content_label"
+		android:textSize="@dimen/font_size_16"/>		
+		<CheckBox android:id="@+id/chkContent"
+			android:layout_width="wrap_content"
+			android:textSize="@dimen/font_size_16"
+			android:text="@string/dialog_select_blog_content"
+			android:checked="true"
+			android:textColor="@color/white"
+			android:layout_height="wrap_content"/>
+		<CheckBox android:id="@+id/chkDescription"
+			android:layout_width="wrap_content"
+			android:text="@string/dialog_select_blog_description"
+			android:checked="true"
+			android:textSize="@dimen/font_size_16"
+			android:textColor="@color/white"
+			android:layout_height="wrap_content"/>		
+	</LinearLayout>
+	<LinearLayout android:orientation="horizontal"
+        android:layout_width="fill_parent"
+        android:id="@+id/chkAllContainer"
+		android:layout_height="wrap_content">
+		<TextView android:layout_width="wrap_content" 
+		    android:layout_height="wrap_content"
+		    android:textColor="@color/white"
+			android:text="@string/dialog_select_category_label"
+			android:textSize="@dimen/font_size_16"/>
+		<CheckBox android:id="@+id/chkAll"
+			android:layout_width="wrap_content"
+			android:text="@string/dialog_select_all_blog"
+			android:checked="false"
+			android:textSize="@dimen/font_size_16"
+			android:textColor="@color/white"
+			android:layout_height="wrap_content"/>
+		<CheckBox android:id="@+id/chkLastest"
+			android:layout_width="wrap_content"
+			android:text="@string/dialog_select_lastest_blog"
+			android:checked="true"
+			android:textSize="@dimen/font_size_16"
+			android:textColor="@color/white"
+			android:layout_height="wrap_content"/>
+	</LinearLayout>	
+	<TextView android:layout_width="wrap_content" 
+	    android:layout_height="wrap_content"
+	    android:textColor="@color/white"
+		android:text="@string/dialog_select_nums_label"
+		android:textSize="@dimen/font_size_16"/>		
+	<SeekBar 
+		android:id="@+id/seekBar"
+		android:layout_width="fill_parent"
+		android:layout_height="wrap_content"
+		android:max="100"
+		android:progress="20" />
+	<TextView android:text="@string/dialog_select_nums_tips"
+		android:id="@+id/tvSeekBar"
+		android:textColor="@color/white"
+		android:layout_height="wrap_content"
+		android:textSize="@dimen/font_size_16"
+		android:layout_width="fill_parent"/>
+</LinearLayout>

@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"    
+    android:gravity="center"
+    android:id="@+id/smalllayout"
+    android:background="@drawable/widgetbackground"
+    android:orientation="vertical" >
+	
+    <TextView    
+ 		android:id="@+id/widget_channel_title" 
+    	android:layout_width="fill_parent"   
+    	android:layout_height="wrap_content"
+    	android:gravity="center"
+    	android:text="cnbeta"
+    	android:textColor="@color/black"  
+    	android:maxLines="3"
+  		android:textSize="20sp"/>
+    
+	<TextView    
+ 		android:id="@+id/widget_channel_count" 
+    	android:layout_width="fill_parent"   
+    	android:layout_height="wrap_content"
+    	android:gravity="center"
+    	android:textColor="@color/black"
+    	android:text="50" 
+  		android:textSize="28sp"/>	
+	    
+</LinearLayout>

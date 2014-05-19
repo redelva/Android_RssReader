@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.lgq.rssreader"
+    android:versionCode="7"
+    android:versionName="1.0.7.0" >
+
+    <uses-sdk
+        android:minSdkVersion="11"
+        android:targetSdkVersion="18" />
+    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.VIBRATE"/>    
+    <uses-permission android:name="android.permission.NFC"/>
+    <uses-permission android:name="android.permission.WAKE_LOCK"/>    
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />    
+    <uses-permission android:name="android.permission.GET_TASKS" />
+	<uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />	
+	<uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
+	<uses-permission android:name="android.permission.READ_PHONE_STATE" />
+	<uses-permission android:name="android.permission.MANAGE_ACCOUNTS"/>
+	<uses-permission android:name="android.permission.GET_ACCOUNTS"/>
+	<uses-permission android:name="android.permission.CHANGE_CONFIGURATION"/>
+
+    <application        
+        android:allowBackup="true"
+        android:hardwareAccelerated="true"
+        android:name="com.lgq.rssreader.core.ReaderApp"
+        android:icon="@drawable/ic_launcher"
+        android:label="@string/app_name"        
+        android:theme="@style/AppTheme" >
+        <activity 
+            android:windowAnimationStyle="@android:style/Animation.Translucent" 
+            android:name=".SplashActivity"             
+            android:configChanges="keyboardHidden"            
+            android:label="@string/app_name">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:configChanges="locale"
+            android:name="com.lgq.rssreader.MainActivity"
+            android:label="@string/app_name" 
+            android:windowNoTitle = "true"            
+            android:theme="@style/Theme.PageIndicatorDefaults">            
+        </activity>
+        <activity
+            android:configChanges="locale"
+            android:name="com.lgq.rssreader.LoginActivity"
+            android:label="@string/title_login_detail" >            
+        </activity>
+        <activity
+            android:configChanges="locale"
+            android:name="com.lgq.rssreader.BlogContentActivity"
+            android:label="@string/title_blog_detail"
+            android:uiOptions="splitActionBarWhenNarrow"
+            android:parentActivityName=".MainActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".BlogDetailActivity" />
+            <meta-data android:name="android.support.UI_OPTIONS"
+                   android:value="splitActionBarWhenNarrow" />
+        </activity>
+        <activity
+            android:configChanges="locale"
+            android:name="com.lgq.rssreader.BlogListActivity"
+            android:label="@string/title_list_detail"            
+            android:parentActivityName=".MainActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".BlogListActivity" />
+        </activity>
+        <activity
+            android:configChanges="locale"
+            android:name="com.lgq.rssreader.SettingActivity"
+            android:label="@string/setting"
+            android:parentActivityName=".MainActivity">            
+        </activity>
+        <activity
+            android:configChanges="locale"
+            android:name="com.lgq.rssreader.SearchActivity"
+            android:label="@string/search"
+            android:parentActivityName=".MainActivity">            
+        </activity>
+        <activity
+            android:configChanges="locale"
+            android:name="com.lgq.rssreader.SubscribeActivity"
+            android:label="@string/add"
+            android:parentActivityName=".MainActivity">            
+        </activity>
+        <activity            
+            android:name="com.evernote.client.android.EvernoteOAuthActivity"
+            android:configChanges="locale|orientation|keyboardHidden"/>
+        <activity
+            android:configChanges="locale" 
+            android:name="com.lgq.rssreader.task.RssWidgetConfig">  
+            <intent-filter>  
+                <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE" />  
+            </intent-filter>  
+        </activity>
+        
+        <activity            
+            android:name="cn.sharesdk.framework.ShareSDKUIShell"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar"
+            android:configChanges="locale|keyboardHidden|orientation|screenSize"
+            android:windowSoftInputMode="stateHidden|adjustResize" >            
+        </activity>
+        
+        <service android:name="com.lgq.rssreader.task.DownloadService"/>        
+		<receiver android:name="com.lgq.rssreader.task.DownloadReceiver">
+            <intent-filter>
+                <action android:name="com.lgq.rssreader.action.ACTION_BOOT_COMPLETED" />
+                <category android:name="android.intent.category.DEFAULT" /> 
+            </intent-filter>
+		</receiver>
+		
+		<service android:name="com.lgq.rssreader.task.RssWidgetService"
+            android:permission="android.permission.BIND_REMOTEVIEWS"/>
+		<receiver android:name="com.lgq.rssreader.task.SmallRssWidgetProvider" >  
+            <intent-filter>  
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />                  
+            </intent-filter>  
+            <meta-data  
+                android:name="android.appwidget.provider"  
+                android:resource="@xml/smallappwidgetprovider" />  
+        </receiver>  
+        <receiver android:name="com.lgq.rssreader.task.LargeRssWidgetProvider" >  
+            <intent-filter>  
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />                  
+            </intent-filter>  
+            <meta-data  
+                android:name="android.appwidget.provider"  
+                android:resource="@xml/largeappwidgetprovider" />  
+        </receiver>
+        <receiver android:name="com.lgq.rssreader.task.MediumRssWidgetProvider" >  
+            <intent-filter>  
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />                 
+            </intent-filter>  
+            <meta-data  
+                android:name="android.appwidget.provider"  
+                android:resource="@xml/mediumappwidgetprovider" />  
+        </receiver>
+         <receiver android:name="com.lgq.rssreader.task.SwitchReceiver">
+            <intent-filter>
+                <action android:name="com.lgq.rssreader.task.language"/>
+            </intent-filter>
+        </receiver>
+    </application>
+     <supports-screens
+       android:smallScreens="true"
+       android:normalScreens="true"
+       android:largeScreens="true"
+       android:anyDensity="true"/>
+</manifest>

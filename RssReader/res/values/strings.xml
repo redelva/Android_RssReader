@@ -1,0 +1,270 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+	<!-- 基本信息 -->
+    <string name="app_name">RSS阅读器</string>
+    <string name="app_author">Lu Guoqing</string>
+    <string name="title_blog_detail">Blog Detail</string>    
+    <string name="title_list_detail">Blog List</string>
+    <string name="title_login_detail">使用Google账号登录</string>
+    <string name="empty"/>
+    <string name="readsetting">阅读设置</string>
+    <string name="action_settings">Settings</string>       
+    <string name="settings">设　置</string>    
+    <string name="friends">朋友圈</string>
+    <string name="google">Google</string>
+    <string name="offlinedownload">下　载</string>
+    <string name="logout">登　出</string>
+    <string name="logout_msg">登出会将所有缓存的条目，图片和阅读记录从设备移除。</string>
+    <string name="logouting_msg">正在注销...\n清除缓存文件可能需要一些时间。</string>
+    <string name="add">订　阅</string>
+    <string name="invite">邀请好友</string>
+    <string name="list_empty_view">暂无数据\n点击重试</string>
+       	    
+    <!-- 标签页 -->
+    <string name="home">主页</string>
+    <string name="all">全部</string>
+    <string name="recommend">推荐</string>
+    <string name="unread">未读</string>
+    <string name="star">收藏</string>
+    <string name="gallery">图库</string>
+    <string name="setting">配置</string>
+    <string name="search">搜　索</string>    
+    <string name="more">更多</string>
+    
+    <!-- 双击退出-->
+	<string name="com_dialog_title_quit">确认退出</string>
+    <string name="com_btn_ok">确定</string>
+    <string name="com_btn_cancel">取消</string>
+    <string name="sys_ask_quit_app">你希望退出程序吗?</string>
+    
+    <!-- 上下文菜单 -->
+    <string name="markAllitem">设置全部已读</string>
+	<string name="setasgallery">设置为图库</string>
+	<!-- <string name="download">离线下载</string>-->
+	<string name="unsubscribe">取消订阅</string>
+	<string name="moveitem">移动</string>
+	<string name="rename">重命名</string>
+	
+	<!-- 时间显示 -->
+    <string name="min">分钟前</string>
+	<string name="year">年前</string>
+	<string name="month">月前</string>
+	<string name="day">天前</string>
+	<string name="hour">小时前</string>
+	<string name="second">秒前</string>
+	
+	<!--下拉刷新-->
+	<string name="pull_to_refresh_more_label">加载更多</string>
+    <string name="pull_to_refresh_pull_label">下拉刷新...</string>
+    <string name="pull_to_refresh_release_label">释放刷新...</string>
+    <string name="pull_to_refresh_refreshing_label">数据加载中...</string>
+    <string name="pull_to_refresh_tap_label">触摸下拉刷新...</string>
+    
+    <string name="xlistview_header_hint_normal">下拉刷新</string>
+    <string name="xlistview_header_hint_ready">松开刷新数据</string>
+    <string name="xlistview_header_hint_loading">正在加载...</string>
+    <string name="xlistview_header_last_time">上次更新时间：</string>
+    <string name="xlistview_footer_hint_normal">上拉查看更多</string>
+    <string name="xlistview_footer_hint_ready">松开载入更多</string>
+    
+   	<string name="blog_setunread">设置未读</string>
+   	<string name="blog_setstar">添加收藏</string>
+   	<string name="blog_setread">设置已读</string>
+   	<string name="blog_setunstar">取消收藏</string>
+   	<string name="blog_clicktoview">点击观看</string>
+   	<string name="blog_fontmsg">字体请放置到SD卡RssReader目录下Fonts文件夹</string>
+   	<string name="blog_videooptimize">Flash视频不支持</string>
+
+	<!--离线下载-->
+	<string name="dialog_offline_bar_title">离线下载选项</string>
+	<string name="dialog_select_content_label">下载内容：</string>
+	<string name="dialog_select_blog_content">正文</string>
+	<string name="dialog_select_blog_description">摘要</string>
+	<string name="dialog_select_category_label">下载种类：</string>
+	<string name="dialog_select_all_blog">全部</string>
+	<string name="dialog_select_lastest_blog">最新</string>
+	<string name="dialog_select_nums_label">下载条数：</string>
+	<string name="dialog_select_nums">下载内容条数</string>
+	<string name="dialog_select_nums_tips">当前选择下载{0}条</string>
+	<string name="dialog_btn_start_download">开始下载</string>
+	<string name="dialog_no_select_target">请选择所要下载的内容</string>
+	<string name="dialog_no_select_download">请选择所要下载的种类</string>
+	<string name="offline_notification_done">离线下载完成</string>
+	<string name="offline_notification_doing">正在离线下载内容:已经完成</string>
+	<string name="offline_notification_start_toast">开始离线下载内容</string>
+	<string name="offline_notification_end_toast">离线下载已经完成,{0}</string>		
+	
+	<!--设置相关-->
+	<string name="sync_title">同步</string>
+	<string name="sync_desc">设置缓存和加载数目</string>
+	<string name="sync_on_start">启动刷新</string>
+	<string name="sync_start_autorefresh">启动后自动刷新</string>
+	<string name="sync_start_nonerefresh">启动后手工刷新</string>
+	<string name="sync_vibrate">更新完成后震动</string>
+	<string name="sync_nonevibrate">更新完成后不震动</string>
+	<string name="sync_shake">摇晃更新</string>
+	<string name="sync_sound">下拉刷新声音</string>
+	<string name="sync_sounddesc">刷新列表时播放声音</string>	
+	<string name="sync_shake_enable">启用摇晃更新</string>
+	<string name="sync_shake_disable">关闭摇晃更新</string>
+	
+	
+	<string name="cache">本地缓存</string>
+	<string name="cache_desc">同步内容相关</string>
+	<string name="cache_number">更新数量</string>
+	<string name="cache_number_default">30</string>
+	<string name="cache_numberdesc">每次更新加载的数量，数量越大加载越慢。</string>	
+	<string name="cache_image">缓存图片</string>
+	<string name="cache_imagesummary">图片缓存</string>		
+	<string name="cache_network">网络状况</string>
+	<string name="cache_wifi">只在WIFI下更新</string>
+	<string name="cache_3g">2G/3G网络</string>
+	<string name="cache_size">缓存图片大小</string>
+	<string name="cache_size_default">200</string>
+	
+	<string name="download">离线下载</string>
+	<string name="download_desc">设置下载策略</string>
+	<string name="download_enable">是否启用离线下载</string>
+	<string name="download_wifi">只在WIFI下更新</string>
+	<string name="download_3g">2G/3G网络</string>
+	<string name="download_police">策略</string>
+	<string name="download_policedesc">选择合适策略进行下载</string>
+	<string name="download_period">间隔时长</string>
+	<string name="download_perioddesc">过多长时间后下载</string>
+	<string name="download_time">下载时间</string>
+	<string name="download_timedesc">制定时间下载，比如早上或下班前</string>
+	<string name="download_police_default">1</string>
+	<string name="download_period_default">3</string>
+	    
+	<string name="operation">操作</string>
+	<string name="operation_desc">阅读相关设置</string>
+	<string name="operation_openasread">打开后设置为已读</string>
+	<string name="operation_open_as_read">标记全部已读前确认</string>
+	<string name="operation_rotation">屏幕自动旋转</string>
+	<string name="operation_seperatevideo">分段视频</string>
+	<string name="operation_defaulticon">默认图标</string>
+	
+	
+	<string name="format">格式化</string>
+	<string name="format_desc">排版方式，调节行高和字体设置排版方式等</string>
+	<string name="format_type">排版方式</string>
+	<string name="format_type_default">2</string>
+	<string name="format_typedesc">排版方式，使阅读网页更简单更愉快</string>
+	<string name="format_font">字体大小</string>
+	<string name="format_font_default">14</string>
+	<string name="format_fontdesc">设置字体大小,可通过手势进行调整<!--清空缓存--><!--清空缓存--></string>
+	<string name="format_line">字体行高</string>
+	<string name="format_line_default">150</string>
+	<string name="format_linedesc">通过设置行高可以更好的阅读</string>
+	
+	
+	<string name="view">查看</string>
+	<string name="view_desc">显示频道,条目和图片</string>		
+	<string name="view_showallchannel">显示全部频道</string>
+	<string name="view_showunreadchannel">仅显示已读频道</string>
+	<string name="view_showallitem">显示全部条目</string>
+	<string name="view_showunreaditem">只显示未读条目</string>
+	<string name="view_noimage">无图模式</string>
+	<string name="view_imgnumdesc">图片加载数量</string>
+	<string name="view_fullscreen">全屏阅读</string>
+	<string name="view_imgnum_default">10</string>
+	<string name="view_lang_default">zh-CN</string>
+	<string name="view_lang">语言</string>
+	
+	<string name="content_errortitle">非常抱歉</string>
+	<string name="content_errorcontent">无法获取信息或者错误发生了</string>
+	<string name="content_errorload">请点击屏幕重新加载</string>
+	<string name="content_savetolibrary">成功保存到图库</string>
+	<string name="content_shareto">分享到</string>
+	<string name="content_nonextitem">没有下一条</string>
+	<string name="content_nopreviousitem">没有上一条</string>
+	<string name="content_loading">正在加载中</string>
+	
+	<string name="list_refreshtime">刷新</string>
+	<string name="list_loadingmore">正在加载更多</string>
+	
+	<string name="recommend_title1">cnBeta</string>
+	<string name="recommend_url1">feed/http://www.cnbeta.com/backend.php</string>
+	<string name="recommend_title2">糗事百科</string>
+	<string name="recommend_url2">feed/http://feed.feedsky.com/qiushi</string>
+	<string name="recommend_title3">爱范儿</string>
+	<string name="recommend_url3">feed/http://www.ifanr.com/feed</string>
+	<string name="recommend_title4">德云社最新相声</string>
+	<string name="recommend_url4">feed/http://www.youku.com/playlist/rss/id/18203223</string>
+	<string name="recommend_title5">果壳</string>
+	<string name="recommend_url5">feed/http://www.guokr.com/rss</string>
+	<string name="recommend_title6">科学松鼠会</string>
+	<string name="recommend_url6">feed/http://songshuhui.net/feed</string>
+	<string name="recommend_title7">It Talks</string>
+	<string name="recommend_url7">feed/http://feeds.feedburner.com/ItTalks</string>
+	<string name="recommend_title8">小众软件</string>
+	<string name="recommend_url8">feed/http://feed.appinn.com/</string>
+	<string name="recommend_title9">青青河边草</string>
+	<string name="recommend_url9">feed/http://blog.sina.com.cn/rss/1394954225.xml</string>
+	<string name="recommend_title10">鲜果</string>
+	<string name="recommend_url10">feed/http://www.xianguo.com/service/dailyshare</string>
+	
+	<string name="recommend_add">推荐订阅</string>
+	
+	<string name="yes">确定</string>
+	<string name="no">取消</string>
+	<string name="cancel">取消</string>
+	<string name="close">关闭</string>
+	
+	<string name="feed_markallasread">标记全部为已读</string>
+	<string name="feed_root">根目录</string>
+	<string name="feed_moveto">移动到</string>
+	<string name="feed_rename">重命名为</string>
+	
+	<string name="login_title">登录</string>
+	<string name="login_msg">正在加载登陆页面</string>
+	<string name="login_authing">正在授权中</string>
+	
+	<string name="cache_clean">清除缓存图片</string>
+	<string name="cache_msg">当前缓存图片大小为%s,点击清除缓存</string>
+	
+	<string name="main_loadingdata">正在努力的加载数据</string>
+	<string name="main_exit">再按一次退出程序</string>
+	
+	<string name="main_search">请输入搜索关键字</string>
+	<string name="main_add">请输入订阅地址或关键词</string>
+	<string name="main_subscribe">成功添加订阅</string>
+	<string name="main_alreadysubscribe">已订阅</string>
+	
+	<string name="feedly_failedtogetprofile">获取个人信息失败</string>
+	<string name="feedly_successtogetprofile">成功获取个人信息</string>
+	<string name="feedly_failedtogettags">获取标签失败</string>
+	<string name="feedly_successtogettags">成功获取标签</string>
+	<string name="feedly_failedtogetsubscriptions">获取订阅失败</string>
+	<string name="feedly_successtogetsubscriptions">成功获取订阅</string>    
+	<string name="feedly_failedtogetunreadcounts">获取未读数量失败</string>
+	<string name="feedly_successtogetunreadcounts">成功获取未读数量</string>
+	<string name="feedly_failedtogetsortorder">获取排序失败</string>
+	<string name="feedly_successtogetsortorder">成功获取排序</string>
+	<string name="feedly_failedsynctofeedly">同步到Feedly失败</string>
+	<string name="feedly_successsynctofeedly">成功同步到Feedly</string>
+	<string name="feedly_failedupdatestatus">更新状态失败</string>
+	<string name="feedly_successupdatestatus">成功更新状态</string>
+	<string name="feedly_failedtogetblogs">获取条目失败</string>
+	<string name="feedly_successtogetblogs">成功获取条目</string>
+	<string name="feedly_waitformoreblogs">正在获取更多条目</string>
+	<string name="feedly_sessionexpire">授权超时</string>
+	<string name="feedly_failedaddsubscription">添加订阅失败</string>
+	<string name="feedly_successaddsubscription">成功添加订阅</string>
+	<string name="feedly_failedmovefolder">移动到%s失败</string>
+	<string name="feedly_successmovefolder">成功到%s移动</string>
+	<string name="feedly_failedsearch">查询失败</string>
+	<string name="feedly_successsearch">查询成功</string>
+	
+	<string name="download_complete">已经完成</string>
+	<string name="download_start">开始于服务器同步</string>
+	<string name="download_blogstart">开始缓存</string>
+	<string name="download_blogcomplete">缓存下载完成</string>
+	<string name="download_failed">下载失败</string>
+	
+	<string name="widget_choosechannel">请选择显示到桌面的订阅:</string>
+	<string name="widget_youhadchosed">你已经选择</string>
+	<string name="widget_ok">确定</string>
+	<string name="widget_page">第%s页</string>
+		
+</resources>

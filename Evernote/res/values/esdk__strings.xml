@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="esdk__evernote">Evernote</string>
+    <string name="esdk__evernote_login_failed">Evernote登录失败</string>
+    <string name="esdk__evernote_login_successful">Evernote登录成功</string>
+    <string name="esdk__err_protocol_version">错误EDAM协议版本</string>
+    <string name="esdk__err_authentication">验证失败</string>
+    <string name="esdk__err_api_setup">初始化Evernote API失败</string>
+    <string name="esdk__loading">加载中...</string>
+</resources>

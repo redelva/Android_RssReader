@@ -1,0 +1,15 @@
+<LinearLayout 
+    xmlns:android="http://schemas.android.com/apk/res/android" 
+    android:layout_width="fill_parent"
+	android:gravity="center"  	
+	android:orientation="vertical"
+	android:layout_height="fill_parent">
+
+    <TextView
+        android:id="@+id/listview_empty_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/list_empty_view"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:textSize="35sp" /> 	
+</LinearLayout>

@@ -1,0 +1,11 @@
+eclipse.preferences.version=1
+encoding//src/com/lgq/rssreader/BlogContentFragment.java=UTF-8
+encoding//src/com/lgq/rssreader/dal/BlogDalHelper.java=UTF-8
+encoding//src/com/lgq/rssreader/dal/ImageRecordDalHelper.java=UTF-8
+encoding//src/com/lgq/rssreader/dal/SyncStateDalHelper.java=UTF-8
+encoding//src/com/lgq/rssreader/parser/FeedlyParser.java=UTF-8
+encoding//src/com/lgq/rssreader/utils/DateHelper.java=UTF-8
+encoding//src/com/lgq/rssreader/utils/Helper.java=UTF-8
+encoding//src/com/lgq/rssreader/utils/HtmlHelper.java=UTF-8
+encoding//src/com/lgq/rssreader/yxapi/YXEntryActivity.java=UTF-8
+encoding/<project>=UTF-8

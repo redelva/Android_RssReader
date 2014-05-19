@@ -1,0 +1,22 @@
+<LinearLayout 
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+	
+    <com.lgq.rssreader.controls.XListView   	
+	    android:id="@+id/image_list"
+	    android:layout_width="0dp"
+        android:layout_height="fill_parent"
+        android:layout_weight="1"
+	    tools:context=".BlogContentFragment"/>
+    
+    <ImageView        
+        android:id="@+id/currentimage"        
+        android:layout_height="fill_parent"
+        android:layout_width="0dp"
+        android:layout_weight="3"        
+        android:contentDescription="@string/empty" />
+
+</LinearLayout>
