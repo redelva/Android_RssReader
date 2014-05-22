@@ -97,6 +97,16 @@ public class ReaderApp extends Application{
         					error.append(element.toString() + "\r\n");
         				}
         				
+        				if(paramThrowable.getCause() != null){
+        					error.append("Caused by:" + paramThrowable.getCause().toString() + "\r\n");
+            				
+            				error.append("Error caused:" + paramThrowable.getCause().toString() + "\r\n");
+            				
+            				for(StackTraceElement element : paramThrowable.getCause().getStackTrace()){
+            					error.append(element.toString() + "\r\n");
+            				}
+        				}
+        				
         				outputStream.write(error.toString().getBytes("utf-8"));
         				outputStream.close();
         			} catch (Exception e) {

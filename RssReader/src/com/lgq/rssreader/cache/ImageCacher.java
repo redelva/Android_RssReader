@@ -30,7 +30,7 @@ public class ImageCacher {
 	}
 	
 	/**
-	 * µÃµ½Í¼Æ¬µØÖ·ÎÄ¼þ¼Ð
+	 * ï¿½Ãµï¿½Í¼Æ¬ï¿½ï¿½Ö·ï¿½Ä¼ï¿½ï¿½ï¿½
 	 * 
 	 * @param imageType
 	 * @return
@@ -84,7 +84,7 @@ public class ImageCacher {
 	static final Pattern patternImgxSrc = Pattern.compile("<img(.+?)xsrc=\"(.+?)\"(.+?)>");
 	
 	/**
-	 * µÃµ½htmlÖÐµÄÍ¼Æ¬µØÖ·
+	 * ï¿½Ãµï¿½htmlï¿½Ðµï¿½Í¼Æ¬ï¿½ï¿½Ö·
 	 * 
 	 * @param html
 	 * @return
@@ -106,7 +106,7 @@ public class ImageCacher {
 	}
 	
 	/**
-	 * µÃµ½ÐÂÍ¼Æ¬µØÖ·£¨±¾µØÂ·¾¶£©
+	 * ï¿½Ãµï¿½ï¿½ï¿½Í¼Æ¬ï¿½ï¿½Ö·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Â·ï¿½ï¿½ï¿½ï¿½
 	 * 
 	 * @param imgType
 	 * @param imageUrl
@@ -121,16 +121,15 @@ public class ImageCacher {
 	}
 	
 	/**
-	 * ÏÂÔØhtmlÖÐµÄÍ¼Æ¬
+	 * ï¿½ï¿½ï¿½ï¿½htmlï¿½Ðµï¿½Í¼Æ¬
 	 * 
 	 * @param imgType
 	 * @param html
 	 */
-	public static void DownloadHtmlImage(final Blog b) {
-		AsyncImageLoader imageLoader = new AsyncImageLoader();
+	public static void DownloadHtmlImage(final Blog b) {		
 		List<String> listSrc = GetImagesList(b.Content);
 		for (String src : listSrc) {
-			ImageRecord record = imageLoader.loadDrawable(b, src);
+			ImageRecord record = Helper.loadDrawable(b, src);
 
 			b.Content.replace(record.OriginUrl, record.StoredName.replace("/rssreader", ".."));
 			new BlogDalHelper().SynchronyContent2DB(b.BlogId, b.Content);
@@ -138,16 +137,15 @@ public class ImageCacher {
 	}
 	
 	/**
-	 * ÏÂÔØhtmlÖÐµÄÍ¼Æ¬
+	 * ï¿½ï¿½ï¿½ï¿½htmlï¿½Ðµï¿½Í¼Æ¬
 	 * 
 	 * @param b
 	 * @param content
 	 */
-	public static String DownloadHtmlImage(final Blog b, String content) {
-		AsyncImageLoader imageLoader = new AsyncImageLoader();
+	public static String DownloadHtmlImage(final Blog b, String content) {		
 		List<String> listSrc = GetImagesList(content);
 		for (String src : listSrc) {
-			ImageRecord record = imageLoader.loadDrawable(b, src);
+			ImageRecord record = Helper.loadDrawable(b, src);
 
 			content = content.replace(record.OriginUrl, record.StoredName.replace("/rssreader", ".."));			
 		}
@@ -156,7 +154,7 @@ public class ImageCacher {
 	}
 	
 	/**
-	 * µÃµ½¸ñÊ½»¯ºóµÄhtml
+	 * ï¿½Ãµï¿½ï¿½ï¿½Ê½ï¿½ï¿½ï¿½ï¿½ï¿½html
 	 * 
 	 * @param imgType
 	 * @param html

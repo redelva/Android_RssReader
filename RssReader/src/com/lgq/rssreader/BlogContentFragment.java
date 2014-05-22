@@ -32,6 +32,7 @@ import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.PixelFormat;
 import android.graphics.Typeface;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.opengl.Visibility;
 import android.os.Build;
@@ -97,6 +98,7 @@ import com.evernote.edam.type.Note;
 import com.evernote.edam.type.Notebook;
 import com.evernote.thrift.transport.TTransportException;
 import com.google.gson.Gson;
+import com.lgq.rssreader.cache.AsyncImageLoader;
 import com.lgq.rssreader.controls.GestureListener;
 import com.lgq.rssreader.controls.WebViewEx;
 
@@ -277,9 +279,9 @@ public class BlogContentFragment extends Fragment{
 	    				break;    			
 	    			case FLASH:
 	    				if (cacheArgs.Total != -1)
-	    					browser.loadUrl("javascript: replaceFlash('" + String.valueOf(cacheArgs.CompleteIndex) + "','" + cacheArgs.Cache.html() + "','" + (ReaderApp.getAppContext().getResources().getString(R.string.blog_clicktoview) + " " + title) + "','True')");
+	    					browser.loadUrl("javascript: replaceFlash('" + String.valueOf(cacheArgs.CompleteIndex) + "','" + cacheArgs.Cache.html().replace("'", "\"") + "','" + (ReaderApp.getAppContext().getResources().getString(R.string.blog_clicktoview) + " " + title.replace("'", "\"")) + "','True')");
 		                else
-		                	browser.loadUrl("javascript: replaceFlash('" + String.valueOf(cacheArgs.CompleteIndex) + "','" + cacheArgs.Cache.html() + "','" + title + "','True')");
+		                	browser.loadUrl("javascript: replaceFlash('" + String.valueOf(cacheArgs.CompleteIndex) + "','" + cacheArgs.Cache.html().replace("'", "\"") + "','" + title.replace("'", "\"") + "','True')");
 	    				break;
 	    		}
 	    		
@@ -404,30 +406,30 @@ public class BlogContentFragment extends Fragment{
 										activity.mEvernoteSession.getClientFactory().createNoteStoreClient().createNote(note, new OnClientCallback<Note>() {
 										    @Override
 										    public void onSuccess(Note data) {
-										    	NotificationHelper.showNotification(2000, getResources().getString(R.string.share_completed));
+										    	NotificationHelper.showNotification(2000, ReaderApp.getAppContext().getResources().getString(R.string.share_completed));
 										    }
 
 										    @Override
 										    public void onException(Exception exception) {
 										    	Log.e("RssReader", "Error saving note", exception);
-										    	NotificationHelper.showNotification(2000, getResources().getString(R.string.share_failed));
+										    	NotificationHelper.showNotification(2000, ReaderApp.getAppContext().getResources().getString(R.string.share_failed));
 										    }
 										});
 									} catch (TTransportException e) {
 										Log.e("RssReader", "Error saving note", e);
-								    	NotificationHelper.showNotification(2000, getResources().getString(R.string.share_failed));
+								    	NotificationHelper.showNotification(2000, ReaderApp.getAppContext().getResources().getString(R.string.share_failed));
 									}
 							    }
 
 							    @Override
 							    public void onException(Exception exception) {
 							    	Log.e("RssReader", "Error saving note", exception);
-							    	NotificationHelper.showNotification(2000, getResources().getString(R.string.share_failed));
+							    	NotificationHelper.showNotification(2000, ReaderApp.getAppContext().getResources().getString(R.string.share_failed));
 							    }
 							});
 						} catch (TTransportException e) {
 							Log.e("RssReader", "Error creating notebook", e);
-				        	NotificationHelper.showNotification(2000, getResources().getString(R.string.share_failed));
+				        	NotificationHelper.showNotification(2000, ReaderApp.getAppContext().getResources().getString(R.string.share_failed));
 						}
         			}else{
         				try {
@@ -435,18 +437,18 @@ public class BlogContentFragment extends Fragment{
 							activity.mEvernoteSession.getClientFactory().createNoteStoreClient().createNote(note, new OnClientCallback<Note>() {
 							    @Override
 							    public void onSuccess(Note data) {
-							    	NotificationHelper.showNotification(2000, getResources().getString(R.string.share_completed));
+							    	NotificationHelper.showNotification(2000, ReaderApp.getAppContext().getResources().getString(R.string.share_completed));
 							    }
 
 							    @Override
 							    public void onException(Exception exception) {
 							    	Log.e("RssReader", "Error saving note", exception);
-							    	NotificationHelper.showNotification(2000, getResources().getString(R.string.share_failed));
+							    	NotificationHelper.showNotification(2000, ReaderApp.getAppContext().getResources().getString(R.string.share_failed));
 							    }
 							  });
 						} catch (TTransportException e) {
 							Log.e("RssReader", "Error share note", e);
-				        	NotificationHelper.showNotification(2000, getResources().getString(R.string.share_failed));
+				        	NotificationHelper.showNotification(2000, ReaderApp.getAppContext().getResources().getString(R.string.share_failed));
 						}
         			}
 				}
@@ -454,16 +456,16 @@ public class BlogContentFragment extends Fragment{
 				@Override
 				public void onException(Exception exception) {
 					Log.e("RssReader", "Error loading notebook", exception);
-		        	NotificationHelper.showNotification(2000, getResources().getString(R.string.share_failed));
+		        	NotificationHelper.showNotification(2000, ReaderApp.getAppContext().getResources().getString(R.string.share_failed));
 				}});
         } catch (TTransportException exception) {
         	Log.e("RssReader", "Error creating notestore", exception);
         	//Toast.makeText(ReaderApp.getAppContext(), R.string.share_failed, Toast.LENGTH_LONG).show();
-        	NotificationHelper.showNotification(2000, getResources().getString(R.string.share_failed));
+        	NotificationHelper.showNotification(2000, ReaderApp.getAppContext().getResources().getString(R.string.share_failed));
         }catch(Exception e){
     		Log.e("RssReader", "Error creating notestore", e);
             //Toast.makeText(ReaderApp.getAppContext(), R.string.share_failed, Toast.LENGTH_LONG).show();
-    		NotificationHelper.showNotification(2000, getResources().getString(R.string.share_failed));
+    		NotificationHelper.showNotification(2000, ReaderApp.getAppContext().getResources().getString(R.string.share_failed));
         }
     }
     
@@ -1173,161 +1175,141 @@ public class BlogContentFragment extends Fragment{
         menu.setOnItemClickedListener(new SateliteClickedListener() {
 			
 			public void eventOccured(int id) {
-				BlogContentActivity activity = (BlogContentActivity)getActivity();
+				final BlogContentActivity activity = (BlogContentActivity)getActivity();
 				
 				switch(id){
-					case 0: 
+					case 0:
 						
-						current.IsStarred = !current.IsStarred;
-		        		
-						if(current.IsStarred)
-							markTag(current, RssAction.AsStar);
-						else
-							markTag(current, RssAction.AsUnstar);
-						
-		        		if(activity != null){
-		        			int index = activity.Blogs.indexOf(current);
-		        			
-		        			if(index == -1)
-		        				activity.Blogs.add(current);
-		        			else
-		        				activity.Blogs.get(index).IsStarred = current.IsStarred;
-		        		}
-		        		
-		        		new BlogDalHelper().MarkAsStar(current.BlogId, current.IsStarred);
-						
-		        		if(current.IsStarred)
-		        			menu.getMenuItems().get(id).setImgResourceId(R.drawable.fav);
+						if(!current.IsStarred)
+		        			menu.getMenuItems().get(id).setImgDrawable(ReaderApp.getAppContext().getResources().getDrawable(R.drawable.fav));		        		
 		        		else
-		        			menu.getMenuItems().get(id).setImgResourceId(R.drawable.addfav);
+		        			menu.getMenuItems().get(id).setImgDrawable(ReaderApp.getAppContext().getResources().getDrawable(R.drawable.addfav));
+						
+						new Thread(){
+							public void run(){
+								current.IsStarred = !current.IsStarred;
+				        		
+								if(current.IsStarred)
+									markTag(current, RssAction.AsStar);
+								else
+									markTag(current, RssAction.AsUnstar);
+								
+				        		if(activity != null){
+				        			int index = activity.Blogs.indexOf(current);
+				        			
+				        			if(index == -1)
+				        				activity.Blogs.add(current);
+				        			else
+				        				activity.Blogs.get(index).IsStarred = current.IsStarred;
+				        		}
+				        		
+				        		new BlogDalHelper().MarkAsStar(current.BlogId, current.IsStarred);
+							}
+						}.start();					
+								        		
 						break;
 					case 1: 
 						
-						current.IsRead = !current.IsRead;
-						
-						if(current.IsRead)
-							markTag(current, RssAction.AsRead);
-						else
-							markTag(current, RssAction.AsUnread);
-		        				        		
-		        		if(activity != null){
-		        			int index = activity.Blogs.indexOf(current);
-		        					        			
-		        			if(current.IsRead)
-		        				activity.Count++;
-							else
-								activity.Count--;
-		        			
-		        			if(index == -1)
-		        				activity.Blogs.add(current);
-		        			else
-		        				activity.Blogs.get(index).IsRead = current.IsRead;
-		        		}
-		        		
-		        		new BlogDalHelper().MarkAsRead(current.BlogId, current.IsRead);
-						
-		        		ImageView img = new ImageView(getActivity());
-		        		
-		        		if(current.IsRead)
-		        			menu.getMenuItems().get(id).setImgResourceId(R.drawable.read);
+						if(!current.IsRead)
+		        			menu.getMenuItems().get(id).setImgDrawable(ReaderApp.getAppContext().getResources().getDrawable(R.drawable.read));
 		        		else
-		        			menu.getMenuItems().get(id).setImgResourceId(R.drawable.unread);
+		        			menu.getMenuItems().get(id).setImgDrawable(ReaderApp.getAppContext().getResources().getDrawable(R.drawable.unread));
+						
+						new Thread(){
+							public void run(){
+								current.IsRead = !current.IsRead;
+								
+								if(current.IsRead)
+									markTag(current, RssAction.AsRead);
+								else
+									markTag(current, RssAction.AsUnread);
+				        				        		
+				        		if(activity != null){
+				        			int index = activity.Blogs.indexOf(current);
+				        					        			
+				        			if(current.IsRead)
+				        				activity.Count++;
+									else
+										activity.Count--;
+				        			
+				        			if(index == -1)
+				        				activity.Blogs.add(current);
+				        			else
+				        				activity.Blogs.get(index).IsRead = current.IsRead;
+				        		}
+				        		
+				        		new BlogDalHelper().MarkAsRead(current.BlogId, current.IsRead);
+							}
+						}.start();
 								        		
 						break;						
 					case 2: 
 						
-						final OnekeyShare oks = new OnekeyShare();
+						new Thread(){
+							public void run(){
+								final OnekeyShare oks = new OnekeyShare();
 
-						// 鍒嗕韩鏃禢otification鐨勫浘鏍囧拰鏂囧瓧
-						oks.setNotification(R.drawable.ic_launcher, 
-						getActivity().getString(R.string.app_name));
-						// address鏄帴鏀朵汉鍦板潃锛屼粎鍦ㄤ俊鎭拰閭欢浣跨敤
-						oks.setAddress(ReaderApp.getProfile().Email);
-						// title鏍囬锛屽嵃璞＄瑪璁般�侀偖绠便�佷俊鎭�佸井淇°�佷汉浜虹綉鍜孮Q绌洪棿浣跨敤
-						oks.setTitle(current.Title);
-						// titleUrl鏄爣棰樼殑缃戠粶閾炬帴锛屼粎鍦ㄤ汉浜虹綉鍜孮Q绌洪棿浣跨敤
-						oks.setTitleUrl(current.Link);
-						// text鏄垎浜枃鏈紝鎵�鏈夊钩鍙伴兘闇�瑕佽繖涓瓧娈�
-						oks.setText(HtmlHelper.ConvertHtmlToEnml(current.Content != null ? current.Content : current.Description));
-						// imagePath鏄浘鐗囩殑鏈湴璺緞锛孡inked-In浠ュ鐨勫钩鍙伴兘鏀寔姝ゅ弬鏁�
-						//oks.setImagePath(MainActivity.TEST_IMAGE);
-						// imageUrl鏄浘鐗囩殑缃戠粶璺緞锛屾柊娴井鍗氥�佷汉浜虹綉銆丵Q绌洪棿銆�
-						// 寰俊鐨勪袱涓钩鍙般�丩inked-In鏀寔姝ゅ瓧娈�
-						//oks.setImageUrl("http://img.appgo.cn/imgs/sharesdk/content/2013/07/25/1374723172663.jpg");
-						// url浠呭湪寰俊锛堝寘鎷ソ鍙嬪拰鏈嬪弸鍦堬級涓娇鐢�
-						oks.setUrl(current.Link);
-						// appPath鏄緟鍒嗕韩搴旂敤绋嬪簭鐨勬湰鍦拌矾鍔诧紝浠呭湪寰俊涓娇鐢�
-						//oks.setAppPath(MainActivity.TEST_IMAGE);
-						// comment鏄垜瀵硅繖鏉″垎浜殑璇勮锛屼粎鍦ㄤ汉浜虹綉鍜孮Q绌洪棿浣跨敤
-						//oks.setComment(getContext().getString(R.string.share));
-						// site鏄垎浜鍐呭鐨勭綉绔欏悕绉帮紝浠呭湪QQ绌洪棿浣跨敤
-						oks.setSite(getActivity().getString(R.string.app_name));
-						// siteUrl鏄垎浜鍐呭鐨勭綉绔欏湴鍧�锛屼粎鍦≦Q绌洪棿浣跨敤
-						oks.setSiteUrl(current.Link);
-						// venueName鏄垎浜ぞ鍖哄悕绉帮紝浠呭湪Foursquare浣跨敤
-						//oks.setVenueName(getActivity().getString(R.string.app_name));
-						// venueDescription鏄垎浜ぞ鍖烘弿杩帮紝浠呭湪Foursquare浣跨敤
-						//oks.setVenueDescription("This is a beautiful place!");
-						// latitude鏄淮搴︽暟鎹紝浠呭湪鏂版氮寰崥銆佽吘璁井鍗氬拰Foursquare浣跨敤
-						//oks.setLatitude(23.122619f);
-						// longitude鏄粡搴︽暟鎹紝浠呭湪鏂版氮寰崥銆佽吘璁井鍗氬拰Foursquare浣跨敤
-						//oks.setLongitude(113.372338f);
-						// 鏄惁鐩存帴鍒嗕韩锛坱rue鍒欑洿鎺ュ垎浜級
-						oks.setSilent(true);
-						
-						// 鏋勯�犱竴涓浘鏍�
-						Bitmap logo = BitmapFactory.decodeResource(getResources(), R.drawable.logo_evernote);
-						// 瀹氫箟鍥炬爣鐨勬爣绛�
-						String label = "Evernote";
-						// 鍥炬爣鐐瑰嚮鍚庝細閫氳繃Toast鎻愮ず娑堟伅
-						OnClickListener listener = new OnClickListener() {
-					        public void onClick(View v) {
-					        	BlogContentActivity activity = (BlogContentActivity)BlogContentFragment.this.getActivity();
-					        	if(!activity.mEvernoteSession.isLoggedIn())
-					        		activity.mEvernoteSession.authenticate(activity);
-					        	else
-					        		ShareEvernote();
-				                oks.finish();
-					        }
-						};
-						oks.setCustomerLogo(logo, label, 6, listener);
-						
-						//閫氳繃OneKeyShareCallback鏉ヤ慨鏀逛笉鍚屽钩鍙板垎浜殑鍐呭
-						oks.setShareContentCustomizeCallback(new ShareContentCustomizeCallback(){
+								oks.setNotification(R.drawable.ic_launcher, getActivity().getString(R.string.app_name));
+								oks.setAddress(ReaderApp.getProfile().Email);
+								oks.setTitle(current.Title);
+								oks.setTitleUrl(current.Link);
+								oks.setText(HtmlHelper.ConvertHtmlToEnml(current.Content != null ? current.Content : current.Description));								
+								oks.setUrl(current.Link);								
+								oks.setSite(getActivity().getString(R.string.app_name));
+								oks.setSiteUrl(current.Link);								
+								oks.setSilent(true);
+								
+								Bitmap logo = BitmapFactory.decodeResource(getResources(), R.drawable.logo_evernote);								
+								String label = "Evernote";
+								OnClickListener listener = new OnClickListener() {
+							        public void onClick(View v) {
+							        	BlogContentActivity activity = (BlogContentActivity)BlogContentFragment.this.getActivity();
+							        	if(!activity.mEvernoteSession.isLoggedIn())
+							        		activity.mEvernoteSession.authenticate(activity);
+							        	else
+							        		ShareEvernote();
+						                oks.finish();
+							        }
+								};
+								oks.setCustomerLogo(logo, label, 6, listener);
+								
+								oks.setShareContentCustomizeCallback(new ShareContentCustomizeCallback(){
 
-							@Override
-							public void onShare(Platform platform, ShareParams paramsToShare) {
-								if(platform.getName().equals("SinaWeibo")){
-									paramsToShare.text = current.Title;								
-								}
-								else if ("Twitter".equals(platform.getName())) {
-									paramsToShare.text = current.Title;
-								}
-								else if ("ShortMessage".equals(platform.getName())) {
-									paramsToShare.text = current.Title;
-								}
-								else if ("Instagram".equals(platform.getName())) {
-									paramsToShare.text = current.Title;
-								}
-								else if ("GooglePlus".equals(platform.getName())) {
-									paramsToShare.text = HtmlHelper.filterHtml(current.Content != null ? current.Content : current.Description);
-								}
-								else if ("Email".equals(platform.getName())) {
-									paramsToShare.text = HtmlHelper.filterHtml(current.Content != null ? current.Content : current.Description);
-								}
-								else if ("QQ".equals(platform.getName())) {
-									paramsToShare.text = HtmlHelper.filterHtml(current.Content != null ? current.Content : current.Description);
-								}
-								else if ("Evernote".equals(platform.getName())) {
-									paramsToShare.text = HtmlHelper.ConvertHtmlToEnml(current.Content != null ? current.Content : current.Description);									
-								}
-								else if ("Wechat".equals(platform.getName())) {
-									paramsToShare.text = HtmlHelper.HtmlToText(HtmlHelper.filterHtml(current.Content != null ? current.Content : current.Description));									
-								}
+									@Override
+									public void onShare(Platform platform, ShareParams paramsToShare) {
+										if(platform.getName().equals("SinaWeibo")){
+											paramsToShare.text = current.Title;								
+										}
+										else if ("Twitter".equals(platform.getName())) {
+											paramsToShare.text = current.Title;
+										}
+										else if ("ShortMessage".equals(platform.getName())) {
+											paramsToShare.text = current.Title;
+										}
+										else if ("Instagram".equals(platform.getName())) {
+											paramsToShare.text = current.Title;
+										}
+										else if ("GooglePlus".equals(platform.getName())) {
+											paramsToShare.text = HtmlHelper.filterHtml(current.Content != null ? current.Content : current.Description);
+										}
+										else if ("Email".equals(platform.getName())) {
+											paramsToShare.text = HtmlHelper.filterHtml(current.Content != null ? current.Content : current.Description);
+										}
+										else if ("QQ".equals(platform.getName())) {
+											paramsToShare.text = HtmlHelper.filterHtml(current.Content != null ? current.Content : current.Description);
+										}
+										else if ("Evernote".equals(platform.getName())) {
+											paramsToShare.text = HtmlHelper.ConvertHtmlToEnml(current.Content != null ? current.Content : current.Description);									
+										}
+										else if ("Wechat".equals(platform.getName())) {
+											paramsToShare.text = HtmlHelper.HtmlToText(HtmlHelper.filterHtml(current.Content != null ? current.Content : current.Description));									
+										}
+									}
+								});
+								
+								oks.show(getActivity());
 							}
-						});
-						
-						oks.show(getActivity());						
+						}.start();
 						
 						break;
 					case 3: 
@@ -1335,13 +1317,17 @@ public class BlogContentFragment extends Fragment{
 						break;
 					case 4: 
 						
-						ReaderApp.getSettings().FullScreen = !ReaderApp.getSettings().FullScreen;
-						
-						Editor e = PreferenceManager.getDefaultSharedPreferences(ReaderApp.getAppContext()).edit();
-		    			
-		    			e.putBoolean("view_fullscreen", ReaderApp.getSettings().FullScreen).commit();
-		    			
-		    			ReaderApp.saveSettings();
+						new Thread(){
+							public void run(){
+								ReaderApp.getSettings().FullScreen = !ReaderApp.getSettings().FullScreen;
+								
+								Editor e = PreferenceManager.getDefaultSharedPreferences(ReaderApp.getAppContext()).edit();
+				    			
+				    			e.putBoolean("view_fullscreen", ReaderApp.getSettings().FullScreen).commit();
+				    			
+				    			ReaderApp.saveSettings();
+							}
+						}.start();						
 		    			
 		    			View view = getActivity().getWindow().getDecorView();		    			
 		    			

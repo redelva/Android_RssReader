@@ -27,6 +27,7 @@ import android.widget.Toast;
 import com.lgq.rssreader.R;
 import com.lgq.rssreader.cache.AsyncImageLoader;
 import com.lgq.rssreader.cache.AsyncImageLoader.ImageCallback;
+import com.lgq.rssreader.controls.SwipeListView;
 import com.lgq.rssreader.core.ReaderApp;
 import com.lgq.rssreader.dal.SyncStateDalHelper;
 import com.lgq.rssreader.entity.Blog;
@@ -58,7 +59,12 @@ public class BlogAdapter extends BaseAdapter {
 		ViewHolder viewHolder = null;
 		final Blog entity = list.get(position);
 		if (convertView != null) {
-			viewHolder = (ViewHolder) convertView.getTag();
+			viewHolder = (ViewHolder) convertView.getTag();	
+			
+			if(this.listView instanceof SwipeListView){
+				((SwipeListView)this.listView).closeOpenedItems();
+			}
+			
 		} else {
 			viewHolder = new ViewHolder();
 			convertView = mInflater.inflate(R.layout.blog_list_item, null);

@@ -19,11 +19,11 @@ import android.util.Log;
 
 import com.lgq.rssreader.R;
 import com.lgq.rssreader.cache.AsyncImageLoader;
-import com.lgq.rssreader.cache.AsyncImageLoader.ImageCallback;
 import com.lgq.rssreader.core.ReaderApp;
 import com.lgq.rssreader.entity.Blog;
 import com.lgq.rssreader.entity.ImageRecord;
 import com.lgq.rssreader.task.ImageTask;
+import com.lgq.rssreader.utils.FileHelper;
 import com.lgq.rssreader.utils.Helper;
 import com.lgq.rssreader.utils.HtmlHelper;
 import com.loopj.android.http.AsyncHttpClient;
@@ -147,9 +147,7 @@ import com.loopj.android.http.JsonHttpResponseHandler;
             }
         }
         
-        private void cacheImage(Element body, Blog blog){
-        	AsyncImageLoader loader = new AsyncImageLoader();
-        	
+        private void cacheImage(Element body, Blog blog){        	
         	for(final Element node : body.getElementsByTag("img"))
             {
         		if(node.attr("src").startsWith("..")){
@@ -157,7 +155,7 @@ import com.loopj.android.http.JsonHttpResponseHandler;
         		}
         		
                 if(node.hasAttr("xSrc") && !node.attr("xSrc").startsWith("..")){
-                	ImageRecord record = loader.loadDrawable(blog, node.attr("xSrc"));
+                	ImageRecord record = Helper.loadDrawable(blog, node.attr("xSrc"));
                 	node.attr("xSrc", record.StoredName.replace("/rssreader", ".."));
                 }
             }

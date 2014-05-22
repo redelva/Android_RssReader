@@ -17,8 +17,6 @@ import org.jsoup.select.Elements;
 import android.graphics.drawable.Drawable;
 import android.util.Log;
 
-import com.lgq.rssreader.cache.AsyncImageLoader;
-import com.lgq.rssreader.cache.AsyncImageLoader.ImageCallback;
 import com.lgq.rssreader.entity.Blog;
 import com.lgq.rssreader.entity.ImageRecord;
 import com.lgq.rssreader.task.ImageTask;

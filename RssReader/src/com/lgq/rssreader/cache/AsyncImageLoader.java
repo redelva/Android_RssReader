@@ -1,8 +1,16 @@
 package com.lgq.rssreader.cache;
 
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.lang.ref.SoftReference;
+import java.net.URL;
 import java.util.*;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 import com.lgq.rssreader.R;
 import com.lgq.rssreader.core.ReaderApp;
@@ -23,142 +31,101 @@ import android.os.Message;
 import android.util.Log;
 
 public class AsyncImageLoader {
-	private HashMap<ImageRecord, SoftReference<Drawable>> imageCache;
+	private HashMap<String, SoftReference<Drawable>> imageCache;
 	Context curContext;
+	private BlockingQueue<Runnable> queue = null;  
+    private ThreadPoolExecutor executor = null; 
+	
 	public AsyncImageLoader() {
 		curContext = ReaderApp.getAppContext();
-		imageCache = new HashMap<ImageRecord, SoftReference<Drawable>>();
+		imageCache = new HashMap<String, SoftReference<Drawable>>();
+		queue = new LinkedBlockingQueue<Runnable>();  
+        /** 
+         * 线程池维护线程的最少数量2 <br> 
+         * 线程池维护线程的最大数量10<br> 
+         * 线程池维护线程所允许的空闲时间180秒 
+         */  
+        executor = new ThreadPoolExecutor(2, 10, 180, TimeUnit.SECONDS, queue);
 	}
-//	/*
-//	 * ֱ������ͼƬ
-//	 */
-//	public void loadDrawable(final Blog blog, final String imageUrl) {
-//		final String folder = ImageCacher.GetImageFolder(blog);
-//		final String originName = imageUrl.substring(imageUrl.lastIndexOf("/") + 1);
-//		final String extension = originName.split("//.")[1];
-//		final String storeName = folder + UUID.randomUUID().toString();
-//		
-//		ImageRecord record = new ImageRecord();
-//		record.Extension = extension;
-//		record.OriginUrl = imageUrl;
-//		record.StoredName = storeName;
-//		record.TimeStamp = new Date();
-//		record.Size = FileHelper.GetFileLength(storeName);
-//
-//		new Thread() {
-//			public void run() {
-//				Drawable drawable = NetHelper.loadImageFromUrlWithStore(storeName, imageUrl);
-//				
-//			}
-//		}.start();
-//	}
-	/**
-	 * �����ص����ز�����
-	 * 
-	 * @param imgType
-	 * @param tag
-	 * @param imageCallback
-	 * @return
-	 */
-	public ImageRecord loadDrawable(final Blog blog, final String imageUrl) {
-		if (imageUrl.trim().equals("")) {
-			return null;
-		}
-		
-//		final Handler handler = new Handler() {
-//			public void handleMessage(Message message) {				
-//				Object[] objs = (Object[])message.obj;
-//				imageCallback.imageLoaded((Drawable)objs[0], (ImageRecord)objs[1]);
-//			}
-//		};
-		
-		final String folder = ImageCacher.GetImageFolder(blog);
-		final String originName = imageUrl.substring(imageUrl.lastIndexOf("/") + 1);
-		final String extension = originName.split("[.]").length > 1 ? originName.split("[.]")[1] : "";
-		final String storeName = folder + UUID.randomUUID().toString();
-		
-		ImageRecord record;
-		final ImageRecordDalHelper recordHelper = new ImageRecordDalHelper();
-		
-		if(recordHelper.Exist(imageUrl)){
-			record = recordHelper.GetImageRecordEntity(imageUrl);
-			File file = new File(record.StoredName);
-			if (imageCache.containsKey(record)) {
-				SoftReference<Drawable> softReference = imageCache.get(record);
-				Drawable drawable = softReference.get();
-				if (drawable != null) {
-					recordHelper.SynchronyData2DB(record);
-					return record;
-				}
-			} else if (file.exists()) {
-				return record;
-			}
-		}else{
-			Drawable drawable = NetHelper.loadImageFromUrlWithStore(storeName, imageUrl);
-			
-			record = new ImageRecord();
-			record.Extension = extension;
-			record.OriginUrl = imageUrl;
-			record.BlogId = blog.BlogId;
-			record.StoredName = storeName;
-			record.TimeStamp = new Date();
-			record.Size = FileHelper.GetFileLength(storeName);
-			
-			recordHelper.SynchronyData2DB(record);
-			
-			if (drawable != null) {
-				return record;
-			}
-		}
-		return record;		
 
-//		new Thread() {
-//			public void run() {
-//				Drawable drawable = NetHelper.loadImageFromUrlWithStore(storeName, imageUrl);
-//				
-//				ImageRecord record = new ImageRecord();
-//				record.Extension = extension;
-//				record.OriginUrl = imageUrl;
-//				record.StoredName = storeName;
-//				record.TimeStamp = new Date();
-//				record.Size = FileHelper.GetFileLength(storeName);
-//				
-//				recordHelper.SynchronyData2DB(record);
-//				
-//				if (drawable != null) {
-//					imageCache.put(record, new SoftReference<Drawable>(drawable));
-//					Message message = handler.obtainMessage(0, new Object[]{drawable, record});
-//					handler.sendMessage(message);
-//				}
-//			}
-//		}.start();		
-	}
-	
-	/**
-	 * �����ص����ز�����
-	 * 
-	 * @param imgType
-	 * @param tag
-	 * @param imageCallback
-	 * @return
-	 */
-	public void loadDrawable(final String imageUrl, final ImageCallback callback) {
-		if (imageUrl.trim().equals("")) {
-			return;
-		}
-		new Thread() {
-			public void run() {
-				Drawable drawable = NetHelper.getBitmapFromURL(imageUrl);
-				
-				if(callback != null){
-					callback.imageLoaded(drawable, null);
-				}
-			}
-		}.start();
-	}
+	public Drawable loadDrawable(final Context context, final String imageUrl, final ImageCallback imageCallback) {  
+        if (imageCache.containsKey(imageUrl)) {  
+            SoftReference<Drawable> softReference = imageCache.get(imageUrl);  
+            Drawable drawable = softReference.get();  
+            if (drawable != null) {  
+                return drawable;  
+            }  
+        }  
+  
+        final Handler handler = new Handler() {  
+            public void handleMessage(Message message) {  
+                imageCallback.imageLoaded((Drawable) message.obj, imageUrl);  
+            }  
+        };  
+  
+        // 将任务添加到线程池  
+        executor.execute(new Runnable() {  
+            public void run() {  
+                // 根据URL加载图片  
+                Drawable drawable = loadImageFromUrl(context, imageUrl);  
+  
+                // 图片资源不为空是创建软引用  
+                if (null != drawable)  
+                	imageCache.put(imageUrl, new SoftReference<Drawable>(drawable));  
+  
+                Message message = handler.obtainMessage(0, drawable);  
+                handler.sendMessage(message);  
+            }  
+        });  
+  
+        return null;  
+    }  
+  
+    // 网络图片先下载到本地cache目录保存，以imagUrl的图片文件名保存，如果有同名文件在cache目录就从本地加载  
+    public static Drawable loadImageFromUrl(Context context, String imageUrl) {  
+        Drawable drawable = null;  
+  
+        if (imageUrl == null)  
+            return null;  
+        String fileName = "";  
+  
+        // 获取url中图片的文件名与后缀  
+        if (imageUrl != null && imageUrl.length() != 0) {  
+            fileName = imageUrl.substring(imageUrl.lastIndexOf("/") + 1);  
+        }  
+  
+        // 根据图片的名称创建文件（不存在：创建）  
+        File file = new File(context.getCacheDir(), fileName);  
+  
+        // 如果在缓存中找不到指定图片则下载  
+        if (!file.exists() && !file.isDirectory()) {  
+            try {  
+                // 从网络上下载图片并写入文件  
+                FileOutputStream fos = new FileOutputStream(file);  
+                InputStream is = new URL(imageUrl).openStream();  
+                int data = is.read();  
+                while (data != -1) {  
+                    fos.write(data);  
+                    data = is.read();  
+                }  
+                fos.close();  
+                is.close();  
+  
+                drawable = Drawable.createFromPath(file.toString());  
+            } catch (IOException e) {  
+                e.printStackTrace();  
+            }  
+        }  
+        // 如果缓存中有则直接使用缓存中的图片  
+        else {  
+            // System.out.println(file.isDirectory() + " " + file.getName());  
+            drawable = Drawable.createFromPath(file.toString());  
+        }  
+        return drawable;  
+    }
 
 	public interface ImageCallback {
-		public void imageLoaded(Drawable imageDrawable, ImageRecord record);
+		public void imageLoaded(Drawable imageDrawable, String imageUrl);
 	}
 
 }

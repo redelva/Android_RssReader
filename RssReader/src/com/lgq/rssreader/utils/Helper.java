@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
+import java.lang.ref.SoftReference;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
@@ -23,6 +24,7 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -32,10 +34,13 @@ import org.json.JSONException;
 import com.google.gson.Gson;
 import com.google.gson.internal.StringMap;
 import com.lgq.rssreader.R;
+import com.lgq.rssreader.cache.ImageCacher;
 import com.lgq.rssreader.core.Config;
 import com.lgq.rssreader.core.ReaderApp;
+import com.lgq.rssreader.dal.ImageRecordDalHelper;
 import com.lgq.rssreader.entity.Blog;
 import com.lgq.rssreader.entity.Channel;
+import com.lgq.rssreader.entity.ImageRecord;
 import com.lgq.rssreader.entity.UnReadCount;
 import com.lgq.rssreader.entity.Unread;
 
@@ -834,6 +839,45 @@ public class Helper {
 			Log.e("ERROR", "urlImage2Drawable failed with image url at " + url, e);
 			return null;
 		}
+	}
+	
+	public static ImageRecord loadDrawable(final Blog blog, final String imageUrl) {
+		if (imageUrl.trim().equals("")) {
+			return null;
+		}		
+		
+		final String folder = ImageCacher.GetImageFolder(blog);
+		final String originName = imageUrl.substring(imageUrl.lastIndexOf("/") + 1);
+		final String extension = originName.split("[.]").length > 1 ? originName.split("[.]")[1] : "";
+		final String storeName = folder + UUID.randomUUID().toString();
+		
+		ImageRecord record;
+		final ImageRecordDalHelper recordHelper = new ImageRecordDalHelper();
+		
+		if(recordHelper.Exist(imageUrl)){
+			record = recordHelper.GetImageRecordEntity(imageUrl);
+			File file = new File(record.StoredName);
+			if (file.exists()) {
+				return record;
+			}
+		}else{
+			Drawable drawable = NetHelper.loadImageFromUrlWithStore(storeName, imageUrl);
+			
+			record = new ImageRecord();
+			record.Extension = extension;
+			record.OriginUrl = imageUrl;
+			record.BlogId = blog.BlogId;
+			record.StoredName = storeName;
+			record.TimeStamp = new Date();
+			record.Size = FileHelper.GetFileLength(storeName);
+			
+			recordHelper.SynchronyData2DB(record);
+			
+			if (drawable != null) {
+				return record;
+			}
+		}
+		return record;	
 	}
 	
 	public static Bitmap GetBitmap(String imageUrl){   
