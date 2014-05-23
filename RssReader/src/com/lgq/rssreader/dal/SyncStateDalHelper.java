@@ -161,23 +161,46 @@ public class SyncStateDalHelper {
 	}
 	
 	public void Delete(List<String> ids, SyncType type){
+//		String where = "";
+//		if(type == SyncType.Blog)
+//			where = "BlogOriginId in (?) ";
+//		if(type == SyncType.Channel)
+//			where = "ChannelId in (?) ";
+//		
+//		StringBuffer sb = new StringBuffer();
+//		
+//		for(String id: ids){
+//			sb.append(id + ",");
+//		}
+//		
+//		if(sb.length() > 0)
+//			sb.deleteCharAt(sb.length() - 1);
+//		
+//		String[] args = { sb.toString()};
+//		db.delete(Config.DB_SYNCSTATE_TABLE, where, args);
+		
 		String where = "";
 		if(type == SyncType.Blog)
-			where = "BlogOriginId in (?) ";
+			where = "BlogOriginId =?";
 		if(type == SyncType.Channel)
-			where = "ChannelId in (?) ";
+			where = "ChannelId=?";
 		
-		StringBuffer sb = new StringBuffer();
-		
-		for(String id: ids){
-			sb.append(id + ",");
+		synchronized (_writeLock) {
+			db.beginTransaction();
+			try {				
+				for (int i = ids.size() - 1, len = 0; i >= len; i--) {
+					String id = ids.get(i);					
+					db.delete(Config.DB_SYNCSTATE_TABLE, where, new String[]{id});
+				}
+				db.setTransactionSuccessful();
+			} 
+			catch(Exception e){
+				e.printStackTrace();
+			}finally {
+				db.endTransaction();
+			}
 		}
 		
-		if(sb.length() > 0)
-			sb.deleteCharAt(sb.length() - 1);
-		
-		String[] args = { sb.toString()};
-		db.delete(Config.DB_SYNCSTATE_TABLE, where, args);
 	}
 	
 	/**
@@ -191,7 +214,7 @@ public class SyncStateDalHelper {
 			ContentValues contentValues = new ContentValues();
 			contentValues.put("BlogOriginId", recordList.get(i).BlogOriginId);
 			contentValues.put("ChannelId", recordList.get(i).ChannelId);
-			contentValues.put("Status", String.valueOf(recordList.get(i).Status));
+			contentValues.put("Status", recordList.get(i).Status.ordinal());
 			contentValues.put("Tag", recordList.get(i).Tag);			
 			contentValues.put("TimeStamp", DateHelper.ParseDateToString(recordList.get(i).TimeStamp));			
 			list.add(contentValues);
@@ -235,7 +258,7 @@ public class SyncStateDalHelper {
 		ContentValues contentValues = new ContentValues();
 		contentValues.put("BlogOriginId", record.BlogOriginId);
 		contentValues.put("ChannelId", record.ChannelId);
-		contentValues.put("Status", String.valueOf(record.Status));
+		contentValues.put("Status", record.Status.ordinal());
 		contentValues.put("Tag", record.Tag);			
 		contentValues.put("TimeStamp", DateHelper.ParseDateToString(record.TimeStamp));
 		synchronized (_writeLock) {

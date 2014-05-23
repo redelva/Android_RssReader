@@ -65,37 +65,8 @@ public class ChannelAdapter extends BaseAdapter {
 			viewHolder.channel_title = (TextView) convertView.findViewById(R.id.channel_title);
 			viewHolder.channel_count = (TextView) convertView.findViewById(R.id.channel_count);			
 		}
-//		String tag = entity.GetIcon();
-//		if (tag.contains("?")) {// 锟截讹拷?锟斤拷锟斤拷址锟斤拷锟斤拷锟斤拷锟叫计�
-//			tag = tag.substring(0, tag.indexOf("?"));
-//		}
-//
-//		viewHolder.rss_cate_icon.setTag(tag);
-//		Drawable cachedImage = asyncImageLoader.loadDrawable(
-//				ImageCacher.EnumImageType.RssIcon, tag, new ImageCallback() {
-//					public void imageLoaded(Drawable imageDrawable, String tag) {
-//						Log.i("Drawable", tag);
-//						ImageView imageViewByTag = (ImageView) listView
-//								.findViewWithTag(tag);
-//						if (imageViewByTag != null && imageDrawable != null) {
-//							imageViewByTag.setImageDrawable(imageDrawable);
-//						} else {
-//							try {
-//								imageViewByTag
-//										.setImageResource(R.drawable.sample_face);
-//							} catch (Exception ex) {
-//
-//							}
-//						}
-//					}
-//				});
-//		if (cachedImage != null) {
-//			viewHolder.rss_cate_icon.setImageDrawable(cachedImage);
-//		}
 
-		viewHolder.channel_count.setText(String.valueOf(entity.UnreadCount));
-		
-		//viewHolder.channel_icon.setImageResource(entity.IsDirectory ? R.drawable.folder : R.drawable.rss);
+		viewHolder.channel_count.setText(String.valueOf(entity.UnreadCount));		
 		
 		if(!ReaderApp.getSettings().UseDefaultIcon)		
 			viewHolder.channel_icon.setImageResource(entity.IsDirectory ? R.drawable.folder : R.drawable.rss);

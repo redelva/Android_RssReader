@@ -41,6 +41,7 @@ import android.widget.Adapter;
 import android.widget.AdapterView;
 import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.BaseAdapter;
 import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
@@ -161,6 +162,30 @@ public class FeedListFragment extends SherlockFragment {
     private String title;
     
     private int page;
+    
+    final String[] recommends = new String[]{
+			ReaderApp.getAppContext().getResources().getString(R.string.recommend_title1),
+			ReaderApp.getAppContext().getResources().getString(R.string.recommend_title2),
+			ReaderApp.getAppContext().getResources().getString(R.string.recommend_title3),
+			ReaderApp.getAppContext().getResources().getString(R.string.recommend_title4),
+			ReaderApp.getAppContext().getResources().getString(R.string.recommend_title5),
+			ReaderApp.getAppContext().getResources().getString(R.string.recommend_title6),
+			ReaderApp.getAppContext().getResources().getString(R.string.recommend_title7),
+			ReaderApp.getAppContext().getResources().getString(R.string.recommend_title8),
+			ReaderApp.getAppContext().getResources().getString(R.string.recommend_title9),
+			ReaderApp.getAppContext().getResources().getString(R.string.recommend_title10)};
+	final String[] urls = new String[]{
+			ReaderApp.getAppContext().getResources().getString(R.string.recommend_url1),
+			ReaderApp.getAppContext().getResources().getString(R.string.recommend_url2),
+			ReaderApp.getAppContext().getResources().getString(R.string.recommend_url3),
+			ReaderApp.getAppContext().getResources().getString(R.string.recommend_url4),
+			ReaderApp.getAppContext().getResources().getString(R.string.recommend_url5),
+			ReaderApp.getAppContext().getResources().getString(R.string.recommend_url6),
+			ReaderApp.getAppContext().getResources().getString(R.string.recommend_url7),
+			ReaderApp.getAppContext().getResources().getString(R.string.recommend_url8),
+			ReaderApp.getAppContext().getResources().getString(R.string.recommend_url9),
+			ReaderApp.getAppContext().getResources().getString(R.string.recommend_url10)};
+	final boolean[] chsBools = new boolean[]{false, false, false,false, false, false,false, false, false,false};
 
     /**
      * A callback interface that all activities containing this fragment must
@@ -206,30 +231,6 @@ public class FeedListFragment extends SherlockFragment {
 	            				}
             				}else{
             					// need to recommend some feeds
-            					
-            					final String[] recommends = new String[]{
-            							getActivity().getResources().getString(R.string.recommend_title1),
-    									getActivity().getResources().getString(R.string.recommend_title2),
-    									getActivity().getResources().getString(R.string.recommend_title3),
-    									getActivity().getResources().getString(R.string.recommend_title4),
-    									getActivity().getResources().getString(R.string.recommend_title5),
-    									getActivity().getResources().getString(R.string.recommend_title6),
-    									getActivity().getResources().getString(R.string.recommend_title7),
-    									getActivity().getResources().getString(R.string.recommend_title8),
-    									getActivity().getResources().getString(R.string.recommend_title9),
-    									getActivity().getResources().getString(R.string.recommend_title10)};
-            					final String[] urls = new String[]{
-            							getActivity().getResources().getString(R.string.recommend_url1),
-    									getActivity().getResources().getString(R.string.recommend_url2),
-    									getActivity().getResources().getString(R.string.recommend_url3),
-    									getActivity().getResources().getString(R.string.recommend_url4),
-    									getActivity().getResources().getString(R.string.recommend_url5),
-    									getActivity().getResources().getString(R.string.recommend_url6),
-    									getActivity().getResources().getString(R.string.recommend_url7),
-    									getActivity().getResources().getString(R.string.recommend_url8),
-    									getActivity().getResources().getString(R.string.recommend_url9),
-    									getActivity().getResources().getString(R.string.recommend_url10)};
-            					final boolean[] chsBools = new boolean[]{false, false, false,false, false, false,false, false, false,false};
             					
             					OnMultiChoiceClickListener multiClick = new OnMultiChoiceClickListener(){
             				    	
@@ -287,18 +288,19 @@ public class FeedListFragment extends SherlockFragment {
         		case Unread:
         		case Search:
         			if(getView() != null){
-        				blogs = (List<Blog>)msg.obj; 
-        				adapter = new BlogAdapter(
-                            getActivity(),
-                            blogs,
-                            listView
-                            );
-        				listView.setAdapter(adapter);        				
+        				blogs = (List<Blog>)msg.obj;
+        				if(listView.getAdapter() == null){
+	        				adapter = new BlogAdapter(
+	                            getActivity(),
+	                            blogs,
+	                            listView
+	                            );
+	        				listView.setAdapter(adapter);
+        				}else{
+        					((BaseAdapter) adapter).notifyDataSetChanged();
+        				}
         				
         				if(blogs.size() == 0){
-//        					TextView emptyView = (TextView)getView().findViewById(id.listview_empty_view);
-//        					emptyView.setText("下拉加载数据");
-//        			        listView.setEmptyView(emptyView);
         					emptyLayout.setEmptyMessage(getActivity().getResources().getString(R.string.list_empty_view));
         					emptyLayout.setShowEmptyButton(true);        					
         					emptyLayout.showEmpty();
@@ -307,18 +309,19 @@ public class FeedListFragment extends SherlockFragment {
         			break;
         		case Star:
         			if(getView() != null){
-        				blogs = (List<Blog>)msg.obj; 
-        				adapter = new BlogAdapter(
-                            getActivity(),
-                            blogs,
-                            listView
-                            );
-        				listView.setAdapter(adapter);
+        				blogs = (List<Blog>)msg.obj;
+        				if(listView.getAdapter() == null){
+	        				adapter = new BlogAdapter(
+	                            getActivity(),
+	                            blogs,
+	                            listView
+	                            );
+	        				listView.setAdapter(adapter);
+        				}else{
+        					((BaseAdapter) adapter).notifyDataSetChanged();
+        				}
         				
         				if(blogs.size() == 0){
-//        					TextView emptyView = (TextView)getView().findViewById(id.listview_empty_view);
-//        					emptyView.setText("下拉加载数据");
-//        			        listView.setEmptyView(emptyView);
         					emptyLayout.setEmptyMessage(getActivity().getResources().getString(R.string.list_empty_view));        					
         					emptyLayout.getEmptyView().setOnClickListener(new View.OnClickListener(){        						
 								@Override
@@ -332,13 +335,17 @@ public class FeedListFragment extends SherlockFragment {
                 	break;
         		case Subscribe: 
         			if(getView() != null){
-        				results = (List<Result>)msg.obj; 
+        				results = (List<Result>)msg.obj;
+        				if(listView.getAdapter() == null){
         				adapter = new ResultAdapter(
-                            getActivity(),
-                            results,
-                            listView
-                            );
-        				listView.setAdapter(adapter);
+	                            getActivity(),
+	                            results,
+	                            listView
+	                            );
+	        				listView.setAdapter(adapter);
+        				}else{
+        					((BaseAdapter) adapter).notifyDataSetChanged();
+        				}
         			}
                 	break;
         		case Gallery:

@@ -339,16 +339,30 @@ public class FeedlyParser extends RssParser {
 
 	private void syncToFeedly(List<SyncState> unsync, HttpResponseHandler handler)
     {
-		if(unsync == null)
+		if(unsync == null || unsync.size() == 0)
 			return ;
 		
         //seperate blog and channel type first
-		final List<String> blogs = new ArrayList<String>();
+		final List<String> readblogs = new ArrayList<String>();
+		final List<String> unreadblogs = new ArrayList<String>();
+		final List<String> starblogs = new ArrayList<String>();
+		final List<String> unstarblogs = new ArrayList<String>();
 		final List<SyncState> channels = new ArrayList<SyncState>();
 		
 		for(SyncState state : unsync){
 			if(state.BlogOriginId != null && state.BlogOriginId.length() > 0){
-				blogs.add(state.BlogOriginId);
+				
+				if(state.Status == RssAction.AsRead)
+					readblogs.add(state.BlogOriginId);
+				
+				if(state.Status == RssAction.AsUnread)
+					unreadblogs.add(state.BlogOriginId);
+				
+				if(state.Status == RssAction.AsStar)
+					starblogs.add(state.BlogOriginId);
+				
+				if(state.Status == RssAction.AsUnstar)
+					unstarblogs.add(state.BlogOriginId);
 			}
 			
 			if(state.ChannelId != null && state.ChannelId.length() > 0){
@@ -358,7 +372,7 @@ public class FeedlyParser extends RssParser {
 		
 		//use batchMarkTag for blog
 		
-		batchMarkTag(blogs, RssAction.AsRead, new HttpResponseHandler(){
+		batchMarkTag(readblogs, RssAction.AsRead, new HttpResponseHandler(){
         	@Override
         	public <RssAction> void onCallback(RssAction action, boolean result, String msg){
         		if(result){
@@ -366,7 +380,46 @@ public class FeedlyParser extends RssParser {
         			
         			SyncStateDalHelper helper = new SyncStateDalHelper();
         			
-        			helper.Delete(blogs, SyncType.Blog);
+        			helper.Delete(readblogs, SyncType.Blog);
+        		}
+        	}
+        });
+		
+		batchMarkTag(unreadblogs, RssAction.AsUnread, new HttpResponseHandler(){
+        	@Override
+        	public <RssAction> void onCallback(RssAction action, boolean result, String msg){
+        		if(result){
+        			Log.i("RssReader", msg);
+        			
+        			SyncStateDalHelper helper = new SyncStateDalHelper();
+        			
+        			helper.Delete(unreadblogs, SyncType.Blog);
+        		}
+        	}
+        });
+		
+		batchMarkTag(starblogs, RssAction.AsStar, new HttpResponseHandler(){
+        	@Override
+        	public <RssAction> void onCallback(RssAction action, boolean result, String msg){
+        		if(result){
+        			Log.i("RssReader", msg);
+        			
+        			SyncStateDalHelper helper = new SyncStateDalHelper();
+        			
+        			helper.Delete(starblogs, SyncType.Blog);
+        		}
+        	}
+        });
+		
+		batchMarkTag(unstarblogs, RssAction.AsUnstar, new HttpResponseHandler(){
+        	@Override
+        	public <RssAction> void onCallback(RssAction action, boolean result, String msg){
+        		if(result){
+        			Log.i("RssReader", msg);
+        			
+        			SyncStateDalHelper helper = new SyncStateDalHelper();
+        			
+        			helper.Delete(unstarblogs, SyncType.Blog);
         		}
         	}
         });

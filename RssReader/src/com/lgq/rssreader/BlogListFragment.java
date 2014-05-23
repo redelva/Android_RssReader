@@ -142,6 +142,10 @@ public class BlogListFragment extends Fragment implements IXListViewListener {
         public void onItemSelected(Blog p, Blog c, Blog n) {
         }
     };
+    
+    public static final int LOADDATA = 1;
+    public static final int UPDATESTATE = 2;
+    public static final int UPDATECOUNT = 3;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -154,7 +158,7 @@ public class BlogListFragment extends Fragment implements IXListViewListener {
         @Override  
         public void handleMessage(Message msg) {            
             switch(msg.what){
-	            case 1 :
+	            case LOADDATA :
 	            	if(adapter == null){
 	            		data = (List<Blog>) msg.obj;
 	            		adapter = new BlogAdapter(
@@ -179,7 +183,7 @@ public class BlogListFragment extends Fragment implements IXListViewListener {
 	            	adapter.notifyDataSetChanged();
 	            	
 	            	break;
-	            case 2:
+	            case UPDATESTATE:
 	            	List<Blog> blogs = (List<Blog>)msg.obj;
 	            	if(data == null){
 	            		data = blogs;
@@ -216,7 +220,7 @@ public class BlogListFragment extends Fragment implements IXListViewListener {
 	            	
 	            	adapter.notifyDataSetChanged();
 	            	break;
-	            case 3:	            	
+	            case UPDATECOUNT:	            	
 	                title.setText(channel.Title + "-" + String.valueOf(msg.obj));
 	            	break;
             }
@@ -243,7 +247,7 @@ public class BlogListFragment extends Fragment implements IXListViewListener {
                     	
                     	if(data.size() > 0){
                     		Message m = myHandler.obtainMessage();                    				
-            	            m.what = 1;
+            	            m.what = LOADDATA;
             	            m.obj = data;
             				myHandler.sendMessage(m);            				
                     	}else{
@@ -262,7 +266,7 @@ public class BlogListFragment extends Fragment implements IXListViewListener {
     			            			
     			            			if(blogs.size() > 0){
     			            				Message m = myHandler.obtainMessage();
-                            	            m.what = 1;
+                            	            m.what = LOADDATA;
                             	            m.obj = blogs;
                             				myHandler.sendMessage(m);
     			            			}
@@ -323,44 +327,8 @@ public class BlogListFragment extends Fragment implements IXListViewListener {
 						position-1 >=0 ? (Blog)adapter.getItem(position-1) : null,
 						(Blog)adapter.getItem(position),
 						position+1 < adapter.getCount() ? (Blog)adapter.getItem(position+1) : null);
-			}
-    		
-//    		@Override  
-//            public void onStartOpen(int position, int action, boolean right) {
-//                Log.i("RssReader", "onStartOpen" + String.valueOf(position) + " " + String.valueOf(action) + " " + String.valueOf(right));
-//                
-////                ImageView img = null;
-////                
-////                View v = listView.getChildAt(position);
-////                
-////                if(right){
-////                	img = ((ViewHolder)v.getTag()).blog_star;
-////                	Animation anim = AnimationUtils.loadAnimation(getActivity(), R.anim.rightalpha);    	        
-////                	img.startAnimation(anim);
-////                }
-////            	else{
-////            		img = ((ViewHolder)v.getTag()).blog_read;
-////            		Animation anim = AnimationUtils.loadAnimation(getActivity(), R.anim.leftalpha);    	        
-////            		img.startAnimation(anim);
-////            	}                
-//            }  
-//  
-//            @Override  
-//            public void onStartClose(int position, boolean right) {
-//            	Log.i("RssReader", "onStartClose" + String.valueOf(position) + " " + String.valueOf(right));  
-//            } 
+			}    		
 		});
-    	
-//        listView.setOnItemClickListener(new AdapterView.OnItemClickListener(){
-//        	@Override
-//			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-//        		ListAdapter adapter = (ListAdapter) parent.getAdapter();
-//				mCallbacks.onItemSelected(
-//						position-1 >=0 ? (Blog)adapter.getItem(position-1) : null,
-//						(Blog)adapter.getItem(position),
-//						position+1 < adapter.getCount() ? (Blog)adapter.getItem(position+1) : null);
-//			}        	
-//        });
 
         // Restore the previously serialized activated item position.
         if (savedInstanceState != null
@@ -444,7 +412,7 @@ public class BlogListFragment extends Fragment implements IXListViewListener {
         			
         			if(blogs.size() > 0 ){
         				Message m = myHandler.obtainMessage();                    				
-        	            m.what = 1;
+        	            m.what = LOADDATA;
         	            m.obj = blogs;
         				myHandler.sendMessage(m);
         			}
@@ -466,51 +434,53 @@ public class BlogListFragment extends Fragment implements IXListViewListener {
 	@Override
 	public void onLoadMore() {
 		
-		final BlogDalHelper helper = new BlogDalHelper();
-		
-		pageIndex = pageIndex + 1;
-		
-		List<Blog> blogs = helper.GetBlogList(channel, pageIndex, ReaderApp.getSettings().NumPerRequest, ReaderApp.getSettings().ShowAllItems);
-		
-		if(blogs.size()>0){
-			Message m = myHandler.obtainMessage();                    				
-            m.what = 1;
-            m.obj = blogs;
-			myHandler.sendMessage(m);
-			onLoad();
-		}else{
-			Blog b = (Blog)adapter.getItem(adapter.getCount() - 1);
+		new Thread(){public void run(){
+			final BlogDalHelper helper = new BlogDalHelper();
 			
-			b.TimeStamp = -b.TimeStamp; 
+			pageIndex = pageIndex + 1;
 			
-			FeedlyParser parser = new FeedlyParser();
+			List<Blog> blogs = helper.GetBlogList(channel, pageIndex, ReaderApp.getSettings().NumPerRequest, ReaderApp.getSettings().ShowAllItems);
 			
-			parser.getRssBlog(channel, b, 30, new HttpResponseHandler(){
-	        	@Override
-	        	public <Blog> void onCallback(List<Blog> blogs, boolean result, String msg, boolean hasMore){
-	        		if(result){        			
-	        			helper.SynchronyData2DB((List<com.lgq.rssreader.entity.Blog>) blogs);
-	        			
-	        			if(blogs.size() > 0 ){
-	        				Message m = myHandler.obtainMessage();                    				
-	        	            m.what = 1;
-	        	            m.obj = blogs;
-	        				myHandler.sendMessage(m);
-	        			}
-	        			
-	        			if(hasMore){
-	        				Toast.makeText(getActivity(), getActivity().getResources().getString(R.string.list_loadingmore), 10).show();
-	        			}
-	        			else{
-	        				Helper.sound();
-	        			}
-	        		}else{
-	        			Toast.makeText(getActivity(), msg, 10).show();        			
-	        		}
-	        		
-	        		onLoad();
-	        	}
-			});
-		}	
+			if(blogs.size()>0){
+				Message m = myHandler.obtainMessage();                    				
+	            m.what = LOADDATA;
+	            m.obj = blogs;
+				myHandler.sendMessage(m);
+				onLoad();
+			}else{
+				Blog b = (Blog)adapter.getItem(adapter.getCount() - 1);
+				
+				b.TimeStamp = -b.TimeStamp; 
+				
+				FeedlyParser parser = new FeedlyParser();
+				
+				parser.getRssBlog(channel, b, 30, new HttpResponseHandler(){
+		        	@Override
+		        	public <Blog> void onCallback(List<Blog> blogs, boolean result, String msg, boolean hasMore){
+		        		if(result){        			
+		        			helper.SynchronyData2DB((List<com.lgq.rssreader.entity.Blog>) blogs);
+		        			
+		        			if(blogs.size() > 0 ){
+		        				Message m = myHandler.obtainMessage();                    				
+		        	            m.what = LOADDATA;
+		        	            m.obj = blogs;
+		        				myHandler.sendMessage(m);
+		        			}
+		        			
+		        			if(hasMore){
+		        				Toast.makeText(getActivity(), getActivity().getResources().getString(R.string.list_loadingmore), 10).show();
+		        			}
+		        			else{
+		        				Helper.sound();
+		        			}
+		        		}else{
+		        			Toast.makeText(getActivity(), msg, 10).show();        			
+		        		}
+		        		
+		        		onLoad();
+		        	}
+				});
+			}
+		}}.start();
 	}
 }

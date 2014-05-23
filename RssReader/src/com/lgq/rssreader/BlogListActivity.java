@@ -154,8 +154,8 @@ public class BlogListActivity extends FragmentActivity implements BlogListFragme
 	            	
         			if(fragment != null){
         				Message m = fragment.myHandler.obtainMessage();
-        	            m.what = 3;
-        	            m.obj = target.UnreadCount - count;//blogs.size();
+        	            m.what = BlogListFragment.UPDATECOUNT;
+        	            m.obj = target.UnreadCount - count > 0 ? target.UnreadCount - count : 0 ;//blogs.size();
         	            fragment.myHandler.sendMessage(m);
         	            
         	            needUpdate = true;
@@ -167,7 +167,7 @@ public class BlogListActivity extends FragmentActivity implements BlogListFragme
 				BlogListFragment fragment =(BlogListFragment)getSupportFragmentManager(). findFragmentById(R.id.blog_list_container);
 								
 				Message m = fragment.myHandler.obtainMessage();
-	            m.what = 2;
+	            m.what = BlogListFragment.UPDATESTATE;
 	            m.obj = blogs;
 	            fragment.myHandler.sendMessage(m);
 				break;
