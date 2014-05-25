@@ -236,7 +236,8 @@ public class BlogContentFragment extends Fragment{
     // 鐘舵��
  	private static final int CONTENT = 1;
  	private static final int DESC = 2;
- 	private static final int FLASH = 3; 	
+ 	private static final int FLASH = 3;
+ 	private static final int SHARE = 4;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -282,6 +283,12 @@ public class BlogContentFragment extends Fragment{
 	    					browser.loadUrl("javascript: replaceFlash('" + String.valueOf(cacheArgs.CompleteIndex) + "','" + cacheArgs.Cache.html().replace("'", "\"") + "','" + (ReaderApp.getAppContext().getResources().getString(R.string.blog_clicktoview) + " " + title.replace("'", "\"")) + "','True')");
 		                else
 		                	browser.loadUrl("javascript: replaceFlash('" + String.valueOf(cacheArgs.CompleteIndex) + "','" + cacheArgs.Cache.html().replace("'", "\"") + "','" + title.replace("'", "\"") + "','True')");
+	    				break;
+	    			case SHARE:
+	    				OnekeyShare oks = (OnekeyShare)msg.obj;
+	    				
+	    				oks.show(getActivity());
+	    				
 	    				break;
 	    		}
 	    		
@@ -1307,7 +1314,12 @@ public class BlogContentFragment extends Fragment{
 									}
 								});
 								
-								oks.show(getActivity());
+								Message m = myHandler.obtainMessage();
+					            m.what = SHARE;
+					            m.obj = oks;
+								
+					            myHandler.sendMessage(m);
+//								oks.show(getActivity());
 							}
 						}.start();
 						
