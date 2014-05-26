@@ -1080,7 +1080,7 @@ public class FeedlyParser extends RssParser {
         						 markTag(blog, action, handler);
         					 }else{
         						 if (handler != null){
-        							 handler.sendResponseMessage(null, false, ReaderApp.getAppContext().getResources().getString(R.string.feedly_failedupdatestatus));
+        							 handler.sendResponseMessage(action, false, ReaderApp.getAppContext().getResources().getString(R.string.feedly_failedupdatestatus));
         						 }
         					 }
         				 }
@@ -1090,7 +1090,7 @@ public class FeedlyParser extends RssParser {
         		 {
         			 if (handler != null)
         			 {
-        				 handler.sendResponseMessage(null, false, ReaderApp.getAppContext().getResources().getString(R.string.feedly_failedupdatestatus));
+        				 handler.sendResponseMessage(action, false, ReaderApp.getAppContext().getResources().getString(R.string.feedly_failedupdatestatus));
         			 }
         		 }
 				

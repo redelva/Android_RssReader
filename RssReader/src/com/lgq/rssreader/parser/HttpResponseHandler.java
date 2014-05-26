@@ -9,6 +9,7 @@ import android.os.Message;
 import com.lgq.rssreader.entity.Blog;
 import com.lgq.rssreader.entity.Channel;
 import com.lgq.rssreader.entity.SyncState;
+import com.lgq.rssreader.enums.RssAction;
 
 public class HttpResponseHandler{		
 	protected static final int SUCCESS_MESSAGE = 0;

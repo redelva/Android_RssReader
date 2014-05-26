@@ -481,7 +481,7 @@ public class BlogContentFragment extends Fragment{
 		
 		feedly.markTag(b, action, new HttpResponseHandler(){
         	@Override
-        	public <RssAction> void onCallback(RssAction action, boolean result, String msg){
+        	public <T> void onCallback(T action, boolean result, String msg){
         		if(!result){
         			Log.i("RssReader", msg);
         			
