@@ -889,6 +889,10 @@ public class FeedlyParser extends RssParser {
 	}
     
     public void batchMarkTag(final List<String> blogs, final RssAction action, final HttpResponseHandler handler) {
+    	
+    	if(blogs == null || blogs.size() == 0)
+    		return;
+    	
     	String actionParams = "";	
 		
         String method = "";
@@ -972,7 +976,7 @@ public class FeedlyParser extends RssParser {
         						 batchMarkTag(blogs, action, handler);
         					 }else{
         						 if (handler != null){
-        							 handler.sendResponseMessage(null, false, ReaderApp.getAppContext().getResources().getString(R.string.feedly_failedupdatestatus));
+        							 handler.sendResponseMessage(action, false, ReaderApp.getAppContext().getResources().getString(R.string.feedly_failedupdatestatus));
         						 }
         					 }
         				 }
@@ -982,7 +986,7 @@ public class FeedlyParser extends RssParser {
         		 {
         			 if (handler != null)
         			 {
-        				 handler.sendResponseMessage(null, false, ReaderApp.getAppContext().getResources().getString(R.string.feedly_failedupdatestatus));
+        				 handler.sendResponseMessage(action, false, ReaderApp.getAppContext().getResources().getString(R.string.feedly_failedupdatestatus));
         			 }
         		 }
 				
@@ -1234,7 +1238,7 @@ public class FeedlyParser extends RssParser {
        		 					markTag(channel, action, handler);
        		 				}else{
        		 					if (handler != null){
-       		 						handler.sendResponseMessage(null, false, ReaderApp.getAppContext().getResources().getString(R.string.feedly_failedupdatestatus));
+       		 						handler.sendResponseMessage(action, false, ReaderApp.getAppContext().getResources().getString(R.string.feedly_failedupdatestatus));
        		 					}
        		 				}
        		 			}
@@ -1244,7 +1248,7 @@ public class FeedlyParser extends RssParser {
        		 	{
        		 		if (handler != null)
        		 		{
-       		 			handler.sendResponseMessage(null, false, ReaderApp.getAppContext().getResources().getString(R.string.feedly_failedupdatestatus));
+       		 			handler.sendResponseMessage(action, false, ReaderApp.getAppContext().getResources().getString(R.string.feedly_failedupdatestatus));
        		 		}
        		 	}
 				

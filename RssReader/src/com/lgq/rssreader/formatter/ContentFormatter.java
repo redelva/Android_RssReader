@@ -53,9 +53,9 @@ public class ContentFormatter extends BlogFormatter
     {
         if (blog.Content == null || blog.Content.length() == 0 || blog.Content.contains("embed")){
             AsyncHttpClient fullClient = new AsyncHttpClient();
-            Uri link = Uri.parse(blog.Link);                
-            fullClient.addHeader("host", link.getHost());
-            fullClient.addHeader("Referer", blog.Link);            
+            //Uri link = Uri.parse(blog.Link);                
+            //fullClient.addHeader("host", link.getHost());
+            //fullClient.addHeader("Referer", blog.Link);            
             fullClient.get(blog.Link, new AsyncHttpResponseHandler(){
             	public void onSuccess(String content){
             		try
