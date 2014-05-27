@@ -259,7 +259,7 @@ public class MainActivity extends SlidingFragmentActivity
 		{
 			case 0:
 				
-				Toast.makeText(MainActivity.this, getResources().getString(R.string.main_loadingdata), 10).show();
+				Toast.makeText(ReaderApp.getAppContext(), ReaderApp.getAppContext().getResources().getString(R.string.main_loadingdata), 10).show();
 				
 				loadChannel();
 
@@ -269,7 +269,10 @@ public class MainActivity extends SlidingFragmentActivity
 
 				Log.i("RssReader", "Need to refresh count in list");
 				
-				boolean needUpdate = data.getBooleanExtra("NeedUpdate", false);
+				boolean needUpdate = false;
+				
+				if(data != null)
+					needUpdate = data.getBooleanExtra("NeedUpdate", false);					
 				
 				if(needUpdate){
 					loadChannel();

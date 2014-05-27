@@ -446,7 +446,7 @@ public class BlogListFragment extends Fragment implements IXListViewListener {
 	            m.what = LOADDATA;
 	            m.obj = blogs;
 				myHandler.sendMessage(m);
-				onLoad();
+				//getActivity().runOnUiThread(new Runnable(){public void run(){onLoad();}});
 			}else{
 				Blog b = (Blog)adapter.getItem(adapter.getCount() - 1);
 				
@@ -477,10 +477,12 @@ public class BlogListFragment extends Fragment implements IXListViewListener {
 		        			Toast.makeText(getActivity(), msg, 10).show();        			
 		        		}
 		        		
-		        		onLoad();
+		        		//onLoad();
 		        	}
 				});
 			}
 		}}.start();
+		
+		onLoad();
 	}
 }
