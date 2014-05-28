@@ -115,7 +115,11 @@ public class ImageCacher {
 	private static String GetLocalImgSrc(Blog b, String src) {
 		String folder = GetImageFolder(b);
 		
-		String localFile = new ImageRecordDalHelper().GetImageRecordEntity(src).StoredName;
+		ImageRecordDalHelper helper = new ImageRecordDalHelper();
+		
+		String localFile = helper.GetImageRecordEntity(src).StoredName;
+		
+		helper.Close();
 
 		return "file:///mnt" + folder + localFile;
 	}
@@ -128,12 +132,18 @@ public class ImageCacher {
 	 */
 	public static void DownloadHtmlImage(final Blog b) {		
 		List<String> listSrc = GetImagesList(b.Content);
+		
+		BlogDalHelper helper = new BlogDalHelper();
+		
 		for (String src : listSrc) {
 			ImageRecord record = Helper.loadDrawable(b, src);
 
 			b.Content.replace(record.OriginUrl, record.StoredName.replace("/rssreader", ".."));
-			new BlogDalHelper().SynchronyContent2DB(b.BlogId, b.Content);
+						
+			helper.SynchronyContent2DB(b.BlogId, b.Content);
 		}
+		
+		helper.Close();
 	}
 	
 	/**

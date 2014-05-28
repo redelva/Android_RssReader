@@ -858,6 +858,7 @@ public class Helper {
 			record = recordHelper.GetImageRecordEntity(imageUrl);
 			File file = new File(record.StoredName);
 			if (file.exists()) {
+				recordHelper.Close();
 				return record;
 			}
 		}else{
@@ -874,9 +875,11 @@ public class Helper {
 			recordHelper.SynchronyData2DB(record);
 			
 			if (drawable != null) {
+				recordHelper.Close();
 				return record;
 			}
 		}
+		recordHelper.Close();
 		return record;	
 	}
 	

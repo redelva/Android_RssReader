@@ -266,5 +266,6 @@
 	<string name="widget_youhadchosed">你已经选择</string>
 	<string name="widget_ok">确定</string>
 	<string name="widget_page">第%s页</string>
+	<string name="error">抱歉,程序发生错误了</string>
 		
 </resources>

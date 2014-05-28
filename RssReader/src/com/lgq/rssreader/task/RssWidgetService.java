@@ -165,10 +165,14 @@ public class RssWidgetService extends RemoteViewsService{
         public void onDataSetChanged() {  
             log("onDataSetChanged");
             
+            BlogDalHelper helper = new BlogDalHelper();
+            
             if(c != null)
-            	mBlogs = new BlogDalHelper().GetBlogList(c, CurrentPage, ReaderApp.getSettings().NumPerRequest, ReaderApp.getSettings().ShowAllItems);
+            	mBlogs = helper.GetBlogList(c, CurrentPage, ReaderApp.getSettings().NumPerRequest, ReaderApp.getSettings().ShowAllItems);
             else
-            	mBlogs = new BlogDalHelper().GetTopBlogList();
+            	mBlogs = helper.GetTopBlogList();
+            
+            helper.Close();
         }  
   
         @Override  

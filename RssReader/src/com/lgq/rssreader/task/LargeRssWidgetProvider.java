@@ -124,7 +124,9 @@ public class LargeRssWidgetProvider extends AppWidgetProvider{
             	@Override
             	public <Blog> void onCallback(List<Blog> blogs, boolean result, String msg, boolean hasMore){
             		if(result){
-            			new BlogDalHelper().SynchronyData2DB((List<com.lgq.rssreader.entity.Blog>) blogs);
+            			BlogDalHelper helper = new BlogDalHelper();
+            			helper.SynchronyData2DB((List<com.lgq.rssreader.entity.Blog>) blogs);
+            			helper.Close();
             			Helper.sound();
             			RssWidgetFactory.CurrentPage = 1;
                 		

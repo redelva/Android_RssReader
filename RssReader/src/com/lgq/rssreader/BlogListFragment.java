@@ -408,7 +408,10 @@ public class BlogListFragment extends Fragment implements IXListViewListener {
         	@Override
         	public <Blog> void onCallback(List<Blog> blogs, boolean result, String msg, boolean hasMore){
         		if(result){
-        			new BlogDalHelper().SynchronyData2DB((List<com.lgq.rssreader.entity.Blog>) blogs);
+        			
+        			BlogDalHelper helper = new BlogDalHelper();
+        			helper.SynchronyData2DB((List<com.lgq.rssreader.entity.Blog>) blogs);
+        			helper.Close();
         			
         			if(blogs.size() > 0 ){
         				Message m = myHandler.obtainMessage();                    				
@@ -447,6 +450,9 @@ public class BlogListFragment extends Fragment implements IXListViewListener {
 	            m.obj = blogs;
 				myHandler.sendMessage(m);
 				//getActivity().runOnUiThread(new Runnable(){public void run(){onLoad();}});
+				
+				helper.Close();
+				
 			}else{
 				Blog b = (Blog)adapter.getItem(adapter.getCount() - 1);
 				
@@ -459,6 +465,7 @@ public class BlogListFragment extends Fragment implements IXListViewListener {
 		        	public <Blog> void onCallback(List<Blog> blogs, boolean result, String msg, boolean hasMore){
 		        		if(result){        			
 		        			helper.SynchronyData2DB((List<com.lgq.rssreader.entity.Blog>) blogs);
+		        			helper.Close();
 		        			
 		        			if(blogs.size() > 0 ){
 		        				Message m = myHandler.obtainMessage();                    				

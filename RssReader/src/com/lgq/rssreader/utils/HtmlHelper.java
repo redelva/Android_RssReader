@@ -399,6 +399,8 @@ public class HtmlHelper {
                 xmlChar[i] = ' '; // 用空格替换
             }
         }
+        
+        helper.Close();
 
         return new String(xmlChar).replace("<?xml version=\"1.0\" encoding=\"utf-8\"?>", "");
     }

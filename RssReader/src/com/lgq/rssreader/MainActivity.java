@@ -191,6 +191,9 @@ public class MainActivity extends SlidingFragmentActivity
 												Log.e("RssReader", e.getMessage());
 											}
 										}
+										
+										blogHelper.Close();
+										imgHelper.Close();
 									}
 								}.start();
 							}

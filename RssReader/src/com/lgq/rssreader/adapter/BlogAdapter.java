@@ -205,6 +205,8 @@ public class BlogAdapter extends BaseAdapter {
         			states.add(s);
         			
         			helper.SynchronyData2DB(states);
+        			
+        			helper.Close();
         		}else{
         			Toast.makeText(ReaderApp.getAppContext(), msg, 10).show();
         		}

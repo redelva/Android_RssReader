@@ -74,10 +74,15 @@ public class MediumRssWidgetProvider extends AppWidgetProvider{
         }
         
         String blogContent = prefs.getString("Widget_Blog" + appWidgetId, "");
+        
+        BlogDalHelper helper = new BlogDalHelper();
+        
         if(blogContent.length() > 0)
         	b = new Gson().fromJson(blogContent, Blog.class);
         else
-        	b = new BlogDalHelper().GetBlogList(c, 1, 1, false).get(0);
+        	b = helper.GetBlogList(c, 1, 1, false).get(0);
+        
+        helper.Close();
     	views.setTextViewText(R.id.widget_blog_title, b.Title);
     	views.setTextViewText(R.id.widget_blog_desc, HtmlHelper.filterHtml(b.Description));
     	if( Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN)
@@ -133,6 +138,7 @@ public class MediumRssWidgetProvider extends AppWidgetProvider{
         final AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
         ComponentName cmpName = new ComponentName(context, LargeRssWidgetProvider.class);
         final int[] appWidgetIds = appWidgetManager.getAppWidgetIds(cmpName);
+        BlogDalHelper helper = new BlogDalHelper();
         
         int mAppWidgetId = intent.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, 0);
         
@@ -150,7 +156,8 @@ public class MediumRssWidgetProvider extends AppWidgetProvider{
         	
         	Channel c = (Channel) new Gson().fromJson(content, Channel.class);
         	
-        	Blog previous = new BlogDalHelper().FindBlogBy(null, "", c, b, true);
+        	
+        	Blog previous = helper.FindBlogBy(null, "", c, b, true);        	
         	
         	RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.widget4_2);
             
@@ -173,8 +180,8 @@ public class MediumRssWidgetProvider extends AppWidgetProvider{
         	content = intent.getExtras().getString(RIGHT + "Channel");
         	
         	Channel c = (Channel) new Gson().fromJson(content, Channel.class);
-        	
-        	Blog next = new BlogDalHelper().FindBlogBy(null, "", c, b, false);
+        	        	
+        	Blog next = helper.FindBlogBy(null, "", c, b, false);        	
         	
         	RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.widget4_2);
             
@@ -192,5 +199,6 @@ public class MediumRssWidgetProvider extends AppWidgetProvider{
 
         }
         
+        helper.Close();
     } 
 }

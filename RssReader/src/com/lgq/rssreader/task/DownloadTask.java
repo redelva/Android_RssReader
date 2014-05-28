@@ -191,7 +191,11 @@ public class DownloadTask extends AsyncTask<List<Channel>, Integer, Void>
 				currentText = context.getResources().getString(R.string.download_complete) + " " + context.getResources().getString(R.string.download).toLowerCase();
 			}
 			
-			new BlogDalHelper().SynchronyData2DB(blogs);
+			BlogDalHelper helper = new BlogDalHelper();
+			
+			helper.SynchronyData2DB(blogs);
+			
+			helper.Close();
 		}		
 		
 		return null;

@@ -269,5 +269,6 @@
 	<string name="widget_youhadchosed">You had choose</string>
 	<string name="widget_ok">Ok</string>
 	<string name="widget_page">Page %s</string>
+	<string name="error">Oops. there is an error happened</string>
 		
 </resources>

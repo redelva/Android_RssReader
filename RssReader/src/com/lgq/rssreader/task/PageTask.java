@@ -22,7 +22,7 @@ import android.widget.ListAdapter;
 import android.widget.ListView;
 
 /**
- * ¼ÓÔØÊý¾Ý
+ * ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
  * 
  * @author walkingp
  * @date 2012-3-13
@@ -47,13 +47,17 @@ public class PageTask<T> extends AsyncTask<Integer, Integer, List<T>> {
 		
 		List<T> data = new ArrayList<T>();
 		
+		BlogDalHelper helper = new BlogDalHelper();
+		
 		if(type == 0){
-			data = (List<T>) new BlogDalHelper().GetBlogList(tab, index, size);
+			data = (List<T>) helper.GetBlogList(tab, index, size);
 		}
 		
 		if(type == 1){
-			data = (List<T>) new BlogDalHelper().GetBlogList(tab, index, size);
+			data = (List<T>) helper.GetBlogList(tab, index, size);
 		}
+		
+		helper.Close();
 		
 		return data;
 	}

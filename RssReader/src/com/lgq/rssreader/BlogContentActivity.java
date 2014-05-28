@@ -73,15 +73,10 @@ public class BlogContentActivity extends SherlockFragmentActivity  {
     	
         super.onCreate(savedInstanceState);
         
-        mEvernoteSession = EvernoteSession.getInstance(this, "redelva", "453e8a5fdee809be", EVERNOTE_SERVICE);
-        
-//        if(ReaderApp.getSettings().FullScreen){
-//        	getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,WindowManager.LayoutParams.FLAG_FULLSCREEN);
-//        }
-        
 		this.requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_blog_detail);
         
+        mEvernoteSession = EvernoteSession.getInstance(this, "redelva", "453e8a5fdee809be", EVERNOTE_SERVICE);
         ShareSDK.initSDK(this);
 
         Blogs = new ArrayList<Blog>();
@@ -107,11 +102,6 @@ public class BlogContentActivity extends SherlockFragmentActivity  {
                     .add(R.id.blog_detail_container, fragment)
                     .commit();
         } 
-            
-//        getActionBar().setDisplayShowCustomEnabled(true);
-//        getActionBar().setCustomView(R.layout.titlebar_content);
-//        Title = (TextView) findViewById(R.id.action_bar_title);        
-//	    getActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);// �������  	    
 	}
     
     @Override

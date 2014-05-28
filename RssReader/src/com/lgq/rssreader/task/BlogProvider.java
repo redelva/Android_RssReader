@@ -11,7 +11,6 @@ import android.net.Uri;
 public class BlogProvider extends ContentProvider {
 
 	private static final UriMatcher matcher;  
-    private BlogDalHelper helper;      
       
     private static final String AUTHORITY = "com.lgq.rssreader.BlogProvider";  
     private static final int PERSON_ALL = 0;  
@@ -20,14 +19,14 @@ public class BlogProvider extends ContentProvider {
     public static final String CONTENT_TYPE = "vnd.android.cursor.dir/vnd.scott.person";  
     public static final String CONTENT_ITEM_TYPE = "vnd.android.cursor.item/vnd.scott.person";  
       
-    //Êý¾Ý¸Ä±äºóÁ¢¼´ÖØÐÂ²éÑ¯  
+    //ï¿½ï¿½Ý¸Ä±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Â²ï¿½Ñ¯  
     private static final Uri NOTIFY_URI = Uri.parse("content://" + AUTHORITY + "/persons");  
       
     static {  
         matcher = new UriMatcher(UriMatcher.NO_MATCH);  
           
-        matcher.addURI(AUTHORITY, "persons", PERSON_ALL);   //Æ¥Åä¼ÇÂ¼¼¯ºÏ  
-        matcher.addURI(AUTHORITY, "persons/#", PERSON_ONE); //Æ¥Åäµ¥Ìõ¼ÇÂ¼  
+        matcher.addURI(AUTHORITY, "persons", PERSON_ALL);   //Æ¥ï¿½ï¿½ï¿½Â¼ï¿½ï¿½ï¿½ï¿½  
+        matcher.addURI(AUTHORITY, "persons/#", PERSON_ONE); //Æ¥ï¿½äµ¥ï¿½ï¿½ï¿½ï¿½Â¼  
     }
 	
 	@Override

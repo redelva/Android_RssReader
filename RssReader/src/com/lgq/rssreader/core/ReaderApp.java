@@ -7,7 +7,10 @@ import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.util.Locale;
 
+import org.jsoup.Connection.Base;
+
 import com.google.gson.Gson;
+import com.lgq.rssreader.MainActivity;
 import com.lgq.rssreader.R;
 import com.lgq.rssreader.entity.Profile;
 import com.lgq.rssreader.entity.RssSettings;
@@ -17,11 +20,18 @@ import com.lgq.rssreader.enums.Theme;
 import com.lgq.rssreader.enums.Token;
 import com.lgq.rssreader.utils.FileHelper;
 
+import android.app.AlarmManager;
+import android.app.AlertDialog;
 import android.app.Application;
+import android.app.PendingIntent;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.DialogInterface.OnClickListener;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.preference.PreferenceManager;
+import android.widget.Toast;
 
 public class ReaderApp extends Application{
     private static Context context;
@@ -109,17 +119,42 @@ public class ReaderApp extends Application{
         				
         				outputStream.write(error.toString().getBytes("utf-8"));
         				outputStream.close();
+        				
+        				Toast.makeText(ReaderApp.getAppContext(), "很抱歉,程序出现异常,即将退出.", Toast.LENGTH_SHORT).show();
+        				
+        				Intent intent = new Intent(ReaderApp.getAppContext(), MainActivity.class);  
+        	            PendingIntent restartIntent = PendingIntent.getActivity(ReaderApp.getAppContext(), 0, intent, Intent.FLAG_ACTIVITY_NEW_TASK);                                                 
+        	            //退出程序                                          
+        	            AlarmManager mgr = (AlarmManager)ReaderApp.getAppContext().getSystemService(Context.ALARM_SERVICE);    
+        	            mgr.set(AlarmManager.RTC, System.currentTimeMillis() + 1000, restartIntent); // 1秒钟后重启应用   
+        	            System.exit(0);
+        				
         			} catch (Exception e) {
         				e.printStackTrace();
         			}// end of try
     			}
+            	
+//            	new AlertDialog.Builder(ReaderApp.getAppContext())
+//				.setTitle(ReaderApp.getAppContext().getResources().getString(R.string.app_name)) 
+//				.setMessage(ReaderApp.getAppContext().getResources().getString(R.string.error))
+//			 	.setPositiveButton(ReaderApp.getAppContext().getResources().getString(R.string.com_btn_ok), new OnClickListener(){
+//
+//					@Override
+//					public void onClick(DialogInterface dialog, int which) {						
+//						System.exit(0);
+//				        Intent intent = new Intent(ReaderApp.getAppContext(), MainActivity.class);  
+//				        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);  
+//				        startActivity(intent); 
+//					}
+//			 	})    				 	
+//			 	.show();
             }
         });
         
         ReaderApp.context = getApplicationContext();
     }
-    
-    public static Context getAppContext() {
+
+	public static Context getAppContext() {
         return ReaderApp.context;
     }
     

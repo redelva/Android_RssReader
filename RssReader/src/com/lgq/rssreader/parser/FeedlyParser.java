@@ -381,6 +381,8 @@ public class FeedlyParser extends RssParser {
         			SyncStateDalHelper helper = new SyncStateDalHelper();
         			
         			helper.Delete(readblogs, SyncType.Blog);
+        			
+        			helper.Close();
         		}
         	}
         });
@@ -394,6 +396,8 @@ public class FeedlyParser extends RssParser {
         			SyncStateDalHelper helper = new SyncStateDalHelper();
         			
         			helper.Delete(unreadblogs, SyncType.Blog);
+        			
+        			helper.Close();
         		}
         	}
         });
@@ -407,6 +411,8 @@ public class FeedlyParser extends RssParser {
         			SyncStateDalHelper helper = new SyncStateDalHelper();
         			
         			helper.Delete(starblogs, SyncType.Blog);
+        			
+        			helper.Close();
         		}
         	}
         });
@@ -420,6 +426,8 @@ public class FeedlyParser extends RssParser {
         			SyncStateDalHelper helper = new SyncStateDalHelper();
         			
         			helper.Delete(unstarblogs, SyncType.Blog);
+        			
+        			helper.Close();
         		}
         	}
         });

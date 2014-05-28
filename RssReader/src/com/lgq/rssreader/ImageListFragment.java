@@ -104,6 +104,8 @@ public class ImageListFragment extends SherlockFragment {
     
     private ImageView currentImage;
     
+    private ImageRecordDalHelper helper;
+    
     public XListView getListView(){return listView;}
         
     public Handler myHandler = new Handler(){
@@ -144,6 +146,8 @@ public class ImageListFragment extends SherlockFragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         
+        helper = new ImageRecordDalHelper(); 
+        		
         // Restore the previously serialized activated item position.
         if (savedInstanceState != null && savedInstanceState.containsKey(STATE_ACTIVATED_POSITION)) {
             setActivatedPosition(savedInstanceState.getInt(STATE_ACTIVATED_POSITION));
@@ -191,7 +195,7 @@ public class ImageListFragment extends SherlockFragment {
 			            public void run() {
 							Message m = myHandler.obtainMessage();
 				            //m.what = tab.ordinal();
-				            m.obj = new ImageRecordDalHelper().GetImageRecordListByPage(page, 10);;
+				            m.obj = helper.GetImageRecordListByPage(page, 10);;
 							myHandler.sendMessage(m);
 						}
 					}).start();
@@ -207,7 +211,7 @@ public class ImageListFragment extends SherlockFragment {
 		            @Override  
 		            public void run() {
 				
-						List<ImageRecord> records = new ImageRecordDalHelper().GetImageRecordListByPage(temp, 10);
+						List<ImageRecord> records = helper.GetImageRecordListByPage(temp, 10);
 						
 						if(records.size() > 0){
 							Message m = myHandler.obtainMessage();
@@ -234,10 +238,16 @@ public class ImageListFragment extends SherlockFragment {
             public void run() {
             	Message m = myHandler.obtainMessage();
 	            m.what = page;
-	            m.obj = new ImageRecordDalHelper().GetTopImageList();
+	            m.obj = helper.GetTopImageList();
 				myHandler.sendMessage(m);
             }
         }).start();
+    }
+    
+    @Override
+    public void onDetach() {
+        super.onDetach();
+    	helper.Close();
     }
        
     @Override

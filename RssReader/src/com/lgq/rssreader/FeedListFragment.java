@@ -152,6 +152,8 @@ public class FeedListFragment extends SherlockFragment {
     
     private EmptyLayout emptyLayout;
     
+    private BlogDalHelper helper;
+    
     public XListView getListView(){return listView;}
     
     /**
@@ -368,6 +370,8 @@ public class FeedListFragment extends SherlockFragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         
+        helper = new BlogDalHelper();
+        
         // Restore the previously serialized activated item position.
         if (savedInstanceState != null && savedInstanceState.containsKey(STATE_ACTIVATED_POSITION)) {
             setActivatedPosition(savedInstanceState.getInt(STATE_ACTIVATED_POSITION));
@@ -490,7 +494,7 @@ public class FeedListFragment extends SherlockFragment {
     		case Search:
         		Message m = myHandler.obtainMessage();
 	            m.what = tab.ordinal();
-	            m.obj = new BlogDalHelper().GetBlogListByKeyword(title, 1, 30);;
+	            m.obj = helper.GetBlogListByKeyword(title, 1, 30);;
 				myHandler.sendMessage(m);
     			break;
     		case Subscribe:
@@ -522,7 +526,7 @@ public class FeedListFragment extends SherlockFragment {
             public void run() {
             	Message m = myHandler.obtainMessage();
 	            m.what = tab.ordinal();
-	            m.obj = new BlogDalHelper().GetBlogList(tab, page, 30);
+	            m.obj = helper.GetBlogList(tab, page, 30);
 				myHandler.sendMessage(m);
             }
         }).start();
@@ -535,7 +539,7 @@ public class FeedListFragment extends SherlockFragment {
         	@Override
         	public <Blog> void onCallback(List<Blog> blogs, boolean result, String msg, boolean hasMore){
         		if(result){		    			            			
-        			new BlogDalHelper().SynchronyData2DB((List<com.lgq.rssreader.entity.Blog>) blogs);
+        			helper.SynchronyData2DB((List<com.lgq.rssreader.entity.Blog>) blogs);
         			
         			if(blogs.size() > 0){
         				Message m = myHandler.obtainMessage();
@@ -617,7 +621,11 @@ public class FeedListFragment extends SherlockFragment {
                 	}
             		final FeedlyParser feedly = new FeedlyParser();
             		
-            		List<SyncState> states = new SyncStateDalHelper().GetSyncStateList();
+            		SyncStateDalHelper stateHelper = new SyncStateDalHelper();
+            		
+            		List<SyncState> states = stateHelper.GetSyncStateList();
+            		
+            		helper.Close();
             		
                     feedly.loadData(states, new HttpResponseHandler(){
                     	@Override
@@ -649,9 +657,9 @@ public class FeedListFragment extends SherlockFragment {
                     	@Override
                     	public <T> void onCallback(List<T> data, boolean result, String msg){
                     		if(result && msg.equals(ReaderApp.getAppContext().getResources().getString(R.string.feedly_successsynctofeedly))){
-                    			new BlogDalHelper().MarkAsRead((List<String>)data, true);
+                    			helper.MarkAsRead((List<String>)data, true);
                     			Log.i("RssReader", "Finish sync from feedly count: " + blogs.size());
-                    		}                    		
+                    		}
                     	}
                     	
                     	@Override
@@ -698,7 +706,7 @@ public class FeedListFragment extends SherlockFragment {
     							adapter.GetData().set(index, c);
     							adapter.notifyDataSetChanged();
     							
-    							new BlogDalHelper().MarkAsRead(c, true);
+    							helper.MarkAsRead(c, true);
     						}
     					}
     				}else{
@@ -722,7 +730,7 @@ public class FeedListFragment extends SherlockFragment {
     						adapter.GetData().remove(c);
     						adapter.notifyDataSetChanged();
     						
-    						new BlogDalHelper().DeleteBlogByChannel(c);
+    						helper.DeleteBlogByChannel(c);
     					}
     				}else{
     					Toast.makeText(getActivity(), msg, 10).show();
@@ -925,6 +933,8 @@ public class FeedListFragment extends SherlockFragment {
 
         // Reset the active callbacks interface to the dummy implementation.
         mCallbacks = channelCallback;
+        
+        helper.Close();
         
         Log.i("RssReader","Detached need to save tab and channel");
     }    

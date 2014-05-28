@@ -206,6 +206,7 @@ public class BlogContentFragment extends Fragment{
     private WebView browser;
     private TextView blogTitle;
     private SatelliteMenu menu;
+    private BlogDalHelper helper;
     
     public SatelliteMenu getMenu(){return menu;}
     
@@ -245,6 +246,7 @@ public class BlogContentFragment extends Fragment{
      */
     public BlogContentFragment() {    	
     	loadEvent = new ManualResetEvent(false);
+    	helper = new BlogDalHelper();
     }
     
     private Handler myHandler = new Handler(){
@@ -302,14 +304,14 @@ public class BlogContentFragment extends Fragment{
 		if(getArguments() != null && getArguments().containsKey(KEYWORD))
 			keyword = getArguments().getString(KEYWORD);
     	
-    	return new BlogDalHelper().FindBlogBy(from, keyword,channel, b, false);
+    	return helper.FindBlogBy(from, keyword,channel, b, false);
     }
     
     public Blog GetPrevious(Blog b){
     	String keyword = "";
 		if(getArguments() != null && getArguments().containsKey(KEYWORD))
 			keyword = getArguments().getString(KEYWORD);
-    	return new BlogDalHelper().FindBlogBy(from, keyword, channel, b, true);    	
+    	return helper.FindBlogBy(from, keyword, channel, b, true);    	
     }
     
     private void markAsRead(final Blog b){
@@ -333,7 +335,7 @@ public class BlogContentFragment extends Fragment{
         		
         		//markTag(b, RssAction.AsRead);
         		
-        		new BlogDalHelper().MarkAsRead(b.BlogId, b.IsRead);
+        		helper.MarkAsRead(b.BlogId, b.IsRead);
         	}
     	}
     }
@@ -370,6 +372,7 @@ public class BlogContentFragment extends Fragment{
 	            			states.add(s);
 	        			}
 	        			helper.SynchronyData2DB(states);
+	        			helper.Close();
 	        		}
 	        	}
 	        });
@@ -500,6 +503,7 @@ public class BlogContentFragment extends Fragment{
         			states.add(s);
         			
         			helper.SynchronyData2DB(states);
+        			helper.Close();
         		}
         	}
         });
@@ -616,7 +620,7 @@ public class BlogContentFragment extends Fragment{
         content.setCacheCompleteHandler(new CacheCompleteHandler(){
 			public void onCache(Blog b, final CacheEventArgs args){
 				if(args.Cache != null)
-					new BlogDalHelper().SynchronyContent2DB(args.Blog.BlogId, args.Cache.outerHtml());
+					helper.SynchronyContent2DB(args.Blog.BlogId, args.Cache.outerHtml());
 			}		
 		});
 		content.setRenderCompleteHandler(new RenderCompleteHandler(){
@@ -633,7 +637,7 @@ public class BlogContentFragment extends Fragment{
 	    				activity.Blogs.get(index).Content = Content;
 	    		}	    			
 				
-				new BlogDalHelper().SynchronyContent2DB(b.BlogId, Content);
+				helper.SynchronyContent2DB(b.BlogId, Content);
 				
 				if(b.BlogId.equals(current.BlogId))
 				{
@@ -681,7 +685,7 @@ public class BlogContentFragment extends Fragment{
         desc.NoImageMode = ReaderApp.getSettings().NoImageMode;
 		desc.setCacheCompleteHandler(new CacheCompleteHandler(){
 			public void onCache(Blog b, final CacheEventArgs args){
-				new BlogDalHelper().SynchronyDescription2DB(args.Blog.BlogId, args.Cache.outerHtml());
+				helper.SynchronyDescription2DB(args.Blog.BlogId, args.Cache.outerHtml());
 			}		
 		});
 		desc.setRenderCompleteHandler(new RenderCompleteHandler(){
@@ -700,7 +704,7 @@ public class BlogContentFragment extends Fragment{
 	    		}
 	    			
 				
-				new BlogDalHelper().SynchronyDescription2DB(b.BlogId, Content);
+				helper.SynchronyDescription2DB(b.BlogId, Content);
 
 				if(b.BlogId.equals(current.BlogId))
 				{
@@ -1210,7 +1214,7 @@ public class BlogContentFragment extends Fragment{
 				        				activity.Blogs.get(index).IsStarred = current.IsStarred;
 				        		}
 				        		
-				        		new BlogDalHelper().MarkAsStar(current.BlogId, current.IsStarred);
+				        		helper.MarkAsStar(current.BlogId, current.IsStarred);
 							}
 						}.start();					
 								        		
@@ -1245,7 +1249,7 @@ public class BlogContentFragment extends Fragment{
 				        				activity.Blogs.get(index).IsRead = current.IsRead;
 				        		}
 				        		
-				        		new BlogDalHelper().MarkAsRead(current.BlogId, current.IsRead);
+				        		helper.MarkAsRead(current.BlogId, current.IsRead);
 							}
 						}.start();
 								        		
@@ -1518,6 +1522,12 @@ public class BlogContentFragment extends Fragment{
 
         return rootView;
     }        
+    
+    @Override
+    public void onDestroy(){
+    	helper.Close();
+    	super.onDestroy();
+    } 
     
     @Override
     public void onSaveInstanceState(Bundle outState) {

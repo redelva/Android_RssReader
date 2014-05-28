@@ -8,8 +8,8 @@ package com.evernote.androidsdk;
 
 public final class R {
 	public static final class id {
-		public static final int esdk__switch_service = 0x7f0700c7;
-		public static final int esdk__webview = 0x7f070066;
+		public static final int esdk__switch_service = 0x7f0800c9;
+		public static final int esdk__webview = 0x7f080066;
 	}
 	public static final class layout {
 		public static final int esdk__webview = 0x7f030022;
@@ -18,12 +18,12 @@ public final class R {
 		public static final int esdk__oauth = 0x7f0f0002;
 	}
 	public static final class string {
-		public static final int esdk__err_api_setup = 0x7f0c0012;
-		public static final int esdk__err_authentication = 0x7f0c0011;
-		public static final int esdk__err_protocol_version = 0x7f0c0010;
-		public static final int esdk__evernote = 0x7f0c000d;
-		public static final int esdk__evernote_login_failed = 0x7f0c000e;
-		public static final int esdk__evernote_login_successful = 0x7f0c000f;
-		public static final int esdk__loading = 0x7f0c0013;
+		public static final int esdk__err_api_setup = 0x7f070013;
+		public static final int esdk__err_authentication = 0x7f070012;
+		public static final int esdk__err_protocol_version = 0x7f070011;
+		public static final int esdk__evernote = 0x7f07000e;
+		public static final int esdk__evernote_login_failed = 0x7f07000f;
+		public static final int esdk__evernote_login_successful = 0x7f070010;
+		public static final int esdk__loading = 0x7f070014;
 	}
 }
