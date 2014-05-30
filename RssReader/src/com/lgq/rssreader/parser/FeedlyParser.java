@@ -1428,9 +1428,12 @@ public class FeedlyParser extends RssParser {
 							b.Title = HtmlHelper.unescape(item.getString("title"));
 						else
 							b.Title = HtmlHelper.unescape(item.getJSONObject("origin").getString("title"));
+						
+						b.Description = "";
+						
 						if (item.has("summary"))
 							b.Description = HtmlHelper.unescape(item.getJSONObject("summary").getString("content"));
-						else
+						if (item.has("content"))
 							b.Description = HtmlHelper.unescape(item.getJSONObject("content").getString("content"));
 						if (item.has("alternate")){
 							int alt = item.getJSONArray("alternate").length();
@@ -1454,9 +1457,9 @@ public class FeedlyParser extends RssParser {
 						}
 			
 						b.PubDate = new Date(item.getLong("published"));
-						b.SubsTitle = item.getJSONObject("origin").getString("title");
+						b.SubsTitle = item.getJSONObject("origin").has("title") ? item.getJSONObject("origin").getString("title") : "";
 						b.TimeStamp = item.getLong("crawled");
-						b.IsRead = !item.getBoolean("unread");
+						b.IsRead = item.has("unread") ? !item.getBoolean("unread") : false;
 						b.Avatar = "";
 			
 						if (item.has("tags"))

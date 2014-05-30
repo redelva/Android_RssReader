@@ -368,9 +368,7 @@ public class FeedListFragment extends SherlockFragment {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        
-        helper = new BlogDalHelper();
+        super.onCreate(savedInstanceState);        
         
         // Restore the previously serialized activated item position.
         if (savedInstanceState != null && savedInstanceState.containsKey(STATE_ACTIVATED_POSITION)) {
@@ -918,6 +916,8 @@ public class FeedListFragment extends SherlockFragment {
         Log.i("RssReader","Attached need to restore tab and channel");
 
         mCallbacks = (Callbacks) activity;
+        
+        helper = new BlogDalHelper();
     }
     
 //    @Override
