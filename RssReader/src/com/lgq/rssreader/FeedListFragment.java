@@ -150,9 +150,7 @@ public class FeedListFragment extends SherlockFragment {
     
     private XListView listView;
     
-    private EmptyLayout emptyLayout;
-    
-    private BlogDalHelper helper;
+    private EmptyLayout emptyLayout;      
     
     public XListView getListView(){return listView;}
     
@@ -460,6 +458,8 @@ public class FeedListFragment extends SherlockFragment {
         if(tab == RssTab.Home){
         	registerForContextMenu(listView);
         }
+        
+        BlogDalHelper helper = new BlogDalHelper(); 
 
     	switch(tab){
     		case Home:
@@ -515,6 +515,8 @@ public class FeedListFragment extends SherlockFragment {
     			break;
     	}
     	
+    	helper.Close();
+    	
     	return rootView;
     }
     
@@ -522,10 +524,15 @@ public class FeedListFragment extends SherlockFragment {
     	new Thread(new Runnable() {  
             @Override  
             public void run() {
+            	
+            	BlogDalHelper helper = new BlogDalHelper();
+            	
             	Message m = myHandler.obtainMessage();
 	            m.what = tab.ordinal();
 	            m.obj = helper.GetBlogList(tab, page, 30);
 				myHandler.sendMessage(m);
+				
+				helper.Close();
             }
         }).start();
     	
@@ -536,9 +543,14 @@ public class FeedListFragment extends SherlockFragment {
     	HttpResponseHandler handler = new HttpResponseHandler(){
         	@Override
         	public <Blog> void onCallback(List<Blog> blogs, boolean result, String msg, boolean hasMore){
-        		if(result){		    			            			
-        			helper.SynchronyData2DB((List<com.lgq.rssreader.entity.Blog>) blogs);
+        		if(result){
         			
+        			BlogDalHelper helper = new BlogDalHelper();
+        			
+        			helper.SynchronyData2DB((List<com.lgq.rssreader.entity.Blog>) blogs);
+
+    				helper.Close();
+    				
         			if(blogs.size() > 0){
         				Message m = myHandler.obtainMessage();
         	            m.what = tab.ordinal();
@@ -623,7 +635,7 @@ public class FeedListFragment extends SherlockFragment {
             		
             		List<SyncState> states = stateHelper.GetSyncStateList();
             		
-            		helper.Close();
+            		stateHelper.Close();
             		
                     feedly.loadData(states, new HttpResponseHandler(){
                     	@Override
@@ -655,7 +667,13 @@ public class FeedListFragment extends SherlockFragment {
                     	@Override
                     	public <T> void onCallback(List<T> data, boolean result, String msg){
                     		if(result && msg.equals(ReaderApp.getAppContext().getResources().getString(R.string.feedly_successsynctofeedly))){
+                    			
+                    			BlogDalHelper helper = new BlogDalHelper(); 
+                    			
                     			helper.MarkAsRead((List<String>)data, true);
+                    			
+                    			helper.Close();
+                    			
                     			Log.i("RssReader", "Finish sync from feedly count: " + blogs.size());
                     		}
                     	}
@@ -704,7 +722,9 @@ public class FeedListFragment extends SherlockFragment {
     							adapter.GetData().set(index, c);
     							adapter.notifyDataSetChanged();
     							
+    							BlogDalHelper helper = new BlogDalHelper();
     							helper.MarkAsRead(c, true);
+    							helper.Close();
     						}
     					}
     				}else{
@@ -728,7 +748,9 @@ public class FeedListFragment extends SherlockFragment {
     						adapter.GetData().remove(c);
     						adapter.notifyDataSetChanged();
     						
+    						BlogDalHelper helper = new BlogDalHelper();
     						helper.DeleteBlogByChannel(c);
+    						helper.Close();
     					}
     				}else{
     					Toast.makeText(getActivity(), msg, 10).show();
@@ -915,9 +937,7 @@ public class FeedListFragment extends SherlockFragment {
         
         Log.i("RssReader","Attached need to restore tab and channel");
 
-        mCallbacks = (Callbacks) activity;
-        
-        helper = new BlogDalHelper();
+        mCallbacks = (Callbacks) activity;        
     }
     
 //    @Override
@@ -926,15 +946,13 @@ public class FeedListFragment extends SherlockFragment {
 //        Object obj = adapter.getItem(position);        
 //        mCallbacks.onItemSelected(obj);
 //    }
-
+        
     @Override
     public void onDetach() {
         super.onDetach();
 
         // Reset the active callbacks interface to the dummy implementation.
         mCallbacks = channelCallback;
-        
-        helper.Close();
         
         Log.i("RssReader","Detached need to save tab and channel");
     }    

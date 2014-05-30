@@ -569,7 +569,7 @@ public class BlogDalHelper {
 	 * @param blogContent
 	 */
 	public void SynchronyDescription2DB(String blogId, String description) {
-		if (description.equals("")) {
+		if (description== null || description.equals("")) {
 			return;
 		}
 		String sql = "update Blogs set Description=? where BlogId=?";

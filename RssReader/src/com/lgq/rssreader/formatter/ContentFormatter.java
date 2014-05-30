@@ -1,5 +1,11 @@
 package com.lgq.rssreader.formatter;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
+import java.net.URL;
+import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
@@ -14,6 +20,7 @@ import android.util.Log;
 
 import com.lgq.rssreader.entity.Blog;
 import com.lgq.rssreader.readability.Readability;
+import com.lgq.rssreader.utils.CharHelper;
 import com.lgq.rssreader.utils.HtmlHelper;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.AsyncHttpResponseHandler;
@@ -74,11 +81,11 @@ public class ContentFormatter extends BlogFormatter
 	                        	for(int i=0, len=pairs.length; i<len; i++){
 	                        		String p = pairs[i].toLowerCase();
 	                        		if(p.contains("charset") && p.contains("gbk")){
-	                        			content = new String(content.getBytes("GBK"), "UTF-8");;
+	                        			content = new String(content.getBytes("GBK"), "UTF-8");
 	                        			break;
 	                        		}
 	                        		if(p.contains("charset") && p.contains("gb2312")){
-	                        			content = new String(content.getBytes("gb2312"), "UTF-8");;
+	                        			content = downloadGbUrl(blog.Link);//CharHelper.change(new String(content.getBytes("utf-8"), "gb2312"), "gb2312", "UTF-8");//new String(content.getBytes("UTF-8"), "gb2312");;
 	                        			break;
 	                        		}
 	                        	}
@@ -110,7 +117,28 @@ public class ContentFormatter extends BlogFormatter
         }
     }
 
-    private static final Object syncLock = new Object();    
+    private static final Object syncLock = new Object();
+    
+    private String downloadGbUrl(String url){
+    	try{
+    		URL u=new URL(url); 
+        	URLConnection conn=u.openConnection(); 
+        	//建立连接 
+        	conn.connect();     	
+        	BufferedReader br=new BufferedReader(new InputStreamReader(conn.getInputStream(),"gb2312")); 
+        	String buf="";
+        	StringBuilder content = new StringBuilder();
+        	while((buf=br.readLine())!=null) 
+        	{ 
+        		content.append(buf); 
+        	} 
+        	//转换编码 
+        	return new String(content.toString().getBytes("UTF-8"));
+    	}catch(IOException e){
+    		e.printStackTrace();
+    		return "";
+    	}
+    }
 	
 	@Override
 	protected String GetReadableString(String content) {

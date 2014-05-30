@@ -1429,7 +1429,7 @@ public class FeedlyParser extends RssParser {
 						else
 							b.Title = HtmlHelper.unescape(item.getJSONObject("origin").getString("title"));
 						
-						b.Description = "";
+						b.Description = ReaderApp.getAppContext().getResources().getString(R.string.empty);
 						
 						if (item.has("summary"))
 							b.Description = HtmlHelper.unescape(item.getJSONObject("summary").getString("content"));
