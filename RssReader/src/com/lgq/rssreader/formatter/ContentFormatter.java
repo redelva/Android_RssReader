@@ -20,7 +20,6 @@ import android.util.Log;
 
 import com.lgq.rssreader.entity.Blog;
 import com.lgq.rssreader.readability.Readability;
-import com.lgq.rssreader.utils.CharHelper;
 import com.lgq.rssreader.utils.HtmlHelper;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.AsyncHttpResponseHandler;

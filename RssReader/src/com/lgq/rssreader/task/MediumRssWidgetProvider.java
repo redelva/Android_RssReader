@@ -79,8 +79,10 @@ public class MediumRssWidgetProvider extends AppWidgetProvider{
         
         if(blogContent.length() > 0)
         	b = new Gson().fromJson(blogContent, Blog.class);
-        else
+        else{
         	b = helper.GetBlogList(c, 1, 1, false).get(0);
+        	prefs.edit().putString("Widget_Blog" + appWidgetId, new Gson().toJson(b)).commit();
+        }
         
         helper.Close();
     	views.setTextViewText(R.id.widget_blog_title, b.Title);
@@ -132,7 +134,7 @@ public class MediumRssWidgetProvider extends AppWidgetProvider{
     
     @SuppressLint("NewApi")
 	@Override  
-    public void onReceive(Context context, Intent intent){ 
+    public void onReceive(final Context context, Intent intent){ 
         super.onReceive(context, intent); 
         
         final AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
@@ -140,64 +142,140 @@ public class MediumRssWidgetProvider extends AppWidgetProvider{
         final int[] appWidgetIds = appWidgetManager.getAppWidgetIds(cmpName);
         BlogDalHelper helper = new BlogDalHelper();
         
-        int mAppWidgetId = intent.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, 0);
+        final int mAppWidgetId = intent.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, 0);
         
         if(intent.getAction().equals(REFRESH)){
+        	
+        	FeedlyParser parser = new FeedlyParser();
+        	Channel c = null;
+        	SharedPreferences prefs = ReaderApp.getAppContext().getSharedPreferences("Widget_Channel", 0); 
+	        String content = prefs.getString("Widget_Channel" + mAppWidgetId, ""); 
+	        if(content.length() > 0 ){
+	        	c = new Gson().fromJson(content, Channel.class);	        	
+	        }
+	        
+	        Blog tmp = new Blog();
+    		tmp.TimeStamp = 0;
+    		tmp.PubDate = new Date();
+        	
+        	parser.getRssBlog(c, tmp, ReaderApp.getSettings().NumPerRequest, new HttpResponseHandler(){
+            	@Override
+            	public <Blog> void onCallback(List<Blog> blogs, boolean result, String msg, boolean hasMore){
+            		if(result){
+            			BlogDalHelper helper = new BlogDalHelper();
+            			helper.SynchronyData2DB((List<com.lgq.rssreader.entity.Blog>) blogs);
+            			helper.Close();
+            			Helper.sound();
+            			
+            			com.lgq.rssreader.entity.Blog previous = ((List<com.lgq.rssreader.entity.Blog>) blogs).get(0);
+                    	
+//                    	RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.widget4_2);
+//                        
+//                    	views.setTextViewText(R.id.widget_blog_title, previous.Title);
+//                    	views.setTextViewText(R.id.widget_blog_desc, HtmlHelper.filterHtml(previous.Description));
+//                    	if( Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN)
+//                    		views.setTextViewTextSize(R.id.widget_blog_desc, TypedValue.COMPLEX_UNIT_DIP, 20);
+//                    	views.setTextViewText(R.id.widget_blog_pagenation, DateHelper.getDaysBeforeNow(previous.PubDate));
+//                        
+                    	SharedPreferences.Editor editor = ReaderApp.getAppContext().getSharedPreferences("Widget_Channel", 0).edit();
+                    	
+                    	editor.putString("Widget_Blog" + mAppWidgetId, new Gson().toJson(previous)).commit();
+                    	
+                    	//appWidgetManager.updateAppWidget(mAppWidgetId, views);
+            			
+                    	buildRemoteView(context, appWidgetManager, mAppWidgetId);
+            		}else{
+            			Toast.makeText(ReaderApp.getAppContext(), msg, 10).show();
+            		}
+            	}
+            });
         	
         }else if(intent.getAction().equals(OPTION)){
         	
         }else if(intent.getAction().equals(LEFT)){
         	
-        	String content = intent.getExtras().getString(LEFT + "Blog");
+//        	String content = intent.getExtras().getString(LEFT + "Blog");
+//        	
+//        	Blog b = (Blog) new Gson().fromJson(content, Blog.class);
+//        	
+//        	content = intent.getExtras().getString(LEFT + "Channel");
+//        	
+//        	Channel c = (Channel) new Gson().fromJson(content, Channel.class);
         	
-        	Blog b = (Blog) new Gson().fromJson(content, Blog.class);
+        	Channel c = null;
+        	Blog b = null;
         	
-        	content = intent.getExtras().getString(LEFT + "Channel");
-        	
-        	Channel c = (Channel) new Gson().fromJson(content, Channel.class);
-        	
-        	
+        	SharedPreferences prefs = ReaderApp.getAppContext().getSharedPreferences("Widget_Channel", 0); 
+            String content = prefs.getString("Widget_Channel" + mAppWidgetId, ""); 
+            if(content.length() > 0 ){
+            	c = new Gson().fromJson(content, Channel.class);
+            }
+            
+            String blogContent = prefs.getString("Widget_Blog" + mAppWidgetId, "");
+            
+            b = new Gson().fromJson(blogContent, Blog.class);
+        	        	
         	Blog previous = helper.FindBlogBy(null, "", c, b, true);        	
         	
-        	RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.widget4_2);
-            
-        	views.setTextViewText(R.id.widget_blog_title, previous.Title);
-        	views.setTextViewText(R.id.widget_blog_desc, HtmlHelper.filterHtml(previous.Description));
-        	if( Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN)
-        		views.setTextViewTextSize(R.id.widget_blog_desc, TypedValue.COMPLEX_UNIT_DIP, 20);
-        	views.setTextViewText(R.id.widget_blog_pagenation, DateHelper.getDaysBeforeNow(previous.PubDate));
+//        	RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.widget4_2);
+//            
+//        	views.setTextViewText(R.id.widget_blog_title, previous.Title);
+//        	views.setTextViewText(R.id.widget_blog_desc, HtmlHelper.filterHtml(previous.Description));
+//        	if( Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN)
+//        		views.setTextViewTextSize(R.id.widget_blog_desc, TypedValue.COMPLEX_UNIT_DIP, 20);
+//        	views.setTextViewText(R.id.widget_blog_pagenation, DateHelper.getDaysBeforeNow(previous.PubDate));
             
         	SharedPreferences.Editor editor = ReaderApp.getAppContext().getSharedPreferences("Widget_Channel", 0).edit();
         	
-        	editor.putString("Widget_Blog" + mAppWidgetId, new Gson().toJson(previous));
+        	editor.putString("Widget_Blog" + mAppWidgetId, new Gson().toJson(previous)).commit();
+        	
+        	buildRemoteView(context, appWidgetManager, mAppWidgetId);
+        	//appWidgetManager.updateAppWidget(mAppWidgetId, views);
         	
         }else if(intent.getAction().equals(RIGHT)){
         	
-        	String content = intent.getExtras().getString(RIGHT + "Blog");
+//        	String content = intent.getExtras().getString(RIGHT + "Blog");
+//        	
+//        	Blog b = (Blog) new Gson().fromJson(content, Blog.class);
+//        	
+//        	content = intent.getExtras().getString(RIGHT + "Channel");
+//        	
+//        	Channel c = (Channel) new Gson().fromJson(content, Channel.class);
         	
-        	Blog b = (Blog) new Gson().fromJson(content, Blog.class);
+        	Channel c = null;
+        	Blog b = null;
         	
-        	content = intent.getExtras().getString(RIGHT + "Channel");
-        	
-        	Channel c = (Channel) new Gson().fromJson(content, Channel.class);
+        	SharedPreferences prefs = ReaderApp.getAppContext().getSharedPreferences("Widget_Channel", 0); 
+            String content = prefs.getString("Widget_Channel" + mAppWidgetId, ""); 
+            if(content.length() > 0 ){
+            	c = new Gson().fromJson(content, Channel.class);
+            }
+            
+            String blogContent = prefs.getString("Widget_Blog" + mAppWidgetId, "");
+            
+            b = new Gson().fromJson(blogContent, Blog.class);
         	        	
         	Blog next = helper.FindBlogBy(null, "", c, b, false);        	
         	
-        	RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.widget4_2);
-            
-        	views.setTextViewText(R.id.widget_blog_title, next.Title);
-        	views.setTextViewText(R.id.widget_blog_desc, HtmlHelper.filterHtml(next.Description));
-        	if( Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN)
-        		views.setTextViewTextSize(R.id.widget_blog_desc, TypedValue.COMPLEX_UNIT_DIP, 20);
-        	views.setTextViewText(R.id.widget_blog_pagenation, DateHelper.getDaysBeforeNow(next.PubDate));
-            
+//        	RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.widget4_2);
+//            
+//        	views.setTextViewText(R.id.widget_blog_title, next.Title);
+//        	views.setTextViewText(R.id.widget_blog_desc, HtmlHelper.filterHtml(next.Description));
+//        	if( Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN)
+//        		views.setTextViewTextSize(R.id.widget_blog_desc, TypedValue.COMPLEX_UNIT_DIP, 20);
+//        	views.setTextViewText(R.id.widget_blog_pagenation, DateHelper.getDaysBeforeNow(next.PubDate));
+//            
         	SharedPreferences.Editor editor = ReaderApp.getAppContext().getSharedPreferences("Widget_Channel", 0).edit();
         	
-        	editor.putString("Widget_Blog" + mAppWidgetId, new Gson().toJson(next));
+        	editor.putString("Widget_Blog" + mAppWidgetId, new Gson().toJson(next)).commit();
+        	
+        	//appWidgetManager.updateAppWidget(mAppWidgetId, views);
+        	
+        	buildRemoteView(context, appWidgetManager, mAppWidgetId);
         	        	
         }else if(intent.getAction().equals(ITEM)){
 
-        }
+        }        
         
         helper.Close();
     } 
