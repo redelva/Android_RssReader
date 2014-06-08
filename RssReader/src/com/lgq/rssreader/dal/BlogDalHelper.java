@@ -18,6 +18,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteStatement;
+import android.util.Log;
 
 public class BlogDalHelper {
 	private DBHelper.DatabaseHelper dbHelper;
@@ -107,6 +108,8 @@ public class BlogDalHelper {
 		
 		sql = sql + " order by " + orderby;
 		
+		Log.i("RssReader", sql);
+		
     	SQLiteStatement s = db.compileStatement(sql);
 
   		long count = s.simpleQueryForLong();
@@ -120,6 +123,108 @@ public class BlogDalHelper {
 	 * @return
 	 */
 	public Blog FindBlogBy(RssTab from, String keyword, Channel channel, Blog current, boolean previous) {
+//		SimpleDateFormat dateFm = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+//		
+//		int index = FindBlogIndex(from, keyword, channel, current, previous);
+//		
+//		String sql = "select * from Blogs ";
+//		
+//		String where = "";
+//		String offset = "";
+//		if(previous){		
+//			where = "pubdate>'" + dateFm.format(current.PubDate) + "' or " +
+//					"(pubdate = '" + dateFm.format(current.PubDate) + "' and timestamp>" + current.TimeStamp + ") or " +
+//					"(pubdate = '" + dateFm.format(current.PubDate) + "' and timestamp=" + current.TimeStamp + " and blogid>'" + current.BlogId + "')";
+//			offset= String.valueOf(index - 1);
+//		}
+//		else{			
+//			where = "pubdate<'" + dateFm.format(current.PubDate) + "' or " +
+//					"(pubdate = '" + dateFm.format(current.PubDate) + "' and timestamp<" + current.TimeStamp + ") or " +
+//					"(pubdate = '" + dateFm.format(current.PubDate) + "' and timestamp=" + current.TimeStamp + " and blogid<'" + current.BlogId + "')";
+//			offset= "0";
+//		}
+//		String limit = "1";		 
+//		
+//		if(from == null){
+//			if(!channel.IsDirectory){
+//				if(previous)
+//					where = "(pubdate>'" + dateFm.format(current.PubDate) + "' or " +
+//							"(pubdate = '" + dateFm.format(current.PubDate) + "' and timestamp>" + current.TimeStamp + ") or " +
+//							"(pubdate = '" + dateFm.format(current.PubDate) + "' and timestamp=" + current.TimeStamp + " and blogid>'" + current.BlogId + "')) and ChannelId='" + current.ChannelId + "'";
+//				else
+//					where = "(pubdate<'" + dateFm.format(current.PubDate) + "' or " +
+//							"(pubdate = '" + dateFm.format(current.PubDate) + "' and timestamp<" + current.TimeStamp + ") or " +
+//							"(pubdate = '" + dateFm.format(current.PubDate) + "' and timestamp=" + current.TimeStamp + " and blogid<'" + current.BlogId + "')) and ChannelId='" + current.ChannelId + "'";
+//			}else{
+//				if(previous)
+//					where = "(pubdate>'" + dateFm.format(current.PubDate) + "' or " +
+//							"(pubdate = '" + dateFm.format(current.PubDate) + "' and timestamp>" + current.TimeStamp + ") or " +
+//							"(pubdate = '" + dateFm.format(current.PubDate) + "' and timestamp=" + current.TimeStamp + " and blogid>'" + current.BlogId + "')) and TagId='" + current.TagId + "'";
+//				else
+//					where = "(pubdate<'" + dateFm.format(current.PubDate) + "' or " +
+//							"(pubdate = '" + dateFm.format(current.PubDate) + "' and timestamp<" + current.TimeStamp + ") or " +
+//							"(pubdate = '" + dateFm.format(current.PubDate) + "' and timestamp=" + current.TimeStamp + " and blogid<'" + current.BlogId + "')) and TagId='" + current.TagId + "'";
+//			}			
+//    	}
+//    	else if(from == RssTab.Search){    		
+//    		if(previous)
+//				where = "(pubdate>'" + dateFm.format(current.PubDate) + "' or " +
+//						"(pubdate = '" + dateFm.format(current.PubDate) + "' and timestamp>" + current.TimeStamp + ") or " +
+//						"(pubdate = '" + dateFm.format(current.PubDate) + "' and timestamp=" + current.TimeStamp + " and blogid>'" + current.BlogId + "')) AND " +
+//						"Description LIKE ? or Content LIKE ? or Title LIKE ?";
+//			else
+//				where = "(pubdate<'" + dateFm.format(current.PubDate) + "' or " +
+//						"(pubdate = '" + dateFm.format(current.PubDate) + "' and timestamp<" + current.TimeStamp + ") or " +
+//						"(pubdate = '" + dateFm.format(current.PubDate) + "' and timestamp=" + current.TimeStamp + " and blogid<'" + current.BlogId + "')) AND " +
+//						"Description LIKE ? or Content LIKE ? or Title LIKE ?";
+//    	}
+//    	else{
+//    		switch(from){
+//    			case All:
+//    				if(previous)
+//    					where = "pubdate>'" + dateFm.format(current.PubDate) + "' or " +
+//    							"(pubdate = '" + dateFm.format(current.PubDate) + "' and timestamp>" + current.TimeStamp + ") or " +
+//    							"(pubdate = '" + dateFm.format(current.PubDate) + "' and timestamp=" + current.TimeStamp + " and blogid>'" + current.BlogId + "')";
+//    				else
+//    					where = "pubdate<'" + dateFm.format(current.PubDate) + "' or " +
+//    							"(pubdate = '" + dateFm.format(current.PubDate) + "' and timestamp<" + current.TimeStamp + ") or " +
+//    							"(pubdate = '" + dateFm.format(current.PubDate) + "' and timestamp=" + current.TimeStamp + " and blogid<'" + current.BlogId + "')";    				
+//    				break;
+//    			case Recommend:
+//    				if(previous)
+//    					where = "(pubdate>'" + dateFm.format(current.PubDate) + "' or " +
+//    							"(pubdate = '" + dateFm.format(current.PubDate) + "' and timestamp>" + current.TimeStamp + ") or " +
+//    							"(pubdate = '" + dateFm.format(current.PubDate) + "' and timestamp=" + current.TimeStamp + " and blogid>'" + current.BlogId + "')) AND IsRecommend = 1";
+//    				else
+//    					where = "(pubdate<'" + dateFm.format(current.PubDate) + "' or " +
+//    							"(pubdate = '" + dateFm.format(current.PubDate) + "' and timestamp<" + current.TimeStamp + ") or " +
+//    							"(pubdate = '" + dateFm.format(current.PubDate) + "' and timestamp=" + current.TimeStamp + " and blogid<'" + current.BlogId + "')) AND IsRecommend = 1";    				
+//    				break;
+//    			case Star:
+//    				if(previous)
+//    					where = "(pubdate>'" + dateFm.format(current.PubDate) + "' or " +
+//    							"(pubdate = '" + dateFm.format(current.PubDate) + "' and timestamp>" + current.TimeStamp + ") or " +
+//    							"(pubdate = '" + dateFm.format(current.PubDate) + "' and timestamp=" + current.TimeStamp + " and blogid>'" + current.BlogId + "')) AND IsStarred = 1";
+//    				else
+//    					where = "(pubdate<'" + dateFm.format(current.PubDate) + "' or " +
+//    							"(pubdate = '" + dateFm.format(current.PubDate) + "' and timestamp<" + current.TimeStamp + ") or " +
+//    							"(pubdate = '" + dateFm.format(current.PubDate) + "' and timestamp=" + current.TimeStamp + " and blogid<'" + current.BlogId + "')) AND IsStarred = 1";    				
+//    				break;
+//    			case Unread:
+//    				if(previous)
+//    					where = "(pubdate>'" + dateFm.format(current.PubDate) + "' or " +
+//    							"(pubdate = '" + dateFm.format(current.PubDate) + "' and timestamp>" + current.TimeStamp + ") or " +
+//    							"(pubdate = '" + dateFm.format(current.PubDate) + "' and timestamp=" + current.TimeStamp + " and blogid>'" + current.BlogId + "')) AND IsRead = 0";
+//    				else
+//    					where = "(pubdate<'" + dateFm.format(current.PubDate) + "' or " +
+//    							"(pubdate = '" + dateFm.format(current.PubDate) + "' and timestamp<" + current.TimeStamp + ") or " +
+//    							"(pubdate = '" + dateFm.format(current.PubDate) + "' and timestamp=" + current.TimeStamp + " and blogid<'" + current.BlogId + "')) AND IsRead = 0";    				
+//    				break;
+//    		}
+//    	}		
+//		
+//		String orderby = "PUBDATE DESC, TIMESTAMP DESC, BLOGID DESC";
+		
 		SimpleDateFormat dateFm = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		
 		int index = FindBlogIndex(from, keyword, channel, current, previous);
@@ -127,20 +232,20 @@ public class BlogDalHelper {
 		String sql = "select * from Blogs ";
 		
 		String where = "";
-		String offset = "";
+		String orderby = "";
 		if(previous){		
 			where = "pubdate>'" + dateFm.format(current.PubDate) + "' or " +
 					"(pubdate = '" + dateFm.format(current.PubDate) + "' and timestamp>" + current.TimeStamp + ") or " +
 					"(pubdate = '" + dateFm.format(current.PubDate) + "' and timestamp=" + current.TimeStamp + " and blogid>'" + current.BlogId + "')";
-			offset= String.valueOf(index - 1);
+			orderby = "PUBDATE ASC, TIMESTAMP ASC, BLOGID ASC";
 		}
 		else{			
 			where = "pubdate<'" + dateFm.format(current.PubDate) + "' or " +
 					"(pubdate = '" + dateFm.format(current.PubDate) + "' and timestamp<" + current.TimeStamp + ") or " +
 					"(pubdate = '" + dateFm.format(current.PubDate) + "' and timestamp=" + current.TimeStamp + " and blogid<'" + current.BlogId + "')";
-			offset= "0";
+			orderby = "PUBDATE DESC, TIMESTAMP DESC, BLOGID DESC";
 		}
-		String limit = "1";		 
+		String limit = "1";
 		
 		if(from == null){
 			if(!channel.IsDirectory){
@@ -163,7 +268,7 @@ public class BlogDalHelper {
 							"(pubdate = '" + dateFm.format(current.PubDate) + "' and timestamp=" + current.TimeStamp + " and blogid<'" + current.BlogId + "')) and TagId='" + current.TagId + "'";
 			}			
     	}
-    	else if(from == RssTab.Search){    		
+    	else if(from == RssTab.Search){
     		if(previous)
 				where = "(pubdate>'" + dateFm.format(current.PubDate) + "' or " +
 						"(pubdate = '" + dateFm.format(current.PubDate) + "' and timestamp>" + current.TimeStamp + ") or " +
@@ -218,16 +323,16 @@ public class BlogDalHelper {
     							"(pubdate = '" + dateFm.format(current.PubDate) + "' and timestamp=" + current.TimeStamp + " and blogid<'" + current.BlogId + "')) AND IsRead = 0";    				
     				break;
     		}
-    	}		
-		
-		String orderby = "PUBDATE DESC, TIMESTAMP DESC, BLOGID DESC";
+    	}
 				
 		List<Blog> list = new ArrayList<Blog>();
+		
+		Log.i("RssReader", sql + " where " + where + " order by " + orderby + " limit 1 ");
 				
 		//Cursor cursor = db.rawQuery("select * from Blogs where " + where + " order by " + orderby + " limit 1 offset " + offset, args);
-		Cursor cursor = db.rawQuery(sql + " where " + where + " order by " + orderby + " limit 1 offset " + offset, null);
+		Cursor cursor = db.rawQuery(sql + " where " + where + " order by " + orderby + " limit 1 ", null);
 		while (cursor != null && cursor.moveToNext()) {
-			Blog entity = new Blog();			
+			Blog entity = new Blog();
 			entity.TagId = cursor.getString(cursor.getColumnIndex("TagId"));
 			entity.ChannelId = cursor.getString(cursor.getColumnIndex("ChannelId"));
 			entity.BlogId = cursor.getString(cursor.getColumnIndex("BlogId"));
