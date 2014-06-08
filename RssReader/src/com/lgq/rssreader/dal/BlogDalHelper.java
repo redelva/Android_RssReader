@@ -225,102 +225,42 @@ public class BlogDalHelper {
 //		
 //		String orderby = "PUBDATE DESC, TIMESTAMP DESC, BLOGID DESC";
 		
-		SimpleDateFormat dateFm = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-		
-		int index = FindBlogIndex(from, keyword, channel, current, previous);
-		
 		String sql = "select * from Blogs ";
 		
 		String where = "";
 		String orderby = "";
 		if(previous){		
-			where = "pubdate>'" + dateFm.format(current.PubDate) + "' or " +
-					"(pubdate = '" + dateFm.format(current.PubDate) + "' and timestamp>" + current.TimeStamp + ") or " +
-					"(pubdate = '" + dateFm.format(current.PubDate) + "' and timestamp=" + current.TimeStamp + " and blogid>'" + current.BlogId + "')";
-			orderby = "PUBDATE ASC, TIMESTAMP ASC, BLOGID ASC";
+			where = "blogid>'" + current.BlogId + "'";
+			orderby = "BLOGID ASC, PUBDATE ASC, TIMESTAMP ASC";
 		}
 		else{			
-			where = "pubdate<'" + dateFm.format(current.PubDate) + "' or " +
-					"(pubdate = '" + dateFm.format(current.PubDate) + "' and timestamp<" + current.TimeStamp + ") or " +
-					"(pubdate = '" + dateFm.format(current.PubDate) + "' and timestamp=" + current.TimeStamp + " and blogid<'" + current.BlogId + "')";
-			orderby = "PUBDATE DESC, TIMESTAMP DESC, BLOGID DESC";
+			where = "blogid<'" + current.BlogId + "'";
+			orderby = "BLOGID DESC, PUBDATE DESC, TIMESTAMP DESC";
 		}
 		String limit = "1";
 		
 		if(from == null){
 			if(!channel.IsDirectory){
-				if(previous)
-					where = "(pubdate>'" + dateFm.format(current.PubDate) + "' or " +
-							"(pubdate = '" + dateFm.format(current.PubDate) + "' and timestamp>" + current.TimeStamp + ") or " +
-							"(pubdate = '" + dateFm.format(current.PubDate) + "' and timestamp=" + current.TimeStamp + " and blogid>'" + current.BlogId + "')) and ChannelId='" + current.ChannelId + "'";
-				else
-					where = "(pubdate<'" + dateFm.format(current.PubDate) + "' or " +
-							"(pubdate = '" + dateFm.format(current.PubDate) + "' and timestamp<" + current.TimeStamp + ") or " +
-							"(pubdate = '" + dateFm.format(current.PubDate) + "' and timestamp=" + current.TimeStamp + " and blogid<'" + current.BlogId + "')) and ChannelId='" + current.ChannelId + "'";
+				where = where + " and ChannelId='" + current.ChannelId + "'";
 			}else{
-				if(previous)
-					where = "(pubdate>'" + dateFm.format(current.PubDate) + "' or " +
-							"(pubdate = '" + dateFm.format(current.PubDate) + "' and timestamp>" + current.TimeStamp + ") or " +
-							"(pubdate = '" + dateFm.format(current.PubDate) + "' and timestamp=" + current.TimeStamp + " and blogid>'" + current.BlogId + "')) and TagId='" + current.TagId + "'";
-				else
-					where = "(pubdate<'" + dateFm.format(current.PubDate) + "' or " +
-							"(pubdate = '" + dateFm.format(current.PubDate) + "' and timestamp<" + current.TimeStamp + ") or " +
-							"(pubdate = '" + dateFm.format(current.PubDate) + "' and timestamp=" + current.TimeStamp + " and blogid<'" + current.BlogId + "')) and TagId='" + current.TagId + "'";
+				where = where + " and TagId='" + current.TagId + "'";
 			}			
     	}
     	else if(from == RssTab.Search){
-    		if(previous)
-				where = "(pubdate>'" + dateFm.format(current.PubDate) + "' or " +
-						"(pubdate = '" + dateFm.format(current.PubDate) + "' and timestamp>" + current.TimeStamp + ") or " +
-						"(pubdate = '" + dateFm.format(current.PubDate) + "' and timestamp=" + current.TimeStamp + " and blogid>'" + current.BlogId + "')) AND " +
-						"Description LIKE ? or Content LIKE ? or Title LIKE ?";
-			else
-				where = "(pubdate<'" + dateFm.format(current.PubDate) + "' or " +
-						"(pubdate = '" + dateFm.format(current.PubDate) + "' and timestamp<" + current.TimeStamp + ") or " +
-						"(pubdate = '" + dateFm.format(current.PubDate) + "' and timestamp=" + current.TimeStamp + " and blogid<'" + current.BlogId + "')) AND " +
-						"Description LIKE ? or Content LIKE ? or Title LIKE ?";
+    		where = where + " AND Description LIKE '" + keyword + "' or Content LIKE '" + keyword + "' or Title LIKE '" + keyword + "'";
     	}
     	else{
     		switch(from){
     			case All:
-    				if(previous)
-    					where = "pubdate>'" + dateFm.format(current.PubDate) + "' or " +
-    							"(pubdate = '" + dateFm.format(current.PubDate) + "' and timestamp>" + current.TimeStamp + ") or " +
-    							"(pubdate = '" + dateFm.format(current.PubDate) + "' and timestamp=" + current.TimeStamp + " and blogid>'" + current.BlogId + "')";
-    				else
-    					where = "pubdate<'" + dateFm.format(current.PubDate) + "' or " +
-    							"(pubdate = '" + dateFm.format(current.PubDate) + "' and timestamp<" + current.TimeStamp + ") or " +
-    							"(pubdate = '" + dateFm.format(current.PubDate) + "' and timestamp=" + current.TimeStamp + " and blogid<'" + current.BlogId + "')";    				
     				break;
     			case Recommend:
-    				if(previous)
-    					where = "(pubdate>'" + dateFm.format(current.PubDate) + "' or " +
-    							"(pubdate = '" + dateFm.format(current.PubDate) + "' and timestamp>" + current.TimeStamp + ") or " +
-    							"(pubdate = '" + dateFm.format(current.PubDate) + "' and timestamp=" + current.TimeStamp + " and blogid>'" + current.BlogId + "')) AND IsRecommend = 1";
-    				else
-    					where = "(pubdate<'" + dateFm.format(current.PubDate) + "' or " +
-    							"(pubdate = '" + dateFm.format(current.PubDate) + "' and timestamp<" + current.TimeStamp + ") or " +
-    							"(pubdate = '" + dateFm.format(current.PubDate) + "' and timestamp=" + current.TimeStamp + " and blogid<'" + current.BlogId + "')) AND IsRecommend = 1";    				
+    				where = where + " AND IsRecommend = 1";    				
     				break;
     			case Star:
-    				if(previous)
-    					where = "(pubdate>'" + dateFm.format(current.PubDate) + "' or " +
-    							"(pubdate = '" + dateFm.format(current.PubDate) + "' and timestamp>" + current.TimeStamp + ") or " +
-    							"(pubdate = '" + dateFm.format(current.PubDate) + "' and timestamp=" + current.TimeStamp + " and blogid>'" + current.BlogId + "')) AND IsStarred = 1";
-    				else
-    					where = "(pubdate<'" + dateFm.format(current.PubDate) + "' or " +
-    							"(pubdate = '" + dateFm.format(current.PubDate) + "' and timestamp<" + current.TimeStamp + ") or " +
-    							"(pubdate = '" + dateFm.format(current.PubDate) + "' and timestamp=" + current.TimeStamp + " and blogid<'" + current.BlogId + "')) AND IsStarred = 1";    				
+    				where = where + " AND IsStarred = 1";    				
     				break;
     			case Unread:
-    				if(previous)
-    					where = "(pubdate>'" + dateFm.format(current.PubDate) + "' or " +
-    							"(pubdate = '" + dateFm.format(current.PubDate) + "' and timestamp>" + current.TimeStamp + ") or " +
-    							"(pubdate = '" + dateFm.format(current.PubDate) + "' and timestamp=" + current.TimeStamp + " and blogid>'" + current.BlogId + "')) AND IsRead = 0";
-    				else
-    					where = "(pubdate<'" + dateFm.format(current.PubDate) + "' or " +
-    							"(pubdate = '" + dateFm.format(current.PubDate) + "' and timestamp<" + current.TimeStamp + ") or " +
-    							"(pubdate = '" + dateFm.format(current.PubDate) + "' and timestamp=" + current.TimeStamp + " and blogid<'" + current.BlogId + "')) AND IsRead = 0";    				
+    				where = where + " AND IsRead = 0";
     				break;
     		}
     	}
