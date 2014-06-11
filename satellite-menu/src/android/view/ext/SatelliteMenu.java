@@ -477,6 +477,16 @@ public class SatelliteMenu extends FrameLayout {
 	public void close() {
 		closeItems();
 	}
+	
+	/**
+	 * Toggle the menu states
+	 */
+	public void toggle() {
+		if(rotated)
+			close();
+		else
+			expand();
+	}
 
 	@Override
 	protected Parcelable onSaveInstanceState() {

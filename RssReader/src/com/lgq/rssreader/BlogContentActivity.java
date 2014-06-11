@@ -110,13 +110,13 @@ public class BlogContentActivity extends SherlockFragmentActivity  {
     	super.onDestroy();
     }
 	
-//	@Override  
-//	public boolean onCreateOptionsMenu(Menu menu) {
-//		super.onCreateOptionsMenu(menu);
-//	    // Inflate the menu; this adds items to the action bar if it is present.  
-//		getSupportMenuInflater().inflate(R.menu.contentmenu, menu);  
-//	    return true;  
-//	}   
+	@Override  
+	public boolean onCreateOptionsMenu(Menu menu) {
+		super.onCreateOptionsMenu(menu);
+	    // Inflate the menu; this adds items to the action bar if it is present.  
+		//getSupportMenuInflater().inflate(R.menu.contentmenu, menu);  
+	    return true;  
+	}   
         
     int oldEv = MotionEvent.ACTION_CANCEL;
     
@@ -184,6 +184,15 @@ public class BlogContentActivity extends SherlockFragmentActivity  {
 				intent.putExtra("Count", Count);
 				intent.putExtra("requestCode", 0);
 				this.setResult(Activity.RESULT_OK, intent);
+			}			
+		}
+		
+		if (keyCode == KeyEvent.KEYCODE_MENU ) {
+			
+			if(fragment != null && fragment.getMenu() != null && fragment.getMenu().getVisibility() == View.VISIBLE){
+				fragment.getMenu().toggle();
+				
+				return true;
 			}			
 		}
 		

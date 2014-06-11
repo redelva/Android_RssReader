@@ -122,7 +122,9 @@ public class BlogListActivity extends FragmentActivity implements BlogListFragme
 				
 				final FeedlyParser feedly = new FeedlyParser();
 				
-				int count = data.getIntExtra("Count", 0);
+				final int count = data.getIntExtra("Count", 0);
+				
+				final BlogListFragment fragment =(BlogListFragment)getSupportFragmentManager().findFragmentById(R.id.blog_list_container);
 	            
 	            if(blogs.size() > 0){
 	            	final Blog b = blogs.get(0);
@@ -147,29 +149,33 @@ public class BlogListActivity extends FragmentActivity implements BlogListFragme
 //		            		}
 //		            	}
 //		            });
-	            	
-	            	BlogListFragment fragment =(BlogListFragment)getSupportFragmentManager(). findFragmentById(R.id.blog_list_container);
-					
-	            	Channel target = Helper.findChannelById(Helper.getChannels(), b.ChannelId);
-	            	
-        			if(fragment != null){
-        				Message m = fragment.myHandler.obtainMessage();
-        	            m.what = BlogListFragment.UPDATECOUNT;
-        	            m.obj = target.UnreadCount - count > 0 ? target.UnreadCount - count : 0 ;//blogs.size();
-        	            fragment.myHandler.sendMessage(m);
-        	            
-        	            needUpdate = true;
-        	            			        	            
-        	            Helper.updateChannels(b.ChannelId, target.UnreadCount - blogs.size());
-        			}
+	            		            	
+					new Thread(){
+						public void run(){
+							Channel target = Helper.findChannelById(Helper.getChannels(), b.ChannelId);
+			            	
+		        			if(fragment != null){
+		        				Message m = fragment.myHandler.obtainMessage();
+		        	            m.what = BlogListFragment.UPDATECOUNT;
+		        	            m.obj = target.UnreadCount - count > 0 ? target.UnreadCount - count : 0 ;//blogs.size();
+		        	            fragment.myHandler.sendMessage(m);
+		        	            
+		        	            needUpdate = true;
+		        	            			        	            
+		        	            Helper.updateChannels(b.ChannelId, target.UnreadCount - blogs.size());
+		        			}
+						}
+					}.start();	            	
 	            }
-				
-				BlogListFragment fragment =(BlogListFragment)getSupportFragmentManager(). findFragmentById(R.id.blog_list_container);
-								
-				Message m = fragment.myHandler.obtainMessage();
-	            m.what = BlogListFragment.UPDATESTATE;
-	            m.obj = blogs;
-	            fragment.myHandler.sendMessage(m);
+						
+	            new Thread(){
+					public void run(){
+						Message m = fragment.myHandler.obtainMessage();
+			            m.what = BlogListFragment.UPDATESTATE;
+			            m.obj = blogs;
+			            fragment.myHandler.sendMessage(m);
+					}
+				}.start();				
 				break;
 			default:
 				break;

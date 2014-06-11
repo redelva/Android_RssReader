@@ -80,11 +80,12 @@ public class ContentFormatter extends BlogFormatter
 	                        	for(int i=0, len=pairs.length; i<len; i++){
 	                        		String p = pairs[i].toLowerCase();
 	                        		if(p.contains("charset") && p.contains("gbk")){
-	                        			content = new String(content.getBytes("GBK"), "UTF-8");
+	                        			//content = new String(content.getBytes("GBK"), "UTF-8");
+	                        			content = downloadGbUrl(blog.Link, "GBK");
 	                        			break;
 	                        		}
 	                        		if(p.contains("charset") && p.contains("gb2312")){
-	                        			content = downloadGbUrl(blog.Link);//CharHelper.change(new String(content.getBytes("utf-8"), "gb2312"), "gb2312", "UTF-8");//new String(content.getBytes("UTF-8"), "gb2312");;
+	                        			content = downloadGbUrl(blog.Link, "gb2312");//CharHelper.change(new String(content.getBytes("utf-8"), "gb2312"), "gb2312", "UTF-8");//new String(content.getBytes("UTF-8"), "gb2312");;
 	                        			break;
 	                        		}
 	                        	}
@@ -118,13 +119,13 @@ public class ContentFormatter extends BlogFormatter
 
     private static final Object syncLock = new Object();
     
-    private String downloadGbUrl(String url){
+    private String downloadGbUrl(String url, String coding){
     	try{
     		URL u=new URL(url); 
         	URLConnection conn=u.openConnection(); 
         	//建立连接 
         	conn.connect();     	
-        	BufferedReader br=new BufferedReader(new InputStreamReader(conn.getInputStream(),"gb2312")); 
+        	BufferedReader br=new BufferedReader(new InputStreamReader(conn.getInputStream(), coding)); 
         	String buf="";
         	StringBuilder content = new StringBuilder();
         	while((buf=br.readLine())!=null) 

@@ -317,7 +317,7 @@ public class FeedlyParser extends RssParser {
         			p.Google = result.getString("google");
         			p.Id = result.getString("id");
         			p.Locale = result.getString("locale");
-        			p.Picture = result.getString("picture") + "?sz=420";
+        			p.Picture = result.getString("picture").replace("?sz=50", "?sz=420");
         			p.Reader = result.has("reader") ?result.getString("reader") : "";
         			p.Wave = result.getString("wave");
         			

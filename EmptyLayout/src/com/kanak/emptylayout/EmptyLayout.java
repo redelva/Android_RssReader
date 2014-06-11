@@ -49,6 +49,10 @@ public class EmptyLayout {
 	 * The error state
 	 */
 	public final static int TYPE_ERROR = 3;	
+	/**
+	 * The normal state
+	 */
+	public final static int TYPE_NORMAL = 4;
 
 	// ---------------------------
 	// default values
@@ -503,6 +507,12 @@ public class EmptyLayout {
 					}
 				}				
 				break;
+			case TYPE_NORMAL:
+				if (mEmptyView!=null) mEmptyView.setVisibility(View.GONE);
+				if (mErrorView!=null) mErrorView.setVisibility(View.GONE);
+				if (mLoadingView!=null) mLoadingView.setVisibility(View.GONE);
+				if (mListView!=null) mListView.setVisibility(View.VISIBLE);				
+				break;
 			default:
 				break;
 			}
@@ -622,5 +632,11 @@ public class EmptyLayout {
 		changeEmptyType();
 	}
 	
-	
+	/**
+	 * Shows list view when is not empty
+	 */
+	public void showListView() {
+		this.mEmptyType = TYPE_NORMAL;
+		changeEmptyType();
+	}
 }

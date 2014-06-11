@@ -146,7 +146,7 @@ public class FeedListFragment extends SherlockFragment {
     /**
      * The current adapter for list.
      */
-    private ListAdapter adapter;
+    private BaseAdapter adapter;
     
     private XListView listView;
     
@@ -318,7 +318,10 @@ public class FeedListFragment extends SherlockFragment {
 	                            );
 	        				listView.setAdapter(adapter);
         				}else{
-        					((BaseAdapter) adapter).notifyDataSetChanged();
+        					((BlogAdapter) adapter).AddMoreData(blogs);
+        					
+        					//adapter.notifyDataSetChanged();
+        					emptyLayout.showListView();
         				}
         				
         				if(blogs.size() == 0){
@@ -344,7 +347,7 @@ public class FeedListFragment extends SherlockFragment {
 	                            );
 	        				listView.setAdapter(adapter);
         				}else{
-        					((BaseAdapter) adapter).notifyDataSetChanged();
+        					adapter.notifyDataSetChanged();
         				}
         			}
                 	break;
@@ -431,6 +434,8 @@ public class FeedListFragment extends SherlockFragment {
 		    		case Subscribe:
 		    		case Gallery:
 		    			break;
+					default:
+						break;
 		    	}
 			}
 
@@ -560,7 +565,7 @@ public class FeedListFragment extends SherlockFragment {
         			
         			Helper.sound();
         		}else{
-        			Toast.makeText(getActivity(), msg, 10).show();
+        			Toast.makeText(getActivity(), msg, Toast.LENGTH_SHORT).show();
         		}
         		
         		listView.stopRefresh();
@@ -653,7 +658,7 @@ public class FeedListFragment extends SherlockFragment {
                     				Helper.vibrate();
                     			}
                     		}else{
-                    			Toast.makeText(getActivity(), msg, 10).show();
+                    			Toast.makeText(getActivity(), msg, Toast.LENGTH_SHORT).show();
                     		}
                     		
                     		getActivity().runOnUiThread(new Runnable(){
@@ -725,10 +730,12 @@ public class FeedListFragment extends SherlockFragment {
     							BlogDalHelper helper = new BlogDalHelper();
     							helper.MarkAsRead(c, true);
     							helper.Close();
+    							
+    							Toast.makeText(getActivity(), ReaderApp.getAppContext().getString(R.string.feedly_successupdatestatus), Toast.LENGTH_SHORT).show();
     						}
     					}
     				}else{
-    					Toast.makeText(getActivity(), msg, 10).show();
+    					Toast.makeText(getActivity(), msg, Toast.LENGTH_SHORT).show();
     				}
     			}
     		});
@@ -753,7 +760,7 @@ public class FeedListFragment extends SherlockFragment {
     						helper.Close();
     					}
     				}else{
-    					Toast.makeText(getActivity(), msg, 10).show();
+    					Toast.makeText(getActivity(), msg, Toast.LENGTH_SHORT).show();
     				}
     			}
     		});
@@ -766,7 +773,7 @@ public class FeedListFragment extends SherlockFragment {
     				if(result){
     					loadChannel();
     				}else{
-    					Toast.makeText(getActivity(), msg, 10).show();
+    					Toast.makeText(getActivity(), msg, Toast.LENGTH_SHORT).show();
     				}
     			}
     		});
@@ -779,7 +786,7 @@ public class FeedListFragment extends SherlockFragment {
     				if(result){
     					loadChannel();
     				}else{
-    					Toast.makeText(getActivity(), msg, 10).show();
+    					Toast.makeText(getActivity(), msg, Toast.LENGTH_SHORT).show();
     				}
     			}
     		});

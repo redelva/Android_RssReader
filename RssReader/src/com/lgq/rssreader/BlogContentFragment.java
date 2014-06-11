@@ -50,6 +50,7 @@ import android.util.TypedValue;
 import android.view.DragEvent;
 import android.view.GestureDetector;
 import android.view.GestureDetector.OnGestureListener;
+import android.view.MenuInflater;
 import android.view.ScaleGestureDetector;
 import android.view.ScaleGestureDetector.OnScaleGestureListener; 
 import android.view.Gravity;
@@ -567,7 +568,7 @@ public class BlogContentFragment extends Fragment{
     	if(ReaderApp.getSettings().FullScreen)
         	toggleHideyBar();
     	
-        super.onCreate(savedInstanceState);
+        super.onCreate(savedInstanceState);        
                 
         if (getArguments() != null){
             // Load the dummy content specified by the fragment
@@ -1539,7 +1540,7 @@ public class BlogContentFragment extends Fragment{
         }
 
         return rootView;
-    }        
+    }
     
     @Override
     public void onSaveInstanceState(Bundle outState) {
