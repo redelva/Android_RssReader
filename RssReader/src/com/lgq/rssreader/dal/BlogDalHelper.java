@@ -225,6 +225,8 @@ public class BlogDalHelper {
 //		
 //		String orderby = "PUBDATE DESC, TIMESTAMP DESC, BLOGID DESC";
 		
+		SimpleDateFormat dateFm = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		
 		String sql = "select * from Blogs ";
 		
 		String where = "";
@@ -250,16 +252,26 @@ public class BlogDalHelper {
     		where = where + " AND Description LIKE '" + keyword + "' or Content LIKE '" + keyword + "' or Title LIKE '" + keyword + "'";
     	}
     	else{
+    		
+    		if(previous){
+				where = "pubdate>'" + dateFm.format(current.PubDate) + "'";
+				orderby = "pubdate ASC, timestamp ASC";
+			}
+			else{			
+				where = "pubdate<'" + dateFm.format(current.PubDate) + "'";
+				orderby = "pubdate DESC, timestamp DESC";
+			}
+    		
     		switch(from){
-    			case All:
+    			case All:    				
     				break;
-    			case Recommend:
+    			case Recommend:    				
     				where = where + " AND IsRecommend = 1";    				
     				break;
-    			case Star:
+    			case Star:    				
     				where = where + " AND IsStarred = 1";    				
     				break;
-    			case Unread:
+    			case Unread:    				
     				where = where + " AND IsRead = 0";
     				break;
     		}
