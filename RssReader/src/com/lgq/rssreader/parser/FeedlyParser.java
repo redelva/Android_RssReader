@@ -278,8 +278,7 @@ public class FeedlyParser extends RssParser {
         		else
         			error = errorResponse;
         		
-        		if (error.contains("expire"))
-       		 	{
+        		if (error != null && error.contains("expire")){
         			//now token is expired, we need to relogin        			
         			refreshToken(new HttpResponseHandler(){
         				public void onCallback(String token, boolean result, String msg){
@@ -454,8 +453,7 @@ public class FeedlyParser extends RssParser {
         		else
         			error = errorResponse;
         		
-        		if (error.contains("expire"))
-       		 	{
+        		if (error != null && error.contains("expire")){
         			//now token is expired, we need to relogin        			
         			refreshToken(new HttpResponseHandler(){
         				public void onCallback(String token, boolean result, String msg){
@@ -590,7 +588,7 @@ public class FeedlyParser extends RssParser {
         		else
         			error = errorResponse;
         		
-        		if (error.contains("expire"))
+        		if (error != null && error.contains("expire"))
        		 	{
         			//now token is expired, we need to relogin        			
         			refreshToken(new HttpResponseHandler(){
@@ -671,7 +669,7 @@ public class FeedlyParser extends RssParser {
         		else
         			error = errorResponse;
         		
-        		if (error.contains("expire"))
+        		if (error != null && error.contains("expire"))
        		 	{
         			//now token is expired, we need to relogin        			
         			refreshToken(new HttpResponseHandler(){
@@ -757,7 +755,7 @@ public class FeedlyParser extends RssParser {
         		else
         			error = errorResponse;
         		
-        		if (error.contains("expire"))
+        		if (error != null && error.contains("expire"))
        		 	{
         			//now token is expired, we need to relogin        			
         			refreshToken(new HttpResponseHandler(){
@@ -845,8 +843,7 @@ public class FeedlyParser extends RssParser {
         		else
         			error = errorResponse;
         		
-        		if (error.contains("expire"))
-       		 	{
+        		if (error != null && error.contains("expire")){       		 	
         			//now token is expired, we need to relogin        			
         			refreshToken(new HttpResponseHandler(){
         				public void onCallback(String token, boolean result, String msg){
@@ -976,7 +973,7 @@ public class FeedlyParser extends RssParser {
         		 }
         		         		 
          		
-        		 if (error.contains("expire")){
+        		 if (error != null && error.contains("expire")){
         			 //now token is expired, we need to relogin        			
         			 refreshToken(new HttpResponseHandler(){
         				 public void onCallback(String token, boolean result, String msg){
@@ -1084,7 +1081,7 @@ public class FeedlyParser extends RssParser {
         		 }
         		         		 
          		
-        		 if (error.contains("expire")){
+        		 if (error != null && error.contains("expire")){
         			 //now token is expired, we need to relogin        			
         			 refreshToken(new HttpResponseHandler(){
         				 public void onCallback(String token, boolean result, String msg){
@@ -1238,7 +1235,7 @@ public class FeedlyParser extends RssParser {
        		 	}
        		         		 
         		
-       		 	if (error.contains("expire")){
+       		 	if (error != null && error.contains("expire")){
        		 		//now token is expired, we need to relogin        			
        		 		refreshToken(new HttpResponseHandler(){
        		 			public void onCallback(String token, boolean result, String msg){
@@ -1344,8 +1341,7 @@ public class FeedlyParser extends RssParser {
         		else
         			error = errorResponse;
         		
-        		if (error.contains("expire"))
-       		 	{
+        		if (error != null && error.contains("expire")){
         			//now token is expired, we need to relogin        			
         			refreshToken(new HttpResponseHandler(){
         				public void onCallback(String token, boolean result, String msg){
@@ -1563,8 +1559,7 @@ public class FeedlyParser extends RssParser {
 	       			 error = response;
 	       		 }
 	       		 
-	       		 if (error.contains("expire"))
-	       		 {
+       		 	if (error != null && error.contains("expire")){
                     //now token is expired, we need to relogin
                     if (handler != null)
                     {
@@ -1628,7 +1623,7 @@ public class FeedlyParser extends RssParser {
     			
     			Log.i("RssReader", error);
     			
-    			if (error.contains("expire"))//now token is expired, we need to relogin
+    			if (error != null && error.contains("expire"))//now token is expired, we need to relogin
                     handler.sendResponseMessage(false, false, ReaderApp.getAppContext().getResources().getString(R.string.feedly_sessionexpire));
                 else
                 	handler.sendResponseMessage(false, false, String.format(ReaderApp.getAppContext().getResources().getString(R.string.feedly_failedmovefolder), folder.Title));
