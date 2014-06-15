@@ -292,6 +292,8 @@ public class FeedlyParser extends RssParser {
         					}
         				}
         			});
+        			
+        			Log.e("RssReader", error);
        		 	}
         		else
         		{
@@ -299,9 +301,7 @@ public class FeedlyParser extends RssParser {
         			{
         				handler.sendResponseMessage(null, false, ReaderApp.getAppContext().getResources().getString(R.string.feedly_failedtogetprofile));
         			}
-        		}
-        		
-        		Log.e("RssReader", error);
+        		}        	
         	}
         	
         	public void onSuccess(JSONObject result){
@@ -467,6 +467,8 @@ public class FeedlyParser extends RssParser {
         					}
         				}
         			});
+        			
+        			Log.e("RssReader", error);
        		 	}
         		else
         		{
@@ -474,9 +476,7 @@ public class FeedlyParser extends RssParser {
         			{
         				handler.sendResponseMessage(null, null, false, ReaderApp.getAppContext().getResources().getString(R.string.feedly_failedtogettags));
         			}
-        		}
-        		
-        		Log.e("RssReader", error);
+        		}        		
         	}
         	
         	public void onSuccess(JSONArray items){
@@ -603,6 +603,8 @@ public class FeedlyParser extends RssParser {
         					}
         				}
         			});
+        			
+        			Log.e("RssReader", error);
        		 	}
         		else
         		{
@@ -610,9 +612,7 @@ public class FeedlyParser extends RssParser {
         			{
         				handler.sendResponseMessage(null, null, false, ReaderApp.getAppContext().getResources().getString(R.string.feedly_failedtogetunreadcounts));
         			}
-        		}
-        		
-        		Log.e("RssReader", error);
+        		}        		
         	}
     		
     		public void onSuccess(JSONObject root){
@@ -684,6 +684,8 @@ public class FeedlyParser extends RssParser {
         					}
         				}
         			});
+        			
+        			Log.e("RssReader", error);
        		 	}
         		else
         		{
@@ -691,9 +693,7 @@ public class FeedlyParser extends RssParser {
         			{
         				handler.sendResponseMessage(null, null, false, ReaderApp.getAppContext().getResources().getString(R.string.feedly_failedtogetunreadcounts));
         			}
-        		}
-        		
-        		Log.e("RssReader", error);
+        		}        		
         	}
     		
     		public void onSuccess(JSONObject root){
@@ -770,6 +770,8 @@ public class FeedlyParser extends RssParser {
         					}
         				}
         			});
+        			
+        			Log.e("RssReader", error);
        		 	}
         		else
         		{
@@ -777,9 +779,7 @@ public class FeedlyParser extends RssParser {
         			{
         				handler.sendResponseMessage(null, null, false, ReaderApp.getAppContext().getResources().getString(R.string.feedly_failedtogetsortorder));
         			}
-        		}
-        		
-        		Log.e("RssReader", error);
+        		}        		
         	}
     		
         	public void onSuccess(JSONObject result){
@@ -857,6 +857,8 @@ public class FeedlyParser extends RssParser {
         					}
         				}
         			});
+        			
+        			Log.e("RssReader", error);
        		 	}
 //        		else
 //        		{
@@ -864,9 +866,7 @@ public class FeedlyParser extends RssParser {
 //        			{
 //        				handler.sendResponseMessage(null, false, ReaderApp.getAppContext().getResources().getString(R.string.feedly_failedsynctofeedly));
 //        			}
-//        		}
-        		
-        		Log.e("RssReader", error);
+//        		}        		
         	}
         	
         	public void onSuccess(JSONObject data){        		
@@ -986,6 +986,8 @@ public class FeedlyParser extends RssParser {
         					 }
         				 }
         			 });
+        			 
+        			 Log.i("RssReader", error);
 		 		 }
         		 else
         		 {
@@ -993,9 +995,7 @@ public class FeedlyParser extends RssParser {
         			 {
         				 handler.sendResponseMessage(action, false, ReaderApp.getAppContext().getResources().getString(R.string.feedly_failedupdatestatus));
         			 }
-        		 }
-				
-        		 Log.i("RssReader", error);
+        		 }				
         	 }
         };
         
@@ -1094,6 +1094,8 @@ public class FeedlyParser extends RssParser {
         					 }
         				 }
         			 });
+        			 
+        			 Log.e("RssReader", error);
 		 		 }
         		 else
         		 {
@@ -1101,9 +1103,7 @@ public class FeedlyParser extends RssParser {
         			 {
         				 handler.sendResponseMessage(action, false, ReaderApp.getAppContext().getResources().getString(R.string.feedly_failedupdatestatus));
         			 }
-        		 }
-				
-        		 Log.i("RssReader", error);
+        		 }				
         	 }
         };
         
@@ -1248,6 +1248,8 @@ public class FeedlyParser extends RssParser {
        		 				}
        		 			}
        		 		});
+       		 		
+       		 		Log.e("RssReader", error);
 		 		}
        		 	else
        		 	{
@@ -1255,9 +1257,7 @@ public class FeedlyParser extends RssParser {
        		 		{
        		 			handler.sendResponseMessage(action, false, ReaderApp.getAppContext().getResources().getString(R.string.feedly_failedupdatestatus));
        		 		}
-       		 	}
-				
-       		 	Log.i("RssReader", error);
+       		 	}				
             }
         };
         
@@ -1355,6 +1355,8 @@ public class FeedlyParser extends RssParser {
         					}
         				}
         			});
+        			
+        			Log.i("RssReader", error);
        		 	}
         		else
         		{
@@ -1362,9 +1364,7 @@ public class FeedlyParser extends RssParser {
         			{
         				handler.sendResponseMessage(new ArrayList<Blog>(), false, ReaderApp.getAppContext().getResources().getString(R.string.feedly_failedtogetblogs), false);
         			}
-        		}
-        		
-    			Log.i("RssReader", error);
+        		}        		
         	}
         	
         	@Override
@@ -1565,6 +1565,8 @@ public class FeedlyParser extends RssParser {
                     {
                    	 	handler.sendResponseMessage(rssUrl, false, ReaderApp.getAppContext().getResources().getString(R.string.feedly_sessionexpire));
                     }
+
+        			Log.i("RssReader", error);
                 }
                 else
                 {
@@ -1621,7 +1623,7 @@ public class FeedlyParser extends RssParser {
     			else
     				error = result;
     			
-    			Log.i("RssReader", error);
+    			//Log.i("RssReader", error);
     			
     			if (error != null && error.contains("expire"))//now token is expired, we need to relogin
                     handler.sendResponseMessage(false, false, ReaderApp.getAppContext().getResources().getString(R.string.feedly_sessionexpire));
@@ -1662,7 +1664,7 @@ public class FeedlyParser extends RssParser {
     			else
     				error = result;
     			
-    			Log.i("RssReader", error);
+    			//Log.i("RssReader", error);
     			if(error.contains("session"))
         			handler.sendResponseMessage(null, false, ReaderApp.getAppContext().getResources().getString(R.string.feedly_sessionexpire), false);
                 else

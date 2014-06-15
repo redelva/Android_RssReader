@@ -73,6 +73,9 @@ public class MediumRssWidgetProvider extends AppWidgetProvider{
         	c = new Gson().fromJson(content, Channel.class);
         }
         
+        if(c == null)
+        	return;
+        
         String blogContent = prefs.getString("Widget_Blog" + appWidgetId, "");
         
         BlogDalHelper helper = new BlogDalHelper();

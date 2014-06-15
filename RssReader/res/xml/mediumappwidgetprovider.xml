@@ -10,4 +10,3 @@
     android:resizeMode="horizontal|vertical"
     android:configure="com.lgq.rssreader.task.RssWidgetConfig">    
 </appwidget-provider>
-
