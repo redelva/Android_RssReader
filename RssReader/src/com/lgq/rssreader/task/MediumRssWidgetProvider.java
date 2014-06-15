@@ -52,9 +52,9 @@ public class MediumRssWidgetProvider extends AppWidgetProvider{
     @SuppressLint("NewApi")
 	@Override  
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {  
-        for(int i=0, len=appWidgetIds.length;i<len;i++){
-        	buildRemoteView(context, appWidgetManager, appWidgetIds[i]);
-        }
+//        for(int i=0, len=appWidgetIds.length;i<len;i++){
+//        	buildRemoteView(context, appWidgetManager, appWidgetIds[i]);
+//        }
         super.onUpdate(context, appWidgetManager, appWidgetIds);        
     }  
       
@@ -194,6 +194,8 @@ public class MediumRssWidgetProvider extends AppWidgetProvider{
             });
         	
         }else if(intent.getAction().equals(OPTION)){
+        	
+        	buildRemoteView(context, appWidgetManager, mAppWidgetId);
         	
         }else if(intent.getAction().equals(LEFT)){
         	
