@@ -162,7 +162,7 @@ public class BlogListActivity extends FragmentActivity implements BlogListFragme
 		        	            
 		        	            needUpdate = true;
 		        	            			        	            
-		        	            Helper.updateChannels(b.ChannelId, target.UnreadCount - blogs.size());
+		        	            Helper.updateChannels(b.ChannelId, target.UnreadCount - blogs.size() > 0 ? target.UnreadCount - blogs.size() : 0);
 		        			}
 						}
 					}.start();	            	

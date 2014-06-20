@@ -268,7 +268,12 @@ public class BlogContentFragment extends Fragment{
     		if(browser != null){
     			switch(msg.what){
 	    			case CONTENT:
-	    			case DESC:    				
+	    			case DESC:
+	    				
+	    				//check current blog is still the parsed blog
+	    				if(cacheArgs != null && cacheArgs.Blog.BlogId != current.BlogId)
+	    					return;
+	    				
 	    				if(Content.length() != 0)
 	    					browser.loadUrl("javascript: LoadContent('" + HtmlHelper.trim(Content) + "','')");
 		            	else
@@ -279,12 +284,15 @@ public class BlogContentFragment extends Fragment{
 	    				blogTitle.setText(current.Title);
 	    				//((BlogContentActivity)getActivity()).Title.setText(current.Title);
 		            	loadEvent.set();
-	    				break;    			
+	    				break;
 	    			case FLASH:
-	    				if (cacheArgs.Total != -1)
-	    					browser.loadUrl("javascript: replaceFlash('" + String.valueOf(cacheArgs.CompleteIndex) + "','" + cacheArgs.Cache.html().replace("'", "\"") + "','" + (ReaderApp.getAppContext().getResources().getString(R.string.blog_clicktoview) + " " + title.replace("'", "\"")) + "','True')");
-		                else
-		                	browser.loadUrl("javascript: replaceFlash('" + String.valueOf(cacheArgs.CompleteIndex) + "','" + cacheArgs.Cache.html().replace("'", "\"") + "','" + title.replace("'", "\"") + "','True')");
+	    				
+	    				if(cacheArgs != null && cacheArgs.Blog.BlogId == current.BlogId){
+	    					if (cacheArgs.Total != -1)
+		    					browser.loadUrl("javascript: replaceFlash('" + String.valueOf(cacheArgs.CompleteIndex) + "','" + cacheArgs.Cache.html().replace("'", "\"") + "','" + (ReaderApp.getAppContext().getResources().getString(R.string.blog_clicktoview) + " " + title.replace("'", "\"")) + "','True')");
+			                else
+			                	browser.loadUrl("javascript: replaceFlash('" + String.valueOf(cacheArgs.CompleteIndex) + "','" + cacheArgs.Cache.html().replace("'", "\"") + "','" + title.replace("'", "\"") + "','True')");
+	    				}
 	    				break;
 	    			case SHARE:
 	    				OnekeyShare oks = (OnekeyShare)msg.obj;

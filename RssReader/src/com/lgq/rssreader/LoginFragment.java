@@ -76,7 +76,7 @@ public class LoginFragment extends Fragment {
         			mProgressDialog.hide();
         		//}else{
         			if(url.contains("code=")){
-        				mProgressDialog.setMessage(getActivity().getResources().getString(R.string.login_authing));
+        				mProgressDialog.setMessage(ReaderApp.getAppContext().getResources().getString(R.string.login_authing));
         				mProgressDialog.show();
         				
         				String params = url.substring(url.indexOf("?") + 1);
@@ -115,11 +115,12 @@ public class LoginFragment extends Fragment {
 								}
         	        			
         	        			mProgressDialog.dismiss();
-        	        			        	        			
-        	                    Intent intent = new Intent();
-        	                    getActivity().setResult(Activity.RESULT_OK, intent);
-        	                    getActivity().finish();
-        	        			
+        	        			        	 
+        	        			if(getActivity() != null){
+        	        				Intent intent = new Intent();
+            	                    getActivity().setResult(Activity.RESULT_OK, intent);
+            	                    getActivity().finish();
+        	        			}
         	        		}
         	        	});
         			}
