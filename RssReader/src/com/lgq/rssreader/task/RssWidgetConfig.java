@@ -115,7 +115,7 @@ public class RssWidgetConfig extends Activity{
                 
                 	c = (Channel)parent.getItemAtPosition(position);
                 
-                	Toast.makeText(view.getContext(), ReaderApp.getAppContext().getResources().getString(R.string.widget_youhadchosed) + c.Title, 10).show();
+                	Toast.makeText(view.getContext(), ReaderApp.getAppContext().getResources().getString(R.string.widget_youhadchosed) + c.Title, Toast.LENGTH_SHORT).show();
             	}                
             }
         });

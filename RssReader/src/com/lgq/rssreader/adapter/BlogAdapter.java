@@ -208,7 +208,7 @@ public class BlogAdapter extends BaseAdapter {
         			
         			helper.Close();
         		}else{
-        			Toast.makeText(ReaderApp.getAppContext(), msg, 10).show();
+        			Toast.makeText(ReaderApp.getAppContext(), msg, Toast.LENGTH_SHORT).show();
         		}
         	}
         });

@@ -188,7 +188,7 @@ public class MediumRssWidgetProvider extends AppWidgetProvider{
             			
                     	buildRemoteView(context, appWidgetManager, mAppWidgetId);
             		}else{
-            			Toast.makeText(ReaderApp.getAppContext(), msg, 10).show();
+            			Toast.makeText(ReaderApp.getAppContext(), msg, Toast.LENGTH_SHORT).show();
             		}
             	}
             });

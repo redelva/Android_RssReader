@@ -146,6 +146,7 @@ public class BlogListFragment extends Fragment implements IXListViewListener {
     public static final int LOADDATA = 1;
     public static final int UPDATESTATE = 2;
     public static final int UPDATECOUNT = 3;
+    public static final int EMPTY = 4;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -223,6 +224,16 @@ public class BlogListFragment extends Fragment implements IXListViewListener {
 	            case UPDATECOUNT:	            	
 	                title.setText(channel.Title + "-" + String.valueOf(msg.obj));
 	            	break;
+	            case EMPTY:
+	                emptyLayout.setEmptyMessage(getActivity().getResources().getString(R.string.list_empty_view));
+            		emptyLayout.getEmptyView().setOnClickListener(new View.OnClickListener(){        						
+						@Override
+						public void onClick(View v) {
+							onEmpty();
+						}
+					});        					
+					emptyLayout.showEmpty();
+	            	break;
             }
             
             super.handleMessage(msg);
@@ -245,38 +256,15 @@ public class BlogListFragment extends Fragment implements IXListViewListener {
                     	
                     	List<Blog> data = helper.GetBlogList(channel, 1, ReaderApp.getSettings().NumPerRequest, ReaderApp.getSettings().ShowAllItems);
                     	
+                    	helper.Close();
+                    	
                     	if(data.size() > 0){
                     		Message m = myHandler.obtainMessage();                    				
             	            m.what = LOADDATA;
             	            m.obj = data;
             				myHandler.sendMessage(m);            				
                     	}else{
-                    		final FeedlyParser feedly = new FeedlyParser();             
-    			            
-                    		Blog tmp = new Blog();
-                    		tmp.TimeStamp = 0;
-                    		tmp.PubDate = new Date();
-                    		
-    			            feedly.getRssBlog(channel, tmp, 30, new HttpResponseHandler(){
-    			            	@Override
-    			            	public <Blog> void onCallback(List<Blog> blogs, boolean result, String msg, boolean hasMore){
-    			            		if(result){
-    			            			
-    			            			helper.SynchronyData2DB((List<com.lgq.rssreader.entity.Blog>) blogs);
-    			            			
-    			            			if(blogs.size() > 0){
-    			            				Message m = myHandler.obtainMessage();
-                            	            m.what = LOADDATA;
-                            	            m.obj = blogs;
-                            				myHandler.sendMessage(m);
-    			            			}
-    			            			
-    			            			Helper.sound();
-    			            		}else{
-    			            			Toast.makeText(getActivity(), msg, 10).show();
-    			            		}
-    			            	}
-    			            });
+                    		onEmpty();
                     	}
                     } catch (Exception e) {
                         e.printStackTrace();  
@@ -398,6 +386,42 @@ public class BlogListFragment extends Fragment implements IXListViewListener {
     	listView.setRefreshTime(DateHelper.getDaysBeforeNow(channel.LastRefreshTime) + ReaderApp.getAppContext().getResources().getString(R.string.list_refreshtime));
 	}
     
+    private void onEmpty(){
+    	final FeedlyParser feedly = new FeedlyParser();             
+        
+		Blog tmp = new Blog();
+		tmp.TimeStamp = 0;
+		tmp.PubDate = new Date();
+		
+        feedly.getRssBlog(channel, tmp, 30, new HttpResponseHandler(){
+        	@Override
+        	public <Blog> void onCallback(List<Blog> blogs, boolean result, String msg, boolean hasMore){
+        		if(result){
+        			BlogDalHelper helper = new BlogDalHelper();
+        			
+        			helper.SynchronyData2DB((List<com.lgq.rssreader.entity.Blog>) blogs);
+        			
+        			helper.Close();
+        			
+        			if(blogs.size() > 0){
+        				Message m = myHandler.obtainMessage();
+        	            m.what = LOADDATA;
+        	            m.obj = blogs;
+        				myHandler.sendMessage(m);
+        			}
+        			
+        			Helper.sound();
+        		}else{
+        			Message m = myHandler.obtainMessage();
+    	            m.what = EMPTY;
+    	            m.obj = blogs;
+    				myHandler.sendMessage(m);
+        			Toast.makeText(ReaderApp.getAppContext(), msg, Toast.LENGTH_SHORT).show();
+        		}
+        	}
+        });
+    }
+    
 	@Override
 	public void onRefresh() {
 		Blog b = (Blog)adapter.getItem(0);
@@ -421,14 +445,14 @@ public class BlogListFragment extends Fragment implements IXListViewListener {
         			}
         			
         			if(hasMore){
-        				Toast.makeText(ReaderApp.getAppContext(), ReaderApp.getAppContext().getResources().getString(R.string.list_loadingmore), 10).show();
+        				Toast.makeText(ReaderApp.getAppContext(), ReaderApp.getAppContext().getResources().getString(R.string.list_loadingmore), Toast.LENGTH_SHORT).show();
         			}else{
         				onLoad();
         				Helper.sound();
         			}
         		}else{
         			onLoad();
-        			Toast.makeText(ReaderApp.getAppContext(), msg, 10).show();        			
+        			Toast.makeText(ReaderApp.getAppContext(), msg, Toast.LENGTH_SHORT).show();        			
         		}
         	}
 		});
@@ -475,13 +499,13 @@ public class BlogListFragment extends Fragment implements IXListViewListener {
 		        			}
 		        			
 		        			if(hasMore){
-		        				Toast.makeText(getActivity(), getActivity().getResources().getString(R.string.list_loadingmore), 10).show();
+		        				Toast.makeText(getActivity(), getActivity().getResources().getString(R.string.list_loadingmore), Toast.LENGTH_SHORT).show();
 		        			}
 		        			else{
 		        				Helper.sound();
 		        			}
 		        		}else{
-		        			Toast.makeText(getActivity(), msg, 10).show();        			
+		        			Toast.makeText(getActivity(), msg, Toast.LENGTH_SHORT).show();        			
 		        		}
 		        		
 		        		//onLoad();

@@ -106,7 +106,7 @@ public class LargeRssWidgetProvider extends AppWidgetProvider{
         
         if(intent.getAction().equals(REFRESH)){
         	
-        	Toast.makeText(context, context.getResources().getString(R.string.content_loading), 10).show();
+        	Toast.makeText(context, context.getResources().getString(R.string.content_loading), Toast.LENGTH_SHORT).show();
         	
         	FeedlyParser parser = new FeedlyParser();
         	Channel c = null;
@@ -132,7 +132,7 @@ public class LargeRssWidgetProvider extends AppWidgetProvider{
                 		
                 		appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetIds,R.id.listView1);
             		}else{
-            			Toast.makeText(context, msg, 10).show();
+            			Toast.makeText(context, msg, Toast.LENGTH_SHORT).show();
             		}
             	}
             });

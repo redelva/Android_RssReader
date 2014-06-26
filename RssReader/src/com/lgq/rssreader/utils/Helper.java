@@ -47,6 +47,7 @@ import com.lgq.rssreader.entity.Unread;
 import android.R.integer;
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.ActivityManager;
 import android.app.AlertDialog;
 import android.app.Application;
 import android.app.Notification;
@@ -562,7 +563,34 @@ public class Helper {
 				e.printStackTrace();
 			}// end of try
 		}
-    }	
+    }
+	
+	/**
+	 * 判断服务是否后台运行
+	 * 
+	 * @param context
+	 *            Context
+	 * @param className
+	 *            判断的服务名字
+	 * @return true 在运行 false 不在运行
+	 */
+	private static boolean isServiceRun(Context mContext, String className) {
+		boolean isRun = false;
+		ActivityManager activityManager = (ActivityManager) mContext.getSystemService(Context.ACTIVITY_SERVICE);
+		List<ActivityManager.RunningServiceInfo> serviceList = activityManager.getRunningServices(50);
+		int size = serviceList.size();
+		for (int i = 0; i < size; i++) {
+			if (serviceList.get(i).service.getClassName().equals(className) == true) {
+				isRun = true;
+				break;
+			}
+		}
+		return isRun;
+	}
+	
+	public static boolean isServiceRun(){
+		return isServiceRun(ReaderApp.getAppContext(), "com.lgq.rssreader.task.DownloadService");
+	}
     
     public static UnReadCount findUnreadById(Unread uc, String id){
     	for(UnReadCount u : uc.Unreads){

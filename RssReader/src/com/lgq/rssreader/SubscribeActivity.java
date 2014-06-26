@@ -103,9 +103,9 @@ public class SubscribeActivity extends SherlockFragmentActivity
         		mProgressDialog.hide();
     			mProgressDialog.dismiss();
         		if(result)        			
-        			Toast.makeText(SubscribeActivity.this, getResources().getString(R.string.main_subscribe), 10).show();
+        			Toast.makeText(SubscribeActivity.this, getResources().getString(R.string.main_subscribe), Toast.LENGTH_SHORT).show();
         		else
-        			Toast.makeText(SubscribeActivity.this, (CharSequence) msg, 10).show();
+        			Toast.makeText(SubscribeActivity.this, (CharSequence) msg, Toast.LENGTH_SHORT).show();
         		
         		ReaderApp.getPreferences().edit().putBoolean("forceRefresh", true).commit();
         		

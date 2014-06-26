@@ -137,7 +137,13 @@ public class MainActivity extends SlidingFragmentActivity
 				
 				SharedPreferences pref = ReaderApp.getPreferences();
 				
-				if(ReaderApp.getProfile() != null && !pref.contains("lastDownloaTime")){
+				boolean bStartService = ReaderApp.getProfile() != null && !pref.contains("lastDownloaTime");
+				
+//				if(!bStartService){
+//					bStartService = !Helper.isServiceRun();
+//				}
+				
+				if(bStartService){
 					Intent i = new Intent(MainActivity.this, DownloadService.class);
 	                i.setAction(DownloadService.ACTION_BOOT_COMPLETED);
 	                MainActivity.this.startService(i);
@@ -262,7 +268,7 @@ public class MainActivity extends SlidingFragmentActivity
 		{
 			case 0:
 				
-				Toast.makeText(ReaderApp.getAppContext(), ReaderApp.getAppContext().getResources().getString(R.string.main_loadingdata), 10).show();
+				Toast.makeText(ReaderApp.getAppContext(), ReaderApp.getAppContext().getResources().getString(R.string.main_loadingdata), Toast.LENGTH_SHORT).show();
 				
 				loadChannel();
 

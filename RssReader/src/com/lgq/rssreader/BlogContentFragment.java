@@ -278,8 +278,8 @@ public class BlogContentFragment extends Fragment{
 	    					browser.loadUrl("javascript: LoadContent('" + HtmlHelper.trim(Content) + "','')");
 		            	else
 		            		browser.loadUrl("javascript: LoadError('" + ReaderApp.getAppContext().getResources().getString(R.string.content_errortitle) + "','" + 
-		            				getActivity().getResources().getString(R.string.content_errorcontent) + "','" + 
-		            				getActivity().getResources().getString(R.string.content_errorload) + "')");
+		            				ReaderApp.getAppContext().getResources().getString(R.string.content_errorcontent) + "','" + 
+		            				ReaderApp.getAppContext().getResources().getString(R.string.content_errorload) + "')");
 	    				    				
 	    				blogTitle.setText(current.Title);
 	    				//((BlogContentActivity)getActivity()).Title.setText(current.Title);
@@ -504,7 +504,7 @@ public class BlogContentFragment extends Fragment{
         		if(!result){
         			Log.i("RssReader", msg);
         			
-        			Toast.makeText(getActivity(), msg, 10).show();
+        			Toast.makeText(getActivity(), msg, Toast.LENGTH_SHORT).show();
         			
         			SyncStateDalHelper helper = new SyncStateDalHelper();
         			
@@ -1420,7 +1420,7 @@ public class BlogContentFragment extends Fragment{
         			showProcess("");
         		}
     			else{
-    				Toast.makeText(getActivity(), getActivity().getResources().getString(R.string.content_nonextitem), 10).show();    				
+    				Toast.makeText(getActivity(), getActivity().getResources().getString(R.string.content_nonextitem), Toast.LENGTH_SHORT).show();    				
     			}
     		}
     		
@@ -1448,7 +1448,7 @@ public class BlogContentFragment extends Fragment{
         			showProcess("");
         		}
     			else{
-    				Toast.makeText(getActivity(), getActivity().getResources().getString(R.string.content_nopreviousitem), 10).show();
+    				Toast.makeText(getActivity(), getActivity().getResources().getString(R.string.content_nopreviousitem), Toast.LENGTH_SHORT).show();
     			}
     		}
     		

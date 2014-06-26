@@ -96,12 +96,14 @@ public class DownloadService extends Service{
                 if (isNetworkAvailable()) {
                 	startDownload();
                 }else{
-                	Toast.makeText(getApplicationContext(), "Network failed", 10).show();
+                	Toast.makeText(getApplicationContext(), "Network failed", Toast.LENGTH_SHORT).show();
                 }
             }
         }
         
-    	return super.onStartCommand(intent, flags, startId);
+        flags = START_STICKY; 
+        
+        return super.onStartCommand(intent, flags, startId);        
     }
 
 	/**
