@@ -533,38 +533,49 @@ import com.loopj.android.http.JsonHttpResponseHandler;
         	int index = url.indexOf('X');
             if (index == -1)
                 return;
-
+            
             AsyncHttpClient client = new AsyncHttpClient();                
             String id = url.substring(index, index + 13);
-            client.get("http://v.youku.com/player/getPlayList/VideoIDS/" + id, new JsonHttpResponseHandler(){
+            client.get("http://v.youku.com/player/getPlayList/VideoIDS/" + id + "/Pf/4/ctype/12/ev/1", new JsonHttpResponseHandler(){
             	@Override
             	public void onSuccess(JSONObject youku){
             		try {
-						if (youku.getJSONArray("data").getJSONObject(0).getJSONObject("segs").getJSONArray("mp4") != null)
-						{
-						    double seed = youku.getJSONArray("data").getJSONObject(0).getDouble("seed");
-						    String fileid = youku.getJSONArray("data").getJSONObject(0).getJSONObject("streamfileids").getString("mp4");
-						    String fileId = getFileID(fileid, seed);
-						    
-						    
-						    tip.html("");                            
-						    for(int i=0, len=youku.getJSONArray("data").getJSONObject(0).getJSONObject("segs").getJSONArray("mp4").length();i<len;i++)
+						if (youku.getJSONArray("data").getJSONObject(0).getJSONObject("segs").getJSONArray("3gphd") != null)
+						{							
+							String ip = youku.getJSONArray("data").getJSONObject(0).getString("ip");				            
+				            int h=1;
+				            String q="mp4";
+				            double seed = youku.getJSONArray("data").getJSONObject(0).getDouble("seed");
+				            String fileid = youku.getJSONArray("data").getJSONObject(0).getJSONObject("streamfileids").getString("3gphd");
+				            String f = getFileID(fileid, seed);
+				            String sidAndtoken = E("becaf9be", na(youku.getJSONArray("data").getJSONObject(0).getString("ep")));
+				            String sid = sidAndtoken.split("_")[0];
+				            String token = sidAndtoken.split("_")[1];
+
+				            tip.html("");
+				            for(int i=0, len=youku.getJSONArray("data").getJSONObject(0).getJSONObject("segs").getJSONArray("3gphd").length();i<len;i++)
 						    {
-						    	JSONObject child = youku.getJSONArray("data").getJSONObject(0).getJSONObject("segs").getJSONArray("mp4").getJSONObject(i);
-						        String k = child.getString("k");
+						    	JSONObject child = youku.getJSONArray("data").getJSONObject(0).getJSONObject("segs").getJSONArray("3gphd").getJSONObject(i);
+						    	String k = child.getString("k");
+								String l = child.getString("seconds");
+						        //String k = child.getString("k");
 						        String k2 = child.getString("k2");
 						        //String indexFileId = fileId.Insert(9, i.ToString()).Remove(10);
 						        
-						        fileId = fileId.substring(0,9) + String.valueOf(i) + fileId.substring(10);
+						        f = f.substring(0,9) + String.valueOf(i) + f.substring(10);
 						        
-						        String directUrl = "http://f.youku.com/player/getFlvPath/sid/00_00/st/mp4/fileid/" + fileId + "?K=" + k + ",k2:"+ k2;
+						        String url = "/player/getFlvPath/sid/" + sid + "_" + "00" + "/st/" + q + "/fileid/" + f + "?K=" + k + "&hd=" + h + "&myp=0&ts=" + l + "&ypp=0";// +e;
+					            f = HtmlHelper.UrlEncodeUpper(D(E("bf7e5f01", sid + "_" + f + "_" + token)));
+					            url = url + ("&ep=" + f) + "&ctype=12&ev=1" + ("&token=" + token);
+					            url += "&oip=" + ip;
+					            url = "http://k.youku.com" + url;
 
-						        if (FlashComplete != null)//blogId, total, youku["data"].First["title"].Value<String>(), directUrl
+						        if (FlashComplete != null)
 						        {
-						            //tip.InnerHtml = "<a onclick=\"linkHandle();\" href=\""+ directUrl +"\">" + Resources.StringResources.OpenToView + " " + youku["data"].First["title"].Value<String>() + "</a>";
-						            tip.html(tip.html() + directUrl + "|");
+						            tip.html(tip.html() + url + "|");
 						        }                                
-						    }
+						    }				            
+													    
 						    tip.html(tip.html().substring(0,tip.html().length() - 1) + "____" + youku.getJSONArray("data").getJSONObject(0).getString("logo"));
 						    FlashComplete.onFlash(youku.getJSONArray("data").getJSONObject(0).getString("title"), new CacheEventArgs(blog, embed, tip, cnt, 0));
 						}
@@ -579,6 +590,52 @@ import com.loopj.android.http.JsonHttpResponseHandler;
                 	FlashComplete.onFlash(ReaderApp.getAppContext().getResources().getString(R.string.blog_videooptimize), new CacheEventArgs(blog, embed, tip, cnt, -1));
                 }
             });
+
+//            AsyncHttpClient client = new AsyncHttpClient();                
+//            String id = url.substring(index, index + 13);
+//            client.get("http://v.youku.com/player/getPlayList/VideoIDS/" + id, new JsonHttpResponseHandler(){
+//            	@Override
+//            	public void onSuccess(JSONObject youku){
+//            		try {
+//						if (youku.getJSONArray("data").getJSONObject(0).getJSONObject("segs").getJSONArray("mp4") != null)
+//						{
+//						    double seed = youku.getJSONArray("data").getJSONObject(0).getDouble("seed");
+//						    String fileid = youku.getJSONArray("data").getJSONObject(0).getJSONObject("streamfileids").getString("mp4");
+//						    String fileId = getFileID(fileid, seed);
+//						    
+//						    
+//						    tip.html("");                            
+//						    for(int i=0, len=youku.getJSONArray("data").getJSONObject(0).getJSONObject("segs").getJSONArray("mp4").length();i<len;i++)
+//						    {
+//						    	JSONObject child = youku.getJSONArray("data").getJSONObject(0).getJSONObject("segs").getJSONArray("mp4").getJSONObject(i);
+//						        String k = child.getString("k");
+//						        String k2 = child.getString("k2");
+//						        //String indexFileId = fileId.Insert(9, i.ToString()).Remove(10);
+//						        
+//						        fileId = fileId.substring(0,9) + String.valueOf(i) + fileId.substring(10);
+//						        
+//						        String directUrl = "http://f.youku.com/player/getFlvPath/sid/00_00/st/mp4/fileid/" + fileId + "?K=" + k + ",k2:"+ k2;
+//
+//						        if (FlashComplete != null)//blogId, total, youku["data"].First["title"].Value<String>(), directUrl
+//						        {
+//						            //tip.InnerHtml = "<a onclick=\"linkHandle();\" href=\""+ directUrl +"\">" + Resources.StringResources.OpenToView + " " + youku["data"].First["title"].Value<String>() + "</a>";
+//						            tip.html(tip.html() + directUrl + "|");
+//						        }                                
+//						    }
+//						    tip.html(tip.html().substring(0,tip.html().length() - 1) + "____" + youku.getJSONArray("data").getJSONObject(0).getString("logo"));
+//						    FlashComplete.onFlash(youku.getJSONArray("data").getJSONObject(0).getString("title"), new CacheEventArgs(blog, embed, tip, cnt, 0));
+//						}
+//					} catch (JSONException e) {
+//						// TODO Auto-generated catch block
+//						e.printStackTrace();
+//					}                        
+//            	}
+//            	
+//            	public void onFailure(){
+//                	tip.html("");
+//                	FlashComplete.onFlash(ReaderApp.getAppContext().getResources().getString(R.string.blog_videooptimize), new CacheEventArgs(blog, embed, tip, cnt, -1));
+//                }
+//            });
         }
 
         private void youtube(final int cnt, final Blog blog, final Element embed, final Element tip, final String url){
@@ -995,6 +1052,106 @@ import com.loopj.android.http.JsonHttpResponseHandler;
 //            	}
 //            });           
 //        }
+        
+        private String convertString(List<Character> array){
+        	StringBuilder s = new StringBuilder();
+            for(Character i : array)
+                   s.append(i);
+            
+            return s.toString();
+        }
+
+        private String na(String a) {
+            if (a == null || a.length() == 0) 
+                return "";
+            int c, b;
+            int[] h = new int[]{-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 62, -1, -1, -1, 63, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, -1, -1, -1, -1, -1, -1, -1, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, -1, -1, -1, -1, -1, -1, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, -1, -1, -1, -1, -1};
+            int i = a.length();
+            int f = 0;
+            List<Character> d = new ArrayList<Character>();
+            for (; f < i;) {
+                do c = h[a.charAt(f++) & 255];
+                while (f < i && -1 == c);
+                if (-1 == c) break;
+                do b = h[a.charAt(f++) & 255];
+                while (f < i && -1 == b);
+                if (-1 == b) break;
+                d.add((char) (c << 2 | (b & 48) >> 4));
+                do {
+                    c = a.charAt(f++) & 255;
+                    if (61 == c)
+                        return convertString(d);
+                    c = h[c];
+                } while (f < i && -1 == c);
+                if (-1 == c) break;
+                d.add((char) ((b & 15) << 4 | (c & 60) >> 2));
+                do {
+                    b = a.charAt(f++) & 255;
+                    if (61 == b)
+                    	return convertString(d);
+                    b = h[b];
+                } while (f < i && -1 == b);
+                if (-1 == b) break;
+                d.add((char) ((c & 3) << 6 | b));
+            }
+            return convertString(d);
+        }
+
+        private String D(String a) {
+            if(a == null || a.length() == 0) 
+            	return "";
+            String b = "";
+            int d, g, h;
+            int f = a.length();
+            int e = 0;
+            for (; e < f;) {
+                d = a.charAt(e++) & 255;
+                if (e == f) {
+                    b += "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/".charAt(d >> 2);
+                    b += "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/".charAt((d & 3) << 4);
+                    b += "==";
+                    break;
+                }
+                g = a.charAt(e++);
+                if (e == f) {
+                    b += "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/".charAt(d >> 2);
+                    b += "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/".charAt((d & 3) << 4 | (g & 240) >> 4);
+                    b += "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/".charAt((g & 15) << 2);
+                    b += "=";
+                    break;
+                }
+                h = a.charAt(e++);
+                b += "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/".charAt(d >> 2);
+                b += "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/".charAt((d & 3) << 4 | (g & 240) >> 4);
+                b += "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/".charAt((g & 15) << 2 | (h & 192) >> 6);
+                b += "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/".charAt(h & 63);
+            }
+            return b;
+        }
+
+        private String E(String a, String c) {
+        	List<Character> b = new ArrayList<Character>();
+            int f = 0;            
+            int h = 0;
+            for (; 256 > h; h++) 
+                b.add((char) h);
+            for (h = 0; 256 > h; h++) {
+                f = (f + b.get(h) + a.charAt(h % a.length())) % 256;
+                Character i = b.get(h);
+                b.set(h, b.get(f));
+                b.set(f, i);
+            }
+            List<Character> d = new ArrayList<Character>();
+            for (int q = f = h = 0; q < c.length(); q++) {
+                h = (h + 1) % 256;
+                f = (f + b.get(h)) % 256;
+                Character i = b.get(h);
+                b.set(h, b.get(f));
+                b.set(f, i);
+                d.add((char) (c.charAt(q) ^ b.get((b.get(h) + b.get(f)) % 256)));
+            }
+            return convertString(d);
+        }
 
         private String getFileID(String fileid, double seed)
         {
