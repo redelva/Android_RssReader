@@ -232,12 +232,16 @@ public class BlogDalHelper {
 		String where = "";
 		String orderby = "";
 		if(previous){		
-			where = "blogid>'" + current.BlogId + "'";
-			orderby = "BLOGID ASC, PUBDATE ASC, TIMESTAMP ASC";
+			//where = "blogid>'" + current.BlogId + "'";
+			//orderby = "BLOGID ASC, PUBDATE ASC, TIMESTAMP ASC";
+			where = "blogid !='" + current.BlogId + "' and timestamp>" + current.TimeStamp;
+			orderby = "TIMESTAMP ASC, PUBDATE ASC, BLOGID ASC";
 		}
 		else{			
-			where = "blogid<'" + current.BlogId + "'";
-			orderby = "BLOGID DESC, PUBDATE DESC, TIMESTAMP DESC";
+			//where = "blogid<'" + current.BlogId + "'";
+			//orderby = "BLOGID DESC, PUBDATE DESC, TIMESTAMP DESC";
+			where = "blogid !='" + current.BlogId + "' and timestamp<" + current.TimeStamp;
+			orderby = "TIMESTAMP DESC, PUBDATE DESC, BLOGID DESC";
 		}
 		String limit = "1";
 		
@@ -255,11 +259,11 @@ public class BlogDalHelper {
     		
     		if(previous){
 				where = "pubdate>'" + dateFm.format(current.PubDate) + "'";
-				orderby = "pubdate ASC, timestamp ASC";
+				orderby = "timestamp ASC, pubdate ASC ";
 			}
 			else{			
 				where = "pubdate<'" + dateFm.format(current.PubDate) + "'";
-				orderby = "pubdate DESC, timestamp DESC";
+				orderby = "timestamp DESC, pubdate DESC";
 			}
     		
     		switch(from){
@@ -402,7 +406,8 @@ public class BlogDalHelper {
 	 */
 	public List<Blog> GetBlogListByWhere(String limit, String where, String[] args) {
 		List<Blog> listBlog = new ArrayList<Blog>();
-		String orderBy = "PUBDATE DESC, TIMESTAMP DESC, BLOGID DESC";
+		//String orderBy = "PUBDATE DESC, TIMESTAMP DESC, BLOGID DESC";
+		String orderBy = "TIMESTAMP DESC, PUBDATE DESC, BLOGID DESC";
 		Cursor cursor = db.query(Config.DB_BLOG_TABLE, null, where, args, null, null, orderBy, limit);
 		while (cursor != null && cursor.moveToNext()) {
 			Blog entity = new Blog();			

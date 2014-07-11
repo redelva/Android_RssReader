@@ -1452,9 +1452,9 @@ public class FeedlyParser extends RssParser {
 								b.Description = b.Description.substring(0, index);
 						}
 			
-						b.PubDate = new Date(item.getLong("published"));
+						b.PubDate = new Date(item.getLong("crawled"));
 						b.SubsTitle = item.getJSONObject("origin").has("title") ? item.getJSONObject("origin").getString("title") : "";
-						b.TimeStamp = item.getLong("crawled");
+						b.TimeStamp = item.getLong("published");
 						b.IsRead = item.has("unread") ? !item.getBoolean("unread") : false;
 						b.Avatar = "";
 			

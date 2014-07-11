@@ -54,6 +54,7 @@
             android:configChanges="locale"
             android:name="com.lgq.rssreader.BlogContentActivity"
             android:label="@string/title_blog_detail"
+            android:hardwareAccelerated="true"
             android:uiOptions="splitActionBarWhenNarrow"
             android:parentActivityName=".MainActivity" >
             <meta-data

@@ -183,6 +183,8 @@ public class BlogListFragment extends Fragment implements IXListViewListener {
 	            	}
 	            	adapter.notifyDataSetChanged();
 	            	
+	            	onLoad();
+	            	
 	            	break;
 	            case UPDATESTATE:
 	            	List<Blog> blogs = (List<Blog>)msg.obj;
@@ -514,6 +516,6 @@ public class BlogListFragment extends Fragment implements IXListViewListener {
 			}
 		}}.start();
 		
-		onLoad();
+		//onLoad();
 	}
 }

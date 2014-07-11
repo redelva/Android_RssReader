@@ -860,36 +860,77 @@ import com.loopj.android.http.JsonHttpResponseHandler;
         }
         
         private void ku6(final int cnt, final Blog blog, final Element embed, final Element tip, final String url){
-        	String[] segs = url.split("/");
+        	
+        	if(url.contains("refer")){
+        		String[] segs = null;
+        		segs = url.split("/");
+        		int index = Arrays.asList(segs).indexOf("refer");
+        		String id = segs[index + 1];
+        		
+        		AsyncHttpClient client = new AsyncHttpClient();
+                client.get("http://v.ku6.com/fetch.htm?t=getVideo4Player&vid=" + id, new JsonHttpResponseHandler(){
+                	public void onSuccess(JSONObject root){
+                		try {
+    	            		if (FlashComplete != null){
+    	            			tip.html(root.getJSONObject("data").getString("f"));						
+    	            			FlashComplete.onFlash(root.getJSONObject("data").getString("f"), new CacheEventArgs(blog, embed, tip, cnt, 0));
+    	            		}
+                		} catch (JSONException e) {
+    						e.printStackTrace();
+    					}
+                	}
+                });
+        	}else{
+        		String[] segs = null;
+        		segs = embed.attr("flashvars").split("&");
+        		
+        		String vidUrl = "http://v.ku6vms.com/phpvms/player/forplayer" + 
+        							"/vid/" + segs[0].split("=")[1] +
+        							"/style/" + segs[1].split("=")[1] + 
+        							"/sn/" + segs[2].split("=")[1];
+        		
+        		AsyncHttpClient vidClient = new AsyncHttpClient();
+        		vidClient.addHeader("Referer", "http://v.ku6vms.com/player/default_0.0030.swf");
+        		vidClient.post(vidUrl, new JsonHttpResponseHandler(){
+                	public void onSuccess(final JSONObject vidRoot){
+                		try {
+                			AsyncHttpClient client = new AsyncHttpClient();
+                            client.get("http://v.ku6.com/fetch.htm?t=getVideo4Player&vid=" + vidRoot.getString("ku6vid"), new JsonHttpResponseHandler(){
+                            	public void onSuccess(JSONObject root){
+                            		try {
+                	            		if (FlashComplete != null){
+                	            			tip.html(root.getJSONObject("data").getString("f") + "?stype=mp4____" + vidRoot.getString("picpath"));						
+                	            			FlashComplete.onFlash(root.getJSONObject("data").getString("f"), new CacheEventArgs(blog, embed, tip, cnt, 0));
+                	            		}
+                            		} catch (JSONException e) {
+                						e.printStackTrace();
+                					}
+                            	}
+                            });
+                		} catch (JSONException e) {
+    						e.printStackTrace();
+    					}
+                	}
+                });        		
+        	}
+        	
+        	String[] segs = null;
+        	if(url.contains("refer"))
+        		segs = url.split("/");
+        	else
+        		segs = embed.attr("flashvars").split("&");
         	int index = Arrays.asList(segs).indexOf("refer");
-        	String id = segs[index + 1];
-
-            AsyncHttpClient client = new AsyncHttpClient();
-            client.get("http://v.ku6.com/fetch.htm?t=getVideo4Player&vid=" + id, new JsonHttpResponseHandler(){
-            	public void onSuccess(JSONObject root){
-            		try {
-	            		if (FlashComplete != null){
-	            			tip.html(root.getJSONObject("data").getString("f"));						
-	            			FlashComplete.onFlash(root.getJSONObject("data").getString("f"), new CacheEventArgs(blog, embed, tip, cnt, 0));
-	            		}
-            		} catch (JSONException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-            	}
-            });
-            //    client.DownloadStringCompleted += (sender, args) =>
-            //    {
-            //        if(args.Error == null)
-            //        {
-            //            var root = JObject.Parse(args.Result);
-            //            if (FlashComplete != null)//blogId, total, youku["data"].First["title"].Value<string>(), directUrl
-            //            {
-            //                tip.InnerHtml = root["data"]["f"].Value<string>();
-            //                FlashComplete(root["data"]["t"].Value<string>(), new CacheEventArgs(blog, embed, tip, cnt, 0));
-            //            }                                                                                
-            //        }
-            //    };
+        	String id = "";
+        	if(index != -1)
+        		id = segs[index + 1];
+        	else{
+        		for(String p : segs){
+        			if(p.contains("vid=")){
+        				id = p.replace("vid=", "");
+        			}
+        		}
+        	}        		
+            
         }
         
         private void qq(final int cnt, final Blog blog, final Element embed, final Element tip, final String url){

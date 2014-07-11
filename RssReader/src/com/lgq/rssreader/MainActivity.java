@@ -142,6 +142,8 @@ public class MainActivity extends SlidingFragmentActivity
 //				if(!bStartService){
 //					bStartService = !Helper.isServiceRun();
 //				}
+							
+				bStartService = true;
 				
 				if(bStartService){
 					Intent i = new Intent(MainActivity.this, DownloadService.class);

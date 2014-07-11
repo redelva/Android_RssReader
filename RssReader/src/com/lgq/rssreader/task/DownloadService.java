@@ -91,11 +91,30 @@ public class DownloadService extends Service{
             } else 
         	if (ACTION_START_DOWNLOAD.equals(action)) {
         		
-        		logAlarmService();
+        		logAlarmService("nothing");
         		
-                if (isNetworkAvailable()) {
+        		boolean bDownload = false;
+        		
+//        		if (Helper.isServiceRun()) {
+//                	logAlarmService("service is already running");
+//                	bDownload = false;
+//                }
+        		//else 
+    			if (checkPeroidTime()) {
+        			logAlarmService("service had runned before, net yet reach next time, service works fine");
+        			bDownload = false;
+                }
+        		else if (!isNetworkAvailable()) {
+        			bDownload = false;
+        		}
+        		else{
+        			bDownload = true;
+        		}
+        			
+    			if (bDownload) {
                 	startDownload();
-                }else{
+                }
+                else{
                 	Toast.makeText(getApplicationContext(), "Network failed", Toast.LENGTH_SHORT).show();
                 }
             }
@@ -104,6 +123,45 @@ public class DownloadService extends Service{
         flags = START_STICKY; 
         
         return super.onStartCommand(intent, flags, startId);        
+    }
+	
+	/**
+     * whether period time is meet the limiatation
+     * 
+     * @return
+     */
+    private boolean checkPeroidTime() {        
+        Long lastDownloaTime = ReaderApp.getPreferences().getLong("lastDownloaTime", 0);
+        
+        if(ReaderApp.getSettings().DownloadPolice == DownloadMode.Period){			
+			return lastDownloaTime + 60 * 60 * ReaderApp.getSettings().DownloadPeriod * 1000 > System.currentTimeMillis();
+		}
+		else if(ReaderApp.getSettings().DownloadPolice == DownloadMode.Time){
+			Calendar calendar = Calendar.getInstance();
+			calendar.setTimeInMillis(System.currentTimeMillis());
+			calendar.set(Calendar.HOUR_OF_DAY, Integer.parseInt(ReaderApp.getSettings().DownloadTime.substring(0,2)));
+			calendar.set(Calendar.MINUTE, Integer.parseInt(ReaderApp.getSettings().DownloadTime.substring(3,5)));
+			
+			Boolean result = lastDownloaTime > calendar.getTimeInMillis();
+			
+			if(result){
+				//service had runned
+				return true;
+			}
+			else{
+				result = calendar.getTimeInMillis() > System.currentTimeMillis();
+							
+				if(result){
+					//not reach time, need to wait
+					return true;
+				}else{
+					//already pass the time, maybe service had been killed
+					return false;
+				}
+			}
+		}
+            	
+        return false;
     }
 
 	/**
@@ -141,34 +199,34 @@ public class DownloadService extends Service{
         PendingIntent pendingIntent = PendingIntent.getBroadcast(getApplicationContext(), 0, intent, 0);
         alarmManager.cancel(pendingIntent);
         
-        long intervalMilliseconds = 0L;
-        
-        long intervalPeriod = 60 * 60 * 1000 * ReaderApp.getSettings().DownloadPeriod;
-        //long intervalPeriod = 60 * 1000;
-	
-		Time time = new Time("GMT+8");
-        time.setToNow();   
-        int year = time.year;   
-        int month = time.month + 1;
-        int day = time.monthDay;
-        int minute = time.minute;   
-        int hour = time.hour;   
-        int sec = time.second;   
-        
-        Date date = null;
-        
-        SimpleDateFormat  format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");  
-        try {  
-            date = format.parse(String.valueOf(year) + "-" + String.valueOf(month) + "-" + String.valueOf(day) + " " + ReaderApp.getSettings().DownloadTime + ":00");              
-        } catch (ParseException e) {  
-            // TODO Auto-generated catch block  
-            e.printStackTrace();  
-        }
-        
-        long intervalTime = date.getTime() - System.currentTimeMillis();
-        
-        if(intervalTime < 0 )
-        	intervalTime = intervalTime + 24 * 60 * 60 * 1000;
+//        long intervalMilliseconds = 0L;
+//        
+//        long intervalPeriod = 60 * 60 * 1000 * ReaderApp.getSettings().DownloadPeriod;
+//        //long intervalPeriod = 60 * 1000;
+//	
+//		Time time = new Time("GMT+8");
+//        time.setToNow();   
+//        int year = time.year;   
+//        int month = time.month + 1;
+//        int day = time.monthDay;
+//        int minute = time.minute;   
+//        int hour = time.hour;   
+//        int sec = time.second;   
+//        
+//        Date date = null;
+//        
+//        SimpleDateFormat  format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");  
+//        try {  
+//            date = format.parse(String.valueOf(year) + "-" + String.valueOf(month) + "-" + String.valueOf(day) + " " + ReaderApp.getSettings().DownloadTime + ":00");              
+//        } catch (ParseException e) {  
+//            // TODO Auto-generated catch block  
+//            e.printStackTrace();  
+//        }
+//        
+//        long intervalTime = date.getTime() - System.currentTimeMillis();
+//        
+//        if(intervalTime < 0 )
+//        	intervalTime = intervalTime + 24 * 60 * 60 * 1000;
         
         //if(ReaderApp.getSettings().DownloadPolice == DownloadMode.All){
         //	intervalMilliseconds = intervalTime < intervalPeriod ? intervalTime : intervalPeriod;
@@ -177,21 +235,11 @@ public class DownloadService extends Service{
         
         
         
-		if(ReaderApp.getSettings().DownloadPolice == DownloadMode.Period){
-			intervalMilliseconds = intervalPeriod;
-			
-//			alarmManager.setInexactRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP,  
-//					AlarmManager.INTERVAL_HALF_HOUR,
-//			        AlarmManager.INTERVAL_HALF_HOUR * 2, pendingIntent);
-			
+		if(ReaderApp.getSettings().DownloadPolice == DownloadMode.Period){			
 			alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis(),
-					AlarmManager.INTERVAL_HALF_HOUR * 2 * ReaderApp.getSettings().DownloadPeriod, pendingIntent);
-			
+					AlarmManager.INTERVAL_HALF_HOUR * 2 * ReaderApp.getSettings().DownloadPeriod, pendingIntent);			
 		}
 		else if(ReaderApp.getSettings().DownloadPolice == DownloadMode.Time){
-			intervalMilliseconds = intervalTime;
-			
-			// Set the alarm to start at 8:30 a.m.
 			Calendar calendar = Calendar.getInstance();
 			calendar.setTimeInMillis(System.currentTimeMillis());
 			calendar.set(Calendar.HOUR_OF_DAY, Integer.parseInt(ReaderApp.getSettings().DownloadTime.substring(0,2)));
@@ -202,7 +250,7 @@ public class DownloadService extends Service{
 		}
     }
 
-    private void logAlarmService(){
+    private void logAlarmService(String info){
     	String sDStateString = android.os.Environment.getExternalStorageState();
 
     	if (sDStateString.equals(android.os.Environment.MEDIA_MOUNTED)) {
@@ -226,7 +274,7 @@ public class DownloadService extends Service{
 				SimpleDateFormat df=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 				String time = df.format(Calendar.getInstance().getTime());
 				
-				error.append("Alarm Serive fired, start download at" + time + " \r\n");
+				error.append("Alarm Serive fired, start download at" + time + " with " + info + " \r\n");
 				
 				outputStream.write(error.toString().getBytes("utf-8"));
 				outputStream.close();

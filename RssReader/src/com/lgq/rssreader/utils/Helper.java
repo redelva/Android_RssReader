@@ -190,7 +190,7 @@ public class Helper {
                                     "}" +
                                     "else{" +
                                     	//Due to the limitation of tudou video should play in same UA, try to use html5 video
-                                    	"if(result[0].length > 0 && result[0].indexOf('vr.tudou') != -1){" +
+                                    	"if(result[0].length > 0 && (result[0].indexOf('vr.tudou') != -1 || result[0].indexOf('ku6') != -1)){" +
 	                                    	"var video = document.createElement('video'); " +
 	                                    	"video.src= result[0];" +
 	                                    	"video.poster= result[1]; " +
