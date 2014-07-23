@@ -131,7 +131,8 @@ public class MainActivity extends SlidingFragmentActivity
 
 			@Override
 			public void run() {
-				Helper.saveHtml(MainActivity.this, true);
+				
+				Helper.saveHtml(MainActivity.this, false);
 				
 				//try to start service
 				
@@ -524,14 +525,20 @@ public class MainActivity extends SlidingFragmentActivity
 		}else {		
 			return super.onKeyDown(keyCode, event);
 		}
-	}    	
+	}
 
-	 private void restartActivity() {
-	     Log.d("RssReader", "Restart activity");
-	     Intent intent = getIntent();
-	     finish();
-	     startActivity(intent);
-	 }
+	private void restartActivity() {
+		Log.d("RssReader", "Restart activity");
+	    Intent intent = getIntent();
+	    finish();
+	    startActivity(intent);
+	}
+	
+	@Override
+	public void onDestroy(){		
+		super.onDestroy();
+		ReaderApp.stopListener();
+	}
 	
 	public void switchContent(Fragment fragment) { 
 		FragmentTransaction ft = getSupportFragmentManager().beginTransaction();    	     	        

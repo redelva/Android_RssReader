@@ -37,6 +37,8 @@ public class ReaderApp extends Application{
     private static Context context;
     private static RssSettings settings;
     private Locale locale;
+    private static SDCardListener fontListener;
+    private static SDCardListener htmlListener;
     
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
@@ -152,6 +154,19 @@ public class ReaderApp extends Application{
         });
         
         ReaderApp.context = getApplicationContext();
+        
+        fontListener = new SDCardListener(Config.FONTS_LOCATION);
+        
+        fontListener.startWatching();
+        
+        htmlListener = new SDCardListener(Config.HTML_LOCATION);
+        
+        htmlListener.startWatching();
+    }
+    
+    public static void stopListener() {
+    	fontListener.stopWatching();
+    	htmlListener.stopWatching();
     }
 
 	public static Context getAppContext() {

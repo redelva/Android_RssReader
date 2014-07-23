@@ -89,11 +89,6 @@ public class Helper {
         String deviceWidth = "360";
         
         String fontFamily = "font-family:arial;";
-        		
-//        if(ReaderApp.getSettings().Font == Font.IOS)
-//        	fontFamily = "font-family:Hiragino;";
-//        if(ReaderApp.getSettings().Font == Font.Yahei)
-//        	fontFamily = "font-family:Dreamofgirl;";
         
         StringBuilder sb = new StringBuilder();
         
@@ -298,7 +293,7 @@ public class Helper {
 	                        "};"+
 	                        //鍒ゆ柇涓や釜鐭╁舰鏄惁鐩镐氦,杩斿洖涓�涓竷灏斿��
 	                       "this.intens = function(rec1,rec2){" +
-	                            "return (rec2.top > rec1.top && rec2.top < (rec1.top + 700));" +
+	                            "return (rec2.top > rec1.top && rec2.top < (rec1.top + document.body.clientHeight));" +
 	                        "};" +
 	                        "this.getStyle = function (element, property) {" +
 	                            "if (arguments.length != 2) return false;" +
@@ -644,8 +639,9 @@ public class Helper {
     
     public static void sound(){
     	if(ReaderApp.getSettings().EnableSound){
-    		MediaPlayer mMediaPlayer = MediaPlayer.create(ReaderApp.getAppContext(), R.raw.sound);// 寰楀埌澹伴煶璧勬簮    	
-    		mMediaPlayer.start();// 鎾斁澹伴煶
+    		MediaPlayer mMediaPlayer = MediaPlayer.create(ReaderApp.getAppContext(), R.raw.sound);// 寰楀埌澹伴煶璧勬簮
+    		if(mMediaPlayer != null)
+    			mMediaPlayer.start();// 鎾斁澹伴煶
         }
     }    
     
