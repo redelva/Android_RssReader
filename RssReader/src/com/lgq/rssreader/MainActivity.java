@@ -249,7 +249,9 @@ public class MainActivity extends SlidingFragmentActivity
         	Intent i = new Intent(this,LoginActivity.class);
 
         	startActivityForResult(i, 0);
-        }        
+        }
+        
+        loadChannel();
     }
     
     private void loadChannel(){

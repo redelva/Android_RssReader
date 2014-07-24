@@ -2,6 +2,9 @@ package com.lgq.rssreader;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Dictionary;
+import java.util.Hashtable;
+import java.util.Iterator;
 import java.util.List;
 
 import com.google.gson.Gson;
@@ -40,6 +43,7 @@ import android.widget.TextView;
 public class BlogListActivity extends FragmentActivity implements BlogListFragment.Callbacks  {
 	
 	private boolean needUpdate;
+	private Channel c;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,7 +70,7 @@ public class BlogListActivity extends FragmentActivity implements BlogListFragme
             Bundle arguments = getIntent().getExtras();
             
             if(arguments.containsKey(BlogListFragment.ARG_ITEM_ID)){
-            	Channel c = (Channel)arguments.get(BlogListFragment.ARG_ITEM_ID);                
+            	c = (Channel)arguments.get(BlogListFragment.ARG_ITEM_ID);                
                 
                 BlogListFragment fragment = new BlogListFragment();
                 fragment.setArguments(arguments);
@@ -127,7 +131,7 @@ public class BlogListActivity extends FragmentActivity implements BlogListFragme
 				final BlogListFragment fragment =(BlogListFragment)getSupportFragmentManager().findFragmentById(R.id.blog_list_container);
 	            
 	            if(blogs.size() > 0){
-	            	final Blog b = blogs.get(0);
+	            	//final Blog b = blogs.get(0);
 	            	
 //	            	feedly.getCount(b.ChannelId, new HttpResponseHandler(){
 //		            	@Override
@@ -152,18 +156,45 @@ public class BlogListActivity extends FragmentActivity implements BlogListFragme
 	            		            	
 					new Thread(){
 						public void run(){
-							Channel target = Helper.findChannelById(Helper.getChannels(), b.ChannelId);
-			            	
-		        			if(fragment != null){
+							
+							//List<Channel> updates = new ArrayList<Channel>();							
+							
+							if(fragment != null){
 		        				Message m = fragment.myHandler.obtainMessage();
 		        	            m.what = BlogListFragment.UPDATECOUNT;
-		        	            m.obj = target.UnreadCount - count > 0 ? target.UnreadCount - count : 0 ;//blogs.size();
+		        	            m.obj = c.UnreadCount - count > 0 ? c.UnreadCount - count : 0 ;//blogs.size();
 		        	            fragment.myHandler.sendMessage(m);
 		        	            
 		        	            needUpdate = true;
 		        	            			        	            
-		        	            Helper.updateChannels(b.ChannelId, target.UnreadCount - blogs.size() > 0 ? target.UnreadCount - blogs.size() : 0);
+		        	            c.UnreadCount = c.UnreadCount - count > 0 ? c.UnreadCount - count : 0;
+		        	            //updates.add(c);
 		        			}
+							
+							if(c.IsDirectory){
+								//need to update sub channel unread count
+								Hashtable<String, Integer> groups = new Hashtable<String, Integer>(); 
+								for(Blog b : blogs){									
+									if(groups.containsKey(b.ChannelId))
+										groups.put(b.ChannelId, groups.get(b.ChannelId) + 1);
+									else
+										groups.put(b.ChannelId, 1);
+								}
+								
+								for(Iterator<String> it = groups.keySet().iterator(); it.hasNext(); ){ 
+							        String id = it.next(); 
+							        Integer count = groups.get(id);
+							        
+									for(Channel child : c.Children){
+										if(child.Id.equals(id)){
+											child.UnreadCount = child.UnreadCount - count;
+											break;
+										}
+									}
+								}
+							}
+							
+							Helper.updateChannels(c.Id, c.UnreadCount);
 						}
 					}.start();	            	
 	            }

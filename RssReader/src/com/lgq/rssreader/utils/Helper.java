@@ -734,7 +734,7 @@ public class Helper {
 		}
 
 		saveChannels(channels);
-    }
+    }    
     
     public static void updateChannels(String channelId, Date lastRefreshTime){
     	Gson gson = new Gson();
@@ -788,7 +788,7 @@ public class Helper {
 		}
 
 		saveChannels(channels);
-    }
+    }    
     
     public static void saveChannels(List<Channel> channels){
     	Gson gson = new Gson();
@@ -800,7 +800,7 @@ public class Helper {
     	}
     			
 		ReaderApp.getAppContext().getSharedPreferences("RssReader", 0).edit().putString("Channel", sb.toString()).commit();
-    }
+    }       
     
     public static String findValueInUrl(String url, String key){
     	String[] params = url.split("&");

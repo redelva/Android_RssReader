@@ -469,19 +469,19 @@ public class FeedListFragment extends SherlockFragment {
     	switch(tab){
     		case Home:
     	        if(getActivity() != null){
-    	        	MainActivity main = (MainActivity)getActivity();
-    	        	if(!main.isLoaded){
-    	        		ImageButton v =((ImageButton) getActivity().findViewById(R.id.ivTitleBtnRight));
-    	        		Animation anim = AnimationUtils.loadAnimation(getActivity(), R.anim.rotate);    	        
-    	    	        v.startAnimation(anim);
-    	        		loadChannel();
-    	        		main.isLoaded = true;
-    	        	}else{
+//    	        	MainActivity main = (MainActivity)getActivity();
+//    	        	if(!main.isLoaded){
+//    	        		ImageButton v =((ImageButton) getActivity().findViewById(R.id.ivTitleBtnRight));
+//    	        		Animation anim = AnimationUtils.loadAnimation(getActivity(), R.anim.rotate);    	        
+//    	    	        v.startAnimation(anim);
+//    	        		loadChannel();
+//    	        		main.isLoaded = true;
+//    	        	}else{
     	        		Message m = myHandler.obtainMessage();                    				
         				m.what = RssTab.Home.ordinal();
         	            m.obj = Helper.getChannels();
         				myHandler.sendMessage(m);
-    	        	}
+    	        	//}
     	        }
     			listView.setPullLoadEnable(false);
     			listView.setPullRefreshEnable(false);

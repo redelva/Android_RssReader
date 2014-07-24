@@ -234,13 +234,13 @@ public class BlogDalHelper {
 		if(previous){		
 			//where = "blogid>'" + current.BlogId + "'";
 			//orderby = "BLOGID ASC, PUBDATE ASC, TIMESTAMP ASC";
-			where = "blogid !='" + current.BlogId + "' and timestamp>" + current.TimeStamp;
+			where = "blogid >'" + current.BlogId + "' and timestamp>=" + current.TimeStamp;
 			orderby = "TIMESTAMP ASC, PUBDATE ASC, BLOGID ASC";
 		}
 		else{			
 			//where = "blogid<'" + current.BlogId + "'";
 			//orderby = "BLOGID DESC, PUBDATE DESC, TIMESTAMP DESC";
-			where = "blogid !='" + current.BlogId + "' and timestamp<" + current.TimeStamp;
+			where = "blogid <'" + current.BlogId + "' and timestamp<=" + current.TimeStamp;
 			orderby = "TIMESTAMP DESC, PUBDATE DESC, BLOGID DESC";
 		}
 		String limit = "1";
