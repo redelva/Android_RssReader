@@ -348,7 +348,7 @@ public class Helper {
 	                        "};" +
 	                        "return _init();" +
 	                    "};" +
-	                    "function LoadContent(content,title) {" +
+	                    "function LoadContent(content,title,type) {" +
 	                    	"window.external.notifyJava('LoadComplted'); " +
 	                    	"document.getElementById('error').style.display='none';" +
 		                    "document.getElementById('content').style.display='block';" +
@@ -356,6 +356,7 @@ public class Helper {
 		                    //"formatImages();" + 
 		                    "scrollLoad();" +
 		                    "window.scrollTo(0,0);" +
+		                    "window.external.loadComplete(type); " +
 		                "}" +
 		                "function LoadError(errorTitle,errorContent, errorLoad) {" +	                    	
 		                    "document.getElementById('content').style.display='none';" +
@@ -364,6 +365,7 @@ public class Helper {
 		                    "document.getElementById('errorContent').innerHTML = errorContent;" +
 		                    "document.getElementById('errorLoad').innerHTML = errorLoad;" +
 		                    "window.scrollTo(0,0);" +
+		                    "window.external.loadComplete('content'); " +
 		                "}" +
 		                "var onInit = function () {"+
 		                	"window.external.loadComplete('init'); " +
@@ -371,7 +373,7 @@ public class Helper {
 	                    "var loadImage = function (cur, url, callback, onerror) {"+
 	                        "var img = new Image();"+
 	                        "img.src = url;"+                                            
-	                        "if (img.complete) {"+                                                
+	                        "if (img.complete) {"+
 	                            "callback && callback(cur, img, true);"+
 	                            "return;"+
 	                        "}"+
@@ -788,7 +790,7 @@ public class Helper {
 		}
 
 		saveChannels(channels);
-    }    
+    }   
     
     public static void saveChannels(List<Channel> channels){
     	Gson gson = new Gson();

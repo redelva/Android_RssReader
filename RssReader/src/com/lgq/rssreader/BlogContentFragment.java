@@ -212,6 +212,7 @@ public class BlogContentFragment extends Fragment{
     public SatelliteMenu getMenu(){return menu;}
     
     private ManualResetEvent loadEvent;
+    private ManualResetEvent jsEvent;
     
     /**
      * A callback interface that all activities containing this fragment must
@@ -246,7 +247,8 @@ public class BlogContentFragment extends Fragment{
      * fragment (e.g. upon screen orientation changes).
      */
     public BlogContentFragment() {    	
-    	loadEvent = new ManualResetEvent(false);    	
+    	loadEvent = new ManualResetEvent(false);
+    	jsEvent = new ManualResetEvent(false);
     }
     
     private Handler myHandler = new Handler(){
@@ -270,22 +272,37 @@ public class BlogContentFragment extends Fragment{
 	    			case CONTENT:
 	    			case DESC:
 	    				
+						try {
+							loadEvent.waitOne();
+						} catch (InterruptedException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+	    				
 	    				//check current blog is still the parsed blog
 	    				if(cacheArgs != null && cacheArgs.Blog.BlogId != current.BlogId)
 	    					return;
 	    				
 	    				if(Content.length() != 0)
-	    					browser.loadUrl("javascript: LoadContent('" + HtmlHelper.trim(Content) + "','')");
+	    					browser.loadUrl("javascript: LoadContent('" + HtmlHelper.trim(Content) + "','','" + (msg.what == CONTENT ? "content" : "description") + "')");
 		            	else
 		            		browser.loadUrl("javascript: LoadError('" + ReaderApp.getAppContext().getResources().getString(R.string.content_errortitle) + "','" + 
 		            				ReaderApp.getAppContext().getResources().getString(R.string.content_errorcontent) + "','" + 
 		            				ReaderApp.getAppContext().getResources().getString(R.string.content_errorload) + "')");
 	    				    				
 	    				blogTitle.setText(current.Title);
+	    				
 	    				//((BlogContentActivity)getActivity()).Title.setText(current.Title);
-		            	loadEvent.set();
+		            	jsEvent.set();
 	    				break;
 	    			case FLASH:
+	    				
+	    				try {
+							jsEvent.waitOne();
+						} catch (InterruptedException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
 	    				
 	    				if(cacheArgs != null && cacheArgs.Blog.BlogId == current.BlogId){
 	    					if (cacheArgs.Total != -1)
@@ -667,13 +684,6 @@ public class BlogContentFragment extends Fragment{
 		            m.what = what;
 		            m.obj = Content;
 					myHandler.sendMessage(m);
-					
-					getActivity().runOnUiThread(new Runnable(){
-						public void run(){
-							mProgressDialog.hide();
-							mProgressDialog.dismiss();
-						}
-					});
 				}				
 			}
 		});
@@ -681,13 +691,7 @@ public class BlogContentFragment extends Fragment{
 		content.setFlashCompleteHandler(new FlashCompleteHandler(){
 			@Override
 			public void onFlash(final Object sender, final CacheEventArgs cacheArgs) {
-				
-				try {
-					loadEvent.waitOne();
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-				}
-				
+								
 				int what = FLASH;
 				
 				Message m = myHandler.obtainMessage();
@@ -731,14 +735,7 @@ public class BlogContentFragment extends Fragment{
 
 				if(b.BlogId.equals(current.BlogId))
 				{
-					int what = DESC;
-					if(getActivity() != null){
-						getActivity().runOnUiThread(new Runnable(){
-							public void run(){
-								hideProcess();						
-							}
-						});
-					}
+					int what = DESC;					
 						
 					Message m = myHandler.obtainMessage();
 		            m.what = what;
@@ -750,13 +747,7 @@ public class BlogContentFragment extends Fragment{
 		
 		desc.setFlashCompleteHandler(new FlashCompleteHandler(){
 			@Override
-			public void onFlash(final Object sender, final CacheEventArgs cacheArgs) {
-				try {
-					loadEvent.waitOne();
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-				}
-				
+			public void onFlash(final Object sender, final CacheEventArgs cacheArgs) {				
 				int what = FLASH;
 				
 				Message m = myHandler.obtainMessage();
@@ -770,18 +761,41 @@ public class BlogContentFragment extends Fragment{
 		});
     }
     
-    protected void hideProcess(){
-    	processImage.clearAnimation();
-    	processMsg.setText("");
-    	processImage.setVisibility(View.GONE);
-    	processMsg.setVisibility(View.GONE);
+    protected void hideProcess(){    	
+    	if(getActivity() != null){
+			getActivity().runOnUiThread(new Runnable(){
+				public void run(){
+					processImage.clearAnimation();
+			    	processMsg.setText("");
+			    	processImage.setVisibility(View.GONE);
+			    	processMsg.setVisibility(View.GONE);
+				}
+			});
+		}
     }
     
-    protected void showProcess(String msg){
-    	processMsg.setText(msg);
-    	processMsg.setVisibility(View.GONE);
-    	processImage.setVisibility(View.VISIBLE);
-    	processImage.setAnimation(AnimationUtils.loadAnimation(getActivity(), R.anim.rotate));    	
+    protected void hideProgressbar(){    	
+    	if(getActivity() != null){
+			getActivity().runOnUiThread(new Runnable(){
+				public void run(){
+					mProgressDialog.hide();
+					mProgressDialog.dismiss();
+				}
+			});
+		}
+    }
+    
+    protected void showProcess(final String msg){
+    	if(getActivity() != null){
+			getActivity().runOnUiThread(new Runnable(){
+				public void run(){
+			    	processMsg.setText(msg);
+			    	processMsg.setVisibility(View.GONE);
+			    	processImage.setVisibility(View.VISIBLE);
+			    	processImage.setAnimation(AnimationUtils.loadAnimation(getActivity(), R.anim.rotate));
+				}
+			});
+		}
     }
     
     @JavascriptInterface
@@ -839,8 +853,13 @@ public class BlogContentFragment extends Fragment{
     }
     
     @JavascriptInterface
-    public void loadComplete(String args){    	
-    	
+    public void loadComplete(String args){
+    	if(args.equals("init"))
+    		loadEvent.set();
+    	else if(args.equals("content"))
+    		hideProgressbar();
+    	else if(args.equals("description"))
+    		hideProcess();
     }
     
     private void initReadSetting(View rootView){
@@ -1415,6 +1434,7 @@ public class BlogContentFragment extends Fragment{
     			Blog tmp = GetNext(current);
     			
     			if(tmp != null){
+    				jsEvent.reset();
     				current = tmp;
         			new Thread(){public void run(){desc.Render(current);}}.start();
         			showProcess("");
@@ -1427,13 +1447,13 @@ public class BlogContentFragment extends Fragment{
     		@Override
     		public void onLoad() {
     			if(readSetting != null && readSetting.getVisibility() == View.GONE){
-	    			loadEvent.reset();
+	    			jsEvent.reset();
 	    			    			
 	    			mProgressDialog = new ProgressDialog(getActivity());
 	    	        mProgressDialog.setCanceledOnTouchOutside(false);
 	    	        mProgressDialog.setIcon(R.id.process);		        
 	    	        mProgressDialog.setMessage(getActivity().getResources().getString(R.string.content_loading) + "...");
-	    	        mProgressDialog.show();					
+	    	        mProgressDialog.show();
 	    	        
 	    	        new Thread(){public void run(){content.Render(current);}}.start();
     			}
@@ -1443,6 +1463,7 @@ public class BlogContentFragment extends Fragment{
     		public void onLeft() {
     			Blog tmp = GetPrevious(current);
     			if(tmp != null){
+    				jsEvent.reset();
     				current = tmp;    			
         			new Thread(){public void run(){desc.Render(current);}}.start();
         			showProcess("");

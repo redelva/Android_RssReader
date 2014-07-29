@@ -29,6 +29,7 @@ import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
+import android.widget.ListView;
 import android.widget.TextView;
 
 /**
@@ -78,6 +79,20 @@ public class BlogListActivity extends FragmentActivity implements BlogListFragme
                         .add(R.id.blog_list_container, fragment)
                         .commit();
             }            
+        }else{
+        	
+        	
+        	if(savedInstanceState.containsKey(BlogListFragment.ARG_ITEM_ID)){
+            	c = (Channel)savedInstanceState.get(BlogListFragment.ARG_ITEM_ID);
+            	
+            	if(getSupportFragmentManager().findFragmentById(R.id.blog_list_container) == null){
+                  BlogListFragment fragment = new BlogListFragment();
+                  fragment.setArguments(savedInstanceState);
+                  getSupportFragmentManager().beginTransaction()
+                          .add(R.id.blog_list_container, fragment)
+                          .commit();
+            	}
+            }
         }
     }
 
@@ -103,6 +118,15 @@ public class BlogListActivity extends FragmentActivity implements BlogListFragme
         detailIntent.putExtras(arguments);
         startActivityForResult(detailIntent, 0);
 	}
+	
+	@Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        if (c != null) {
+            // Serialize and persist the activated item position.
+            outState.putSerializable(BlogListFragment.ARG_ITEM_ID, c);
+        }
+    }
 	
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data)
