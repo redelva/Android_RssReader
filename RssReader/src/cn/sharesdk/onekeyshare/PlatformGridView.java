@@ -274,7 +274,10 @@ public class PlatformGridView extends LinearLayout implements
 			if (customers != null) {
 				//logos.addAll(customers);
 				for(CustomerLogo customer : customers){
-					logos.add(customer.SortId, customer);
+					if(customer.SortId != -1)
+						logos.add(customer.SortId, customer);
+					else
+						logos.add(customer);
 				}
 			}
 			this.callback = platformGridView;

@@ -18,6 +18,8 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.Dialog;
 import android.app.ProgressDialog;
+import android.content.ClipData;
+import android.content.ClipboardManager;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
@@ -1330,11 +1332,28 @@ public class BlogContentFragment extends Fragment{
 								};
 								oks.setCustomerLogo(logo, label, 6, listener);
 								
+								Bitmap copyLogo = BitmapFactory.decodeResource(getResources(), R.drawable.logo_copy);								
+								String copyLabel = ReaderApp.getAppContext().getString(android.R.string.copy);
+								OnClickListener copyListener = new OnClickListener() {
+							        public void onClick(View v) {
+							        	ClipboardManager clipboard = (ClipboardManager)ReaderApp.getAppContext().getSystemService(Context.CLIPBOARD_SERVICE);
+							        	
+							        	ClipData clip = ClipData.newPlainText("RssReader", HtmlHelper.HtmlToText(HtmlHelper.filterHtml(current.Content != null ? current.Content : current.Description)));
+							        	
+							        	clipboard.setPrimaryClip(clip);
+							        	
+							        	Toast.makeText(ReaderApp.getAppContext(), "已经添加到剪贴板", Toast.LENGTH_SHORT).show();
+							        	
+						                oks.finish();
+							        }
+								};
+								oks.setCustomerLogo(copyLogo, copyLabel, -1, copyListener);
+								
 								oks.setShareContentCustomizeCallback(new ShareContentCustomizeCallback(){
 
 									@Override
 									public void onShare(Platform platform, ShareParams paramsToShare) {
-										if(platform.getName().equals("SinaWeibo")){
+										if("SinaWeibo".equals(platform.getName())){
 											paramsToShare.text = current.Title;								
 										}
 										else if ("Twitter".equals(platform.getName())) {
@@ -1360,7 +1379,7 @@ public class BlogContentFragment extends Fragment{
 										}
 										else if ("Wechat".equals(platform.getName())) {
 											paramsToShare.text = HtmlHelper.HtmlToText(HtmlHelper.filterHtml(current.Content != null ? current.Content : current.Description));									
-										}
+										}										
 									}
 								});
 								
