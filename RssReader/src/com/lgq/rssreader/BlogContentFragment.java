@@ -274,13 +274,6 @@ public class BlogContentFragment extends Fragment{
 	    			case CONTENT:
 	    			case DESC:
 	    				
-						try {
-							loadEvent.waitOne();
-						} catch (InterruptedException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						}
-	    				
 	    				//check current blog is still the parsed blog
 	    				if(cacheArgs != null && cacheArgs.Blog.BlogId != current.BlogId)
 	    					return;
@@ -298,13 +291,6 @@ public class BlogContentFragment extends Fragment{
 		            	jsEvent.set();
 	    				break;
 	    			case FLASH:
-	    				
-	    				try {
-							jsEvent.waitOne();
-						} catch (InterruptedException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						}
 	    				
 	    				if(cacheArgs != null && cacheArgs.Blog.BlogId == current.BlogId){
 	    					if (cacheArgs.Total != -1)
@@ -682,6 +668,13 @@ public class BlogContentFragment extends Fragment{
 				{
 					int what = CONTENT;
 					
+					try {
+						loadEvent.waitOne();
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					
 					Message m = myHandler.obtainMessage();
 		            m.what = what;
 		            m.obj = Content;
@@ -695,6 +688,13 @@ public class BlogContentFragment extends Fragment{
 			public void onFlash(final Object sender, final CacheEventArgs cacheArgs) {
 								
 				int what = FLASH;
+				
+				try {
+					jsEvent.waitOne();
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 				
 				Message m = myHandler.obtainMessage();
 	            m.what = what;
@@ -737,7 +737,14 @@ public class BlogContentFragment extends Fragment{
 
 				if(b.BlogId.equals(current.BlogId))
 				{
-					int what = DESC;					
+					int what = DESC;
+					
+					try {
+						loadEvent.waitOne();
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
 						
 					Message m = myHandler.obtainMessage();
 		            m.what = what;
@@ -751,6 +758,13 @@ public class BlogContentFragment extends Fragment{
 			@Override
 			public void onFlash(final Object sender, final CacheEventArgs cacheArgs) {				
 				int what = FLASH;
+				
+				try {
+					jsEvent.waitOne();
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 				
 				Message m = myHandler.obtainMessage();
 	            m.what = what;
