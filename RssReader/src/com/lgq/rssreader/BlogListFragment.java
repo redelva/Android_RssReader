@@ -439,8 +439,9 @@ public class BlogListFragment extends Fragment implements IXListViewListener {
         			helper.SynchronyData2DB((List<com.lgq.rssreader.entity.Blog>) blogs);
         			helper.Close();
         			
-        			if(blogs.size() > 0 ){
-        				Message m = myHandler.obtainMessage();                    				
+        			//only first page show in UI thread
+        			if(blogs.size() > 0){
+        				Message m = myHandler.obtainMessage();
         	            m.what = LOADDATA;
         	            m.obj = blogs;
         				myHandler.sendMessage(m);
@@ -493,7 +494,7 @@ public class BlogListFragment extends Fragment implements IXListViewListener {
 		        			helper.SynchronyData2DB((List<com.lgq.rssreader.entity.Blog>) blogs);
 		        			helper.Close();
 		        			
-		        			if(blogs.size() > 0 ){
+		        			if(blogs.size() > 0){
 		        				Message m = myHandler.obtainMessage();                    				
 		        	            m.what = LOADDATA;
 		        	            m.obj = blogs;

@@ -8,8 +8,8 @@
 
 package cn.sharesdk.onekeyshare;
 
-import static cn.sharesdk.framework.utils.R.getBitmapRes;
-import static cn.sharesdk.framework.utils.R.getStringRes;
+import static cn.sharesdk.framework.utils.R.*;
+import static cn.sharesdk.framework.utils.BitmapHelper.*;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -19,6 +19,7 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.ResolveInfo;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.os.Message;
@@ -38,6 +39,7 @@ import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 import android.widget.FrameLayout.LayoutParams;
+import cn.sharesdk.framework.CustomPlatform;
 import cn.sharesdk.framework.FakeActivity;
 import cn.sharesdk.framework.Platform;
 import cn.sharesdk.framework.PlatformActionListener;
@@ -75,14 +77,18 @@ public class OnekeyShare extends FakeActivity implements
 	private ShareContentCustomizeCallback customizeCallback;
 	private boolean dialogMode;
 	private boolean disableSSO;
+	private HashMap<String, String> hiddenPlatforms;
+	private View bgView;
 
 	public OnekeyShare() {
 		reqMap = new HashMap<String, Object>();
 		customers = new ArrayList<CustomerLogo>();
 		callback = this;
+		hiddenPlatforms = new HashMap<String, String>();
 	}
 
 	public void show(Context context) {
+		ShareSDK.initSDK(context);
 		super.show(context, null);
 	}
 
@@ -208,17 +214,27 @@ public class OnekeyShare extends FakeActivity implements
 	}
 
 	/** 设置自己图标和点击事件，可以重复调用添加多次 */
-	public void setCustomerLogo(Bitmap logo, String label, int sortId, OnClickListener ocListener) {
+	public void setCustomerLogo(Bitmap logo, String label, OnClickListener ocListener) {
 		CustomerLogo cl = new CustomerLogo();
 		cl.label = label;
 		cl.logo = logo;
 		cl.listener = ocListener;
-		cl.SortId = sortId;
+		cl.index = -1;
+		customers.add(cl);
+	}
+	
+	/** 设置自己图标和点击事件，可以重复调用添加多次 */
+	public void setCustomerLogo(Bitmap logo, String label, int index, OnClickListener ocListener) {
+		CustomerLogo cl = new CustomerLogo();
+		cl.label = label;
+		cl.logo = logo;
+		cl.listener = ocListener;
+		cl.index = index;
 		customers.add(cl);
 	}
 
 	/** 设置一个总开关，用于在分享前若需要授权，则禁用sso功能 */
-	public void disableSSOWhenAuthorize() {
+ 	public void disableSSOWhenAuthorize() {
 		disableSSO = true;
 	}
 
@@ -226,6 +242,25 @@ public class OnekeyShare extends FakeActivity implements
 	public void setDialogMode() {
 		dialogMode = true;
 		reqMap.put("dialogMode", dialogMode);
+	}
+
+	/** 添加一个隐藏的platform */
+	public void addHiddenPlatform(String platform) {
+		hiddenPlatforms.put(platform, platform);
+	}
+
+	/** 设置一个将被截图分享的View */
+	public void setViewToShare(View viewToShare) {
+		try {
+			Bitmap bm = captureView(viewToShare, viewToShare.getWidth(), viewToShare.getHeight());
+			reqMap.put("viewToShare", bm);
+		} catch (Throwable e) {
+			e.printStackTrace();
+		}
+	}
+
+	public void setEditPageBackground(View bgView) {
+		this.bgView = bgView;
 	}
 
 	public void onCreate() {
@@ -243,21 +278,31 @@ public class OnekeyShare extends FakeActivity implements
 			if (silent) {
 				HashMap<Platform, HashMap<String, Object>> shareData
 						= new HashMap<Platform, HashMap<String,Object>>();
-				shareData.put(ShareSDK.getPlatform(activity, name), copy);
+				shareData.put(ShareSDK.getPlatform(name), copy);
 				share(shareData);
-			} else if (ShareCore.isUseClientToShare(activity, name)) {
+			} else if (ShareCore.isUseClientToShare(name)) {
 				HashMap<Platform, HashMap<String, Object>> shareData
 						= new HashMap<Platform, HashMap<String,Object>>();
-				shareData.put(ShareSDK.getPlatform(activity, name), copy);
+				shareData.put(ShareSDK.getPlatform(name), copy);
 				share(shareData);
 			} else {
-				EditPage page = new EditPage();
-				page.setShareData(copy);
-				page.setParent(this);
-				if (dialogMode) {
-					page.setDialogMode();
+				Platform pp = ShareSDK.getPlatform(name);
+				if (pp instanceof CustomPlatform) {
+					HashMap<Platform, HashMap<String, Object>> shareData
+							= new HashMap<Platform, HashMap<String,Object>>();
+					shareData.put(ShareSDK.getPlatform(name), copy);
+					share(shareData);
+				} else {
+					EditPage page = new EditPage();
+					page.setBackGround(bgView);
+					bgView = null;
+					page.setShareData(copy);
+					page.setParent(this);
+					if (dialogMode) {
+						page.setDialogMode();
+					}
+					page.show(activity, null);
 				}
-				page.show(activity, null);
 			}
 			finish();
 			return;
@@ -271,6 +316,7 @@ public class OnekeyShare extends FakeActivity implements
 
 		// 设置宫格列表数据
 		grid.setData(copy, silent);
+		grid.setHiddenPlatforms(hiddenPlatforms);
 		grid.setCustomerLogos(customers);
 		grid.setParent(this);
 		btnCancel.setOnClickListener(this);
@@ -306,6 +352,7 @@ public class OnekeyShare extends FakeActivity implements
 
 		// 宫格列表
 		grid = new PlatformGridView(getContext());
+		grid.setEditPageBackground(bgView);
 		LinearLayout.LayoutParams lpWg = new LinearLayout.LayoutParams(
 				LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
 		grid.setLayoutParams(lpWg);
@@ -368,15 +415,15 @@ public class OnekeyShare extends FakeActivity implements
 		}
 	}
 
-	public void finish() {
+	public boolean onFinish() {
 		if (finishing) {
-			return;
+			return super.onFinish();
 		}
 
 		if (animHide == null) {
 			finishing = true;
 			super.finish();
-			return;
+			return super.onFinish();
 		}
 
 		// 取消分享菜单的统计
@@ -400,6 +447,7 @@ public class OnekeyShare extends FakeActivity implements
 		});
 		flPage.clearAnimation();
 		flPage.startAnimation(animHide);
+		return super.onFinish();
 	}
 
 	/** 循环执行分享 */
@@ -450,14 +498,19 @@ public class OnekeyShare extends FakeActivity implements
 				continue;
 			}
 
-			boolean isInstagram = "Instagram".equals(name);
-			if (isInstagram && !plat.isValid()) {
-				Message msg = new Message();
-				msg.what = MSG_TOAST;
-				int resId = getStringRes(getContext(), "instagram_client_inavailable");
-				msg.obj = activity.getString(resId);
-				UIHandler.sendMessage(msg, this);
-				continue;
+			if ("Instagram".equals(name)) {
+				Intent test = new Intent(Intent.ACTION_SEND);
+				test.setPackage("com.instagram.android");
+				test.setType("image/*");
+				ResolveInfo ri = activity.getPackageManager().resolveActivity(test, 0);
+				if (ri == null) {
+					Message msg = new Message();
+					msg.what = MSG_TOAST;
+					int resId = getStringRes(getContext(), "instagram_client_inavailable");
+					msg.obj = activity.getString(resId);
+					UIHandler.sendMessage(msg, this);
+					continue;
+				}
 			}
 
 			boolean isYixin = "YixinMoments".equals(name) || "Yixin".equals(name);
@@ -481,13 +534,27 @@ public class OnekeyShare extends FakeActivity implements
 					shareType = Platform.SHARE_WEBPAGE;
 				}
 			} else {
-				Object imageUrl = data.get("imageUrl");
-				if (imageUrl != null && !TextUtils.isEmpty(String.valueOf(imageUrl))) {
+				Bitmap viewToShare = (Bitmap) data.get("viewToShare");
+				if (viewToShare != null && !viewToShare.isRecycled()) {
 					shareType = Platform.SHARE_IMAGE;
-					if (String.valueOf(imageUrl).endsWith(".gif")) {
-						shareType = Platform.SHARE_EMOJI;
-					} else if (data.containsKey("url") && !TextUtils.isEmpty(data.get("url").toString())) {
-						shareType = Platform.SHARE_WEBPAGE;
+					if (data.containsKey("url")) {
+						Object url = data.get("url");
+						if (url != null && !TextUtils.isEmpty(url.toString())) {
+							shareType = Platform.SHARE_WEBPAGE;
+						}
+					}
+				} else {
+					Object imageUrl = data.get("imageUrl");
+					if (imageUrl != null && !TextUtils.isEmpty(String.valueOf(imageUrl))) {
+						shareType = Platform.SHARE_IMAGE;
+						if (String.valueOf(imageUrl).endsWith(".gif")) {
+							shareType = Platform.SHARE_EMOJI;
+						} else if (data.containsKey("url")) {
+							Object url = data.get("url");
+							if (url != null && !TextUtils.isEmpty(url.toString())) {
+								shareType = Platform.SHARE_WEBPAGE;
+							}
+						}
 					}
 				}
 			}

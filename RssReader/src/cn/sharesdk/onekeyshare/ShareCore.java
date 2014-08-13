@@ -8,13 +8,18 @@
 
 package cn.sharesdk.onekeyshare;
 
-import java.lang.reflect.Field;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.util.HashMap;
-import java.util.Map.Entry;
-
 import android.content.Context;
+import android.content.Intent;
+import android.content.pm.ResolveInfo;
+import android.graphics.Bitmap;
+import android.graphics.Bitmap.CompressFormat;
 import android.text.TextUtils;
 import cn.sharesdk.framework.Platform;
+import cn.sharesdk.framework.Platform.ShareParams;
+import cn.sharesdk.framework.utils.R;
 import cn.sharesdk.framework.ShareSDK;
 
 /**
@@ -41,73 +46,61 @@ public class ShareCore {
 			return false;
 		}
 
-		Platform.ShareParams sp = null;
 		try {
-			sp = getShareParams(plat, data);
-		} catch(Throwable t) {
-			sp = null;
+			String imagePath = (String) data.get("imagePath");
+			Bitmap viewToShare = (Bitmap) data.get("viewToShare");
+			if (TextUtils.isEmpty(imagePath) && viewToShare != null && !viewToShare.isRecycled()) {
+				String path = R.getCachePath(plat.getContext(), "screenshot");
+				File ss = new File(path, String.valueOf(System.currentTimeMillis()) + ".jpg");
+				FileOutputStream fos = new FileOutputStream(ss);
+				viewToShare.compress(CompressFormat.JPEG, 100, fos);
+				fos.flush();
+				fos.close();
+				data.put("imagePath", ss.getAbsolutePath());
+			}
+		} catch (Throwable t) {
+			t.printStackTrace();
+			return false;
 		}
 
-		if (sp != null) {
-			if (customizeCallback != null) {
-				customizeCallback.onShare(plat, sp);
-			}
-			plat.share(sp);
+		ShareParams sp = new ShareParams(data);
+		if (customizeCallback != null) {
+			customizeCallback.onShare(plat, sp);
 		}
+
+		String[] flags = new String[] {
+				"OnekeyShare",
+				plat.getContext().getPackageName(),
+				String.valueOf(ShareSDK.getSDKVersionCode())
+		};
+		sp.setCustomFlag(flags);
+		plat.share(sp);
 		return true;
 	}
 
-	private Platform.ShareParams getShareParams(Platform plat,
-			HashMap<String, Object> data) throws Throwable {
-		String className = plat.getClass().getName() + "$ShareParams";
-		Class<?> cls = Class.forName(className);
-		if (cls == null) {
-			return null;
-		}
-
-		Object sp = cls.newInstance();
-		if (sp == null) {
-			return null;
-		}
-
-		for (Entry<String, Object> ent : data.entrySet()) {
-			Object value= ent.getValue();
-			if (value == null) {
-				continue;
-			}
-
-			if (value instanceof String) {
-				String strValue = (String) value;
-				if (TextUtils.isEmpty(strValue)) {
-					continue;
-				}
-			}
-
-			try {
-				Field fld = cls.getField(ent.getKey());
-				if (fld != null) {
-					fld.setAccessible(true);
-					fld.set(sp, value);
-				}
-			} catch(Throwable t) {}
-		}
-
-		return (Platform.ShareParams) sp;
-	}
-
 	/** 判断指定平台是否使用客户端分享 */
-	public static boolean isUseClientToShare(Context context, String platform) {
+	public static boolean isUseClientToShare(String platform) {
 		if ("Wechat".equals(platform) || "WechatMoments".equals(platform)
 				|| "WechatFavorite".equals(platform) || "ShortMessage".equals(platform)
 				|| "Email".equals(platform) || "GooglePlus".equals(platform)
 				|| "QQ".equals(platform) || "Pinterest".equals(platform)
 				|| "Instagram".equals(platform) || "Yixin".equals(platform)
-				|| "YixinMoments".equals(platform) || "QZone".equals(platform)) {
+				|| "YixinMoments".equals(platform) || "QZone".equals(platform)
+				|| "Mingdao".equals(platform) || "Line".equals(platform)) {
 			return true;
 		} else if ("Evernote".equals(platform)) {
-			Platform plat = ShareSDK.getPlatform(context, platform);
+			Platform plat = ShareSDK.getPlatform(platform);
 			if ("true".equals(plat.getDevinfo("ShareByAppClient"))) {
 				return true;
+			}
+		} else if ("SinaWeibo".equals(platform)) {
+			Platform plat = ShareSDK.getPlatform(platform);
+			if ("true".equals(plat.getDevinfo("ShareByAppClient"))) {
+				Intent test = new Intent(Intent.ACTION_SEND);
+				test.setPackage("com.sina.weibo");
+				test.setType("image/*");
+				ResolveInfo ri = plat.getContext().getPackageManager().resolveActivity(test, 0);
+				return (ri != null);
 			}
 		}
 
@@ -120,7 +113,8 @@ public class ShareCore {
 				|| "WechatFavorite".equals(platform) || "ShortMessage".equals(platform)
 				|| "Email".equals(platform) || "GooglePlus".equals(platform)
 				|| "QQ".equals(platform) || "Pinterest".equals(platform)
-				|| "Yixin".equals(platform) || "YixinMoments".equals(platform)) {
+				|| "Yixin".equals(platform) || "YixinMoments".equals(platform)
+				|| "Line".equals(platform)) {
 			return false;
 		}
 		return true;

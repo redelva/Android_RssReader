@@ -56,6 +56,7 @@
         AppKey="4181516537"
         AppSecret="234d3a3012a82ce6c527c0db6d3c7be3"
         RedirectUrl="http://weibo.com"
+        ShareByAppClient="true"
         Enable="true" />
 
     <TencentWeibo
@@ -64,6 +65,7 @@
         AppKey="801122756"
         AppSecret="3da72a47b0a8add064dfd8ea52c75407"
         RedirectUri="http://sharesdk.cn"
+        ShareByAppClient="true"
         Enable="true" />
 
     <QZone
@@ -71,6 +73,7 @@
         SortId="3"
         AppId="100371282"
         AppKey="aed9b0303e3ed1e27bae87c33761161d"
+        ShareByAppClient="false"
         Enable="true" />
     
     <!-- Wechat微信和WechatMoments微信朋友圈的appid是一样的；
@@ -83,24 +86,28 @@
         Id="4"
         SortId="4"
         AppId="wx06b3b70ad11ba41f"
+        BypassApproval="true"
         Enable="true" />
     
     <WechatMoments
         Id="5"
         SortId="5"
         AppId="wx06b3b70ad11ba41f"
+        BypassApproval="true"        
         Enable="true" />
         
 	<WechatFavorite
         Id="6"
         SortId="19"
-        AppId="wx06b3b70ad11ba41f"
+        AppId="wx06b3b70ad11ba41f" 
+        BypassApproval="true"       
         Enable="true" />
     
 	<QQ
         Id="7"
         SortId="7"
         AppId="100371282"
+        ShareByAppClient="true"
         AppKey="aed9b0303e3ed1e27bae87c33761161d"
         Enable="true" />
     
@@ -225,13 +232,13 @@
         ClientID="G0ZI20FM30SJAJTX2RIBGD05QV1NE2KVIM2SPXML2XUJNXEU"
         ClientSecret="3XHQNSMMHIFBYOLWEPONNV4DOTCDBQH0AEMVGCBG0MZ32XNU"
         RedirectUrl="http://www.sharesdk.cn"
-        Enable="false" />
+        Enable="true" />
         
 	<Pinterest
     	Id="23"
         SortId="23"
         ClientId="1432928"
-        Enable="false" />
+        Enable="true" />
      
      <Flickr
      	Id="24"
@@ -254,7 +261,7 @@
         SortId="26"
         AppKey="7janx53ilz11gbs"
 		AppSecret="c1hpx5fz6tzkm32"
-        Enable="false" />
+        Enable="true" />
         
     <VKontakte 
     	Id="27"
@@ -282,5 +289,18 @@
         SortId="30"
         AppId="yx0d9a9f9088ea44d78680f3274da1765f"
         Enable="false" />
+	
+	<Mingdao
+    	Id="31"
+        SortId="31"
+        AppKey="EEEE9578D1D431D3215D8C21BF5357E3"
+        AppSecret="5EDE59F37B3EFA8F65EEFB9976A4E933"
+        RedirectUri="http://sharesdk.cn"
+        Enable="true" />
+	
+	<Line
+	    Id="32"
+        SortId="32"
+        Enable="true" />
 
 </DevInfor>

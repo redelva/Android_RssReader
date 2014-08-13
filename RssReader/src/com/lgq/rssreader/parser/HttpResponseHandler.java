@@ -48,7 +48,7 @@ public class HttpResponseHandler{
     
     public <T, K> void onCallback(List<T> tdata, List<K> kdata, boolean result, String msg){}      
     
-    public <T, K> void onCallback(List<T> tdata, List<K> kdata, boolean result, String msg, boolean hasmore){}
+    public <T, K> void onCallback(List<T> tdata, List<K> kdata, boolean result, String msg, boolean hasmore){}       
 		   
     //
     // Pre-processing of messages (executes in background threadpool thread)

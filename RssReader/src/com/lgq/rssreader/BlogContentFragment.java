@@ -39,6 +39,7 @@ import android.net.Uri;
 import android.opengl.Visibility;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
 import android.os.Parcelable;
@@ -120,9 +121,11 @@ import com.lgq.rssreader.core.Config;
 import com.lgq.rssreader.core.ManualResetEvent;
 import com.lgq.rssreader.core.ReaderApp;
 import com.lgq.rssreader.dal.BlogDalHelper;
+import com.lgq.rssreader.dal.ImageRecordDalHelper;
 import com.lgq.rssreader.dal.SyncStateDalHelper;
 import com.lgq.rssreader.entity.Blog;
 import com.lgq.rssreader.entity.Channel;
+import com.lgq.rssreader.entity.ImageRecord;
 import com.lgq.rssreader.entity.SyncState;
 import com.lgq.rssreader.enums.MoveDirection;
 import com.lgq.rssreader.enums.RssAction;
@@ -1322,15 +1325,38 @@ public class BlogContentFragment extends Fragment{
 							public void run(){
 								final OnekeyShare oks = new OnekeyShare();
 
+								// 令编辑页面显示为Dialog模式
+								oks.setDialogMode();
+
+								// 在自动授权时可以禁用SSO方式
+								//oks.disableSSOWhenAuthorize();
+
 								oks.setNotification(R.drawable.ic_launcher, getActivity().getString(R.string.app_name));
 								oks.setAddress(ReaderApp.getProfile().Email);
 								oks.setTitle(current.Title);
 								oks.setTitleUrl(current.Link);
-								oks.setText(HtmlHelper.ConvertHtmlToEnml(current.Content != null ? current.Content : current.Description));								
-								oks.setUrl(current.Link);								
+								oks.setText(HtmlHelper.HtmlToText(HtmlHelper.filterHtml(current.Content != null && current.Content.length() > 0 ? current.Content : current.Description)));								
+								oks.setUrl(current.Link);
+								oks.setVenueName("RssReader");
+								oks.setVenueDescription("RssReader offers better experience!");								
 								oks.setSite(getActivity().getString(R.string.app_name));
 								oks.setSiteUrl(current.Link);								
 								oks.setSilent(true);
+								
+								String sDStateString = android.os.Environment.getExternalStorageState();
+
+								if (sDStateString.equals(android.os.Environment.MEDIA_MOUNTED)) {
+									try {
+										File SDFile = android.os.Environment.getExternalStorageDirectory();
+										List<Blog> tmp = new ArrayList<Blog>();
+										tmp.add(current);
+										List<ImageRecord> records = new ImageRecordDalHelper().GetImageRecordByBlog(tmp);
+										if(records != null && !records.isEmpty())
+											oks.setImagePath(SDFile.getAbsolutePath() + Config.IMAGES_LOCATION + records.get(0).StoredName);
+									} catch (Exception e) {
+										e.printStackTrace();
+									}// end of try
+								}
 								
 								Bitmap logo = BitmapFactory.decodeResource(getResources(), R.drawable.logo_evernote);								
 								String label = "Evernote";
@@ -1380,19 +1406,19 @@ public class BlogContentFragment extends Fragment{
 											paramsToShare.text = current.Title;
 										}
 										else if ("GooglePlus".equals(platform.getName())) {
-											paramsToShare.text = HtmlHelper.filterHtml(current.Content != null ? current.Content : current.Description);
+											paramsToShare.text = HtmlHelper.filterHtml(current.Content != null && current.Content.length() > 0 ? current.Content : current.Description);
 										}
 										else if ("Email".equals(platform.getName())) {
-											paramsToShare.text = HtmlHelper.filterHtml(current.Content != null ? current.Content : current.Description);
+											paramsToShare.text = HtmlHelper.filterHtml(current.Content != null && current.Content.length() > 0 ? current.Content : current.Description);
 										}
 										else if ("QQ".equals(platform.getName())) {
-											paramsToShare.text = HtmlHelper.filterHtml(current.Content != null ? current.Content : current.Description);
+											paramsToShare.text = HtmlHelper.filterHtml(current.Content != null && current.Content.length() > 0 ? current.Content : current.Description);
 										}
 										else if ("Evernote".equals(platform.getName())) {
-											paramsToShare.text = HtmlHelper.ConvertHtmlToEnml(current.Content != null ? current.Content : current.Description);									
+											paramsToShare.text = HtmlHelper.ConvertHtmlToEnml(current.Content != null && current.Content.length() > 0 ? current.Content : current.Description);									
 										}
 										else if ("Wechat".equals(platform.getName())) {
-											paramsToShare.text = HtmlHelper.HtmlToText(HtmlHelper.filterHtml(current.Content != null ? current.Content : current.Description));									
+											paramsToShare.text = HtmlHelper.HtmlToText(HtmlHelper.filterHtml(current.Content != null && current.Content.length() > 0 ? current.Content : current.Description));									
 										}										
 									}
 								});
@@ -1401,8 +1427,8 @@ public class BlogContentFragment extends Fragment{
 					            m.what = SHARE;
 					            m.obj = oks;
 								
-					            myHandler.sendMessage(m);
-//								oks.show(getActivity());
+					            //myHandler.sendMessage(m);
+				            	oks.show(getActivity());
 							}
 						}.start();
 						

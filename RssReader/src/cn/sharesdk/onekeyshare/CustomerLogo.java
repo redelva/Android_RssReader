@@ -15,6 +15,6 @@ import android.view.View.OnClickListener;
 public class CustomerLogo {
 	public String label;
 	public Bitmap logo;
-	public int SortId;
 	public OnClickListener listener;
+	public int index;
 }

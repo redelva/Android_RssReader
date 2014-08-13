@@ -8,8 +8,7 @@
 
 package cn.sharesdk.onekeyshare;
 
-import static cn.sharesdk.framework.utils.R.getBitmapRes;
-
+import static cn.sharesdk.framework.utils.R.*;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -33,6 +32,7 @@ import android.widget.ImageView;
 import android.widget.ImageView.ScaleType;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import cn.sharesdk.framework.CustomPlatform;
 import cn.sharesdk.framework.Platform;
 import cn.sharesdk.framework.ShareSDK;
 import cn.sharesdk.framework.utils.UIHandler;
@@ -40,6 +40,7 @@ import cn.sharesdk.framework.utils.UIHandler;
 /** 平台宫格列表显示工具。 */
 public class PlatformGridView extends LinearLayout implements
 		OnClickListener, Callback {
+	private static final int MIN_CLICK_INTERVAL = 1000;
 	private static final int MSG_PLATFORM_LIST_GOT = 1;
 	// 每行显示的格数
 	private int LINE_PER_PAGE;
@@ -61,6 +62,9 @@ public class PlatformGridView extends LinearLayout implements
 	private HashMap<String, Object> reqData;
 	private OnekeyShare parent;
 	private ArrayList<CustomerLogo> customers;
+	private HashMap<String, String> hiddenPlatforms;
+	private View bgView;
+	private long lastClickTime;
 
 	public PlatformGridView(Context context) {
 		super(context);
@@ -82,9 +86,9 @@ public class PlatformGridView extends LinearLayout implements
 		addView(pager);
 
 		// 为了更好的ui效果，开启子线程获取平台列表
-		new Thread(){
+		new Thread() {
 			public void run() {
-				platformList = ShareSDK.getPlatformList(context);
+				platformList = ShareSDK.getPlatformList();
 				if (platformList == null) {
 					platformList = new Platform[0];
 				}
@@ -136,6 +140,8 @@ public class PlatformGridView extends LinearLayout implements
 		if (platformList != null) {
 			int cusSize = customers == null ? 0 : customers.size();
 			int platSize = platformList == null ? 0 : platformList.length;
+			int hideSize = hiddenPlatforms == null ? 0 : hiddenPlatforms.size();
+			platSize = platSize-hideSize;
 			int size = platSize + cusSize;
 			pageCount = size / PAGE_SIZE;
 			if (size % PAGE_SIZE > 0) {
@@ -196,9 +202,17 @@ public class PlatformGridView extends LinearLayout implements
 		this.silent = silent;
 	}
 
+	public void setHiddenPlatforms(HashMap<String, String> hiddenPlatforms) {
+		this.hiddenPlatforms = hiddenPlatforms;
+	}
+
 	/** 设置自己图标的点击事件 */
 	public void setCustomerLogos(ArrayList<CustomerLogo> customers) {
 		this.customers = customers;
+	}
+
+	public void setEditPageBackground(View bgView) {
+		this.bgView = bgView;
 	}
 
 	/** 设置分享操作的回调页面 */
@@ -207,6 +221,12 @@ public class PlatformGridView extends LinearLayout implements
 	}
 
 	public void onClick(View v) {
+		long time = System.currentTimeMillis();
+		if (time - lastClickTime < MIN_CLICK_INTERVAL) {
+			return;
+		}
+		lastClickTime = time;
+
 		Platform plat = (Platform) v.getTag();
 		if (plat != null) {
 			if (silent) {
@@ -220,7 +240,8 @@ public class PlatformGridView extends LinearLayout implements
 			String name = plat.getName();
 			reqData.put("platform", name);
 			// EditPage不支持微信平台、Google+、QQ分享、Pinterest、信息和邮件，总是执行直接分享
-			if (ShareCore.isUseClientToShare(getContext(), name)) {
+			if ((plat instanceof CustomPlatform)
+					|| ShareCore.isUseClientToShare(name)) {
 				HashMap<Platform, HashMap<String, Object>> shareData
 						= new HashMap<Platform, HashMap<String,Object>>();
 				shareData.put(plat, reqData);
@@ -230,6 +251,8 @@ public class PlatformGridView extends LinearLayout implements
 
 			// 跳转EditPage分享
 			EditPage page = new EditPage();
+			page.setBackGround(bgView);
+			bgView = null;
 			page.setShareData(reqData);
 			page.setParent(parent);
 			if ("true".equals(String.valueOf(reqData.get("dialogMode")))) {
@@ -267,18 +290,33 @@ public class PlatformGridView extends LinearLayout implements
 			this.platformGridView = platformGridView;
 			logos = new ArrayList<Object>();
 			Platform[] platforms = platformGridView.platformList;
+			HashMap<String, String> hiddenPlatforms = platformGridView.hiddenPlatforms;
 			if (platforms != null) {
+				if (hiddenPlatforms != null && hiddenPlatforms.size() > 0) {
+					ArrayList<Platform> ps = new ArrayList<Platform>();
+					for (Platform p : platforms) {
+						if (hiddenPlatforms.containsKey(p.getName())) {
+							continue;
+						}
+						ps.add(p);
+					}
+
+					platforms = new Platform[ps.size()];
+					for (int i = 0; i < platforms.length; i++) {
+						platforms[i] = ps.get(i);
+					}
+				}
+
 				logos.addAll(Arrays.asList(platforms));
 			}
 			ArrayList<CustomerLogo> customers = platformGridView.customers;
 			if (customers != null) {
-				//logos.addAll(customers);
-				for(CustomerLogo customer : customers){
-					if(customer.SortId != -1)
-						logos.add(customer.SortId, customer);
+				for(CustomerLogo logo : customers){
+					if(logo.index == -1)
+						logos.add(logo);
 					else
-						logos.add(customer);
-				}
+						logos.add(logo.index, logo);
+				}				
 			}
 			this.callback = platformGridView;
 			girds = null;
@@ -368,7 +406,7 @@ public class PlatformGridView extends LinearLayout implements
 				lineSize++;
 			}
 			LayoutParams lp = new LayoutParams(
-					LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
+					LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
 			lp.weight = 1;
 			for (int i = 0; i < lines; i++) {
 				LinearLayout llLine = new LinearLayout(getContext());
@@ -470,7 +508,10 @@ public class PlatformGridView extends LinearLayout implements
 			}
 
 			int resId = cn.sharesdk.framework.utils.R.getStringRes(getContext(), plat.getName());
-			return getContext().getString(resId);
+			if (resId > 0) {
+				return getContext().getString(resId);
+			}
+			return null;
 		}
 
 	}

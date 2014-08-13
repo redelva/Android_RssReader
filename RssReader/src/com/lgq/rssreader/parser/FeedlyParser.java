@@ -1283,7 +1283,7 @@ public class FeedlyParser extends RssParser {
 
 	@Override
 	public void getRssBlog(final Channel channel, final Blog blog, final int count, final HttpResponseHandler handler) { 
-		String url = "";
+		String url = "";		
 		try {		
 	        if(channel.Id.length() > 0)
 				url = "https://cloud.feedly.com/v3/streams/contents?streamId=" + URLEncoder.encode(channel.Id, "UTF-8");			
@@ -1327,7 +1327,7 @@ public class FeedlyParser extends RssParser {
     	client.addHeader("Host", "cloud.feedly.com");
         client.addHeader("Accept-Charset", "utf8");
         client.addHeader("Referer", "http://cloud.feedly.com/");
-        client.addHeader("X-Feedly-Access-Token", ReaderApp.getToken(Token.AccessToken));
+        client.addHeader("X-Feedly-Access-Token", ReaderApp.getToken(Token.AccessToken));        
         
         Log.i("RssReader", "Start get rss blog request at: " + new Date());
         
@@ -1495,12 +1495,13 @@ public class FeedlyParser extends RssParser {
 	                    {
 	                    	handler.sendResponseMessage(blogs, true, ReaderApp.getAppContext().getResources().getString(R.string.feedly_waitformoreblogs), true);
 	                    }
+	                    	                    
 	                    getRssBlog(channel, blog, count, handler);
 	                }
 	                else
 	                {
 	                    if(blog.TimeStamp > 0)
-	                        editor.putString("UP" + channel.Id, "").commit();
+	                        editor.putString("UP" + channel.Id, "").commit();	                    
 
 	                    if (handler != null)
 	                    {
