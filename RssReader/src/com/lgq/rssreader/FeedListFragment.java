@@ -235,7 +235,7 @@ public class FeedListFragment extends SherlockFragment {
             				}else{
             					// need to recommend some feeds
             					
-            					if(msg.arg2 == SYNC){
+            					if(msg.arg1 == SYNC){
             						OnMultiChoiceClickListener multiClick = new OnMultiChoiceClickListener(){
                 				    	
                 						@Override

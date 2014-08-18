@@ -25,7 +25,7 @@ public class SDCardListener extends FileObserver {
     public void onEvent(int event, String path) {         
         switch(event) {  
 	        case FileObserver.ALL_EVENTS:
-	            Log.d("RssReader", "path:"+ path);  
+	            //Log.d("RssReader", "path:"+ path);
 	            break;  
 	        case FileObserver.CREATE:
 	        case FileObserver.MOVED_FROM:

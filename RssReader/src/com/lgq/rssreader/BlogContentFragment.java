@@ -550,41 +550,11 @@ public class BlogContentFragment extends Fragment{
 //        ;
 //    }
     
-    /**
-     * Detects and toggles immersive mode.
-     */
-    public void toggleHideyBar() {
-        // The UI options currently enabled are represented by a bitfield.
-        // getSystemUiVisibility() gives us that bitfield.
-        int uiOptions = getActivity().getWindow().getDecorView().getSystemUiVisibility();
-        int newUiOptions = uiOptions;
-        boolean isImmersiveModeEnabled =
-                ((uiOptions | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY) == uiOptions);
-        if (isImmersiveModeEnabled) {
-            Log.i("RssReader", "Turning immersive mode mode off. ");
-        } else {
-            Log.i("RssReader", "Turning immersive mode mode on.");
-        }
- 
-        // Immersive mode: Backward compatible to KitKat (API 19).
-        // Note that this flag doesn't do anything by itself, it only augments the behavior
-        // of HIDE_NAVIGATION and FLAG_FULLSCREEN.  For the purposes of this sample
-        // all three flags are being toggled together.
-        // This sample uses the "sticky" form of immersive mode, which will let the user swipe
-        // the bars back in again, but will automatically make them disappear a few seconds later.
-        newUiOptions ^= View.SYSTEM_UI_FLAG_HIDE_NAVIGATION;
-        newUiOptions ^= View.SYSTEM_UI_FLAG_FULLSCREEN;
-        newUiOptions ^= View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY;
-        getActivity().getWindow().getDecorView().setSystemUiVisibility(newUiOptions);
-    }
     
     @Override
     public void onCreate(Bundle savedInstanceState) {
     	if(savedInstanceState != null )
-    		savedInstanceState.setClassLoader(SatelliteMenu.SavedState.class.getClassLoader());
-    	
-    	if(ReaderApp.getSettings().FullScreen)
-        	toggleHideyBar();
+    		savedInstanceState.setClassLoader(SatelliteMenu.SavedState.class.getClassLoader());    	
     	
         super.onCreate(savedInstanceState);        
                 
@@ -650,7 +620,7 @@ public class BlogContentFragment extends Fragment{
 					helper.SynchronyContent2DB(args.Blog.BlogId, args.Cache.outerHtml());
 					helper.Close();
 				}
-			}		
+			}
 		});
 		content.setRenderCompleteHandler(new RenderCompleteHandler(){
 			public void onRender(Blog b, final String Content){
@@ -1345,6 +1315,9 @@ public class BlogContentFragment extends Fragment{
 								oks.setUrl(current.Link);
 								oks.setVenueName("RssReader");
 								oks.setVenueDescription("RssReader offers better experience!");								
+								oks.setText(HtmlHelper.ConvertHtmlToEnml(current.Content != null && current.Content.length() != 0 ? current.Content : current.Description));								
+								oks.setText(HtmlHelper.ConvertHtmlToEnml(current.Content != null && current.Content.length() != 0 ? current.Content : current.Description));								
+								oks.setUrl(current.Link);								
 								oks.setSite(getActivity().getString(R.string.app_name));
 								oks.setSiteUrl(current.Link);								
 								oks.setSilent(true);
@@ -1466,6 +1439,8 @@ public class BlogContentFragment extends Fragment{
 		    			//toggleHideyBar();
 						
 						
+		    					    			
+		    			Helper.toggleImmersiveMode(getActivity());
 		    				
 						break;
 					case 5: 
@@ -1491,6 +1466,9 @@ public class BlogContentFragment extends Fragment{
         
         menu = (SatelliteMenu)rootView.findViewById(R.id.pathmenu);
         initPathMenu();
+        
+        if(ReaderApp.getSettings().FullScreen)
+        	Helper.toggleImmersiveMode(getActivity());
 
         browser = (WebView)rootView.findViewById(R.id.browser);
         browser.getSettings().setJavaScriptEnabled(true);
@@ -1516,28 +1494,21 @@ public class BlogContentFragment extends Fragment{
     			}
     		}
     		
-    		@Override
     		public void onUp(){
-    			Log.i("RssReader", "up");
-    			
-    			int uiOptions = getActivity().getWindow().getDecorView().getSystemUiVisibility();
-    			boolean isImmersiveModeEnabled = ((uiOptions | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY) == uiOptions);
-    			
-    			if(ReaderApp.getSettings().FullScreen && isImmersiveModeEnabled){
-    				toggleHideyBar();
-    			}
+    			int uiOptions = getActivity().getWindow().getDecorView().getSystemUiVisibility();    	        
+    	        boolean isImmersiveModeEnabled =((uiOptions | View.SYSTEM_UI_FLAG_IMMERSIVE) == uiOptions);
+    	        
+    	        if(ReaderApp.getSettings().FullScreen && !isImmersiveModeEnabled)
+    	        	Helper.toggleImmersiveMode(getActivity());
     		}
     		
     		@Override
     		public void onDown(){
-    			Log.i("RssReader", "down");
-    			
-    			int uiOptions = getActivity().getWindow().getDecorView().getSystemUiVisibility();
-    			boolean isImmersiveModeEnabled = ((uiOptions | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY) == uiOptions);
-    			
-    			if(ReaderApp.getSettings().FullScreen && !isImmersiveModeEnabled){
-    				toggleHideyBar();
-    			}
+    			int uiOptions = getActivity().getWindow().getDecorView().getSystemUiVisibility();    	        
+    	        boolean isImmersiveModeEnabled =((uiOptions | View.SYSTEM_UI_FLAG_IMMERSIVE) == uiOptions);
+    	        
+    	        if(ReaderApp.getSettings().FullScreen && isImmersiveModeEnabled)
+    	        	Helper.toggleImmersiveMode(getActivity());
     		}
     		
     		@Override

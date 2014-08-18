@@ -70,10 +70,10 @@ public class BlogContentActivity extends SherlockFragmentActivity  {
     protected void onCreate(Bundle savedInstanceState) {
     	if(savedInstanceState != null )
         	savedInstanceState.setClassLoader(SatelliteMenu.SavedState.class.getClassLoader());
+    	this.requestWindowFeature(Window.FEATURE_NO_TITLE);
     	
         super.onCreate(savedInstanceState);
-        
-		this.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        		
         setContentView(R.layout.activity_blog_detail);
         
         mEvernoteSession = EvernoteSession.getInstance(this, "redelva", "453e8a5fdee809be", EVERNOTE_SERVICE);
