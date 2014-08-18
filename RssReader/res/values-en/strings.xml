@@ -180,6 +180,9 @@
 	<string name="content_nonextitem">No next item</string>
 	<string name="content_nopreviousitem">No previous item</string>
 	<string name="content_loading">Loading</string>
+	<string name="content_addtoclipbroad">Added to clipbroad</string>
+	<string name="content_immersiveon">Immersive mode On</string>
+	<string name="content_immersiveoff">Immersive mode Off</string>
 	
 	<string name="list_refreshtime">Refresh</string>
 	<string name="list_loadingmore">Loading more</string>

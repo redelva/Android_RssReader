@@ -277,6 +277,8 @@ public class BlogContentFragment extends Fragment{
 	    			case CONTENT:
 	    			case DESC:
 	    				
+	    				Log.i("RssReader", "Render content in js");
+	    				
 	    				//check current blog is still the parsed blog
 	    				if(cacheArgs != null && cacheArgs.Blog.BlogId != current.BlogId)
 	    					return;
@@ -743,6 +745,8 @@ public class BlogContentFragment extends Fragment{
 					int what = DESC;
 					
 					try {
+						Log.i("RssReader", "Waiting for page load complete");
+						
 						loadEvent.waitOne();
 					} catch (InterruptedException e) {
 						// TODO Auto-generated catch block
@@ -873,6 +877,8 @@ public class BlogContentFragment extends Fragment{
     
     @JavascriptInterface
     public void loadComplete(String args){
+    	Log.i("RssReader", "Page Load " + args);
+    	
     	if(args.equals("init"))
     		loadEvent.set();
     	else if(args.equals("content"))
@@ -1382,7 +1388,7 @@ public class BlogContentFragment extends Fragment{
 							        	
 							        	clipboard.setPrimaryClip(clip);
 							        	
-							        	Toast.makeText(ReaderApp.getAppContext(), "已经添加到剪贴板", Toast.LENGTH_SHORT).show();
+							        	Toast.makeText(ReaderApp.getAppContext(), ReaderApp.getAppContext().getString(R.string.content_addtoclipbroad), Toast.LENGTH_SHORT).show();
 							        	
 						                oks.finish();
 							        }
@@ -1447,12 +1453,19 @@ public class BlogContentFragment extends Fragment{
 				    			e.putBoolean("view_fullscreen", ReaderApp.getSettings().FullScreen).commit();
 				    			
 				    			ReaderApp.saveSettings();
+				    			
+				    			if(ReaderApp.getSettings().FullScreen)
+				    				Toast.makeText(getActivity(), ReaderApp.getAppContext().getString(R.string.content_immersiveon), Toast.LENGTH_SHORT).show();
+				    			else
+				    				Toast.makeText(getActivity(), ReaderApp.getAppContext().getString(R.string.content_immersiveoff), Toast.LENGTH_SHORT).show();
 							}
 						}.start();						
 		    			
-		    			View view = getActivity().getWindow().getDecorView();		    			
+		    			//View view = getActivity().getWindow().getDecorView();		    			
 		    			
-		    			toggleHideyBar();
+		    			//toggleHideyBar();
+						
+						
 		    				
 						break;
 					case 5: 
@@ -1504,15 +1517,46 @@ public class BlogContentFragment extends Fragment{
     		}
     		
     		@Override
-    		public void onLoad() {
+    		public void onUp(){
+    			Log.i("RssReader", "up");
+    			
+    			int uiOptions = getActivity().getWindow().getDecorView().getSystemUiVisibility();
+    			boolean isImmersiveModeEnabled = ((uiOptions | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY) == uiOptions);
+    			
+    			if(ReaderApp.getSettings().FullScreen && isImmersiveModeEnabled){
+    				toggleHideyBar();
+    			}
+    		}
+    		
+    		@Override
+    		public void onDown(){
+    			Log.i("RssReader", "down");
+    			
+    			int uiOptions = getActivity().getWindow().getDecorView().getSystemUiVisibility();
+    			boolean isImmersiveModeEnabled = ((uiOptions | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY) == uiOptions);
+    			
+    			if(ReaderApp.getSettings().FullScreen && !isImmersiveModeEnabled){
+    				toggleHideyBar();
+    			}
+    		}
+    		
+    		@Override
+    		public void onDoubleTap() {
     			if(readSetting != null && readSetting.getVisibility() == View.GONE){
 	    			jsEvent.reset();
 	    			    			
 	    			mProgressDialog = new ProgressDialog(getActivity());
+	    			
+	    			mProgressDialog.getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE, WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE);
+	    			
 	    	        mProgressDialog.setCanceledOnTouchOutside(false);
 	    	        mProgressDialog.setIcon(R.id.process);		        
 	    	        mProgressDialog.setMessage(getActivity().getResources().getString(R.string.content_loading) + "...");
 	    	        mProgressDialog.show();
+	    	        
+	    	        mProgressDialog.getWindow().getDecorView().setSystemUiVisibility(getActivity().getWindow().getDecorView().getSystemUiVisibility());
+	        		//Clear the not focusable flag from the window
+	    	        mProgressDialog.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE);
 	    	        
 	    	        new Thread(){public void run(){content.Render(current);}}.start();
     			}
@@ -1554,7 +1598,10 @@ public class BlogContentFragment extends Fragment{
     			browser.loadUrl("javascript: fontsize(" + size + ")");
     			
     		}
-        }, view, (int) (getActivity().getWindowManager().getDefaultDisplay().getWidth() * 0.33));
+        }, 
+        view, 
+        (int) (getActivity().getWindowManager().getDefaultDisplay().getWidth() * 0.33),
+        (int) (getActivity().getWindowManager().getDefaultDisplay().getHeight() * 0.33));
         
         gesture = new GestureDetector(getActivity(), simpleListner);
         

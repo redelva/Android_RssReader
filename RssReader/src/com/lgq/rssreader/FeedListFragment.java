@@ -163,6 +163,9 @@ public class FeedListFragment extends SherlockFragment {
     
     private int page;
     
+    public static final int LOCAL = 1;
+    public static final int SYNC = 2;
+    
     final String[] recommends = new String[]{
 			ReaderApp.getAppContext().getResources().getString(R.string.recommend_title1),
 			ReaderApp.getAppContext().getResources().getString(R.string.recommend_title2),
@@ -232,31 +235,33 @@ public class FeedListFragment extends SherlockFragment {
             				}else{
             					// need to recommend some feeds
             					
-            					OnMultiChoiceClickListener multiClick = new OnMultiChoiceClickListener(){
-            				    	
-            						@Override
-            						public void onClick(DialogInterface dialog, int which, boolean isChecked) {
-            							if(isChecked){
-            								FeedlyParser parser = new FeedlyParser();
-            								parser.addRss(urls[which], recommends[which], null);            								
-            							}            							
-            						}
-            	        		};
-            					
-            					AlertDialog dialog = new AlertDialog.Builder(getActivity())  
-			   	                         .setIcon(android.R.drawable.btn_star_big_on)  
-			   	                         .setTitle(getActivity().getResources().getString(R.string.recommend_add))
-			   	                         .setMultiChoiceItems(recommends, chsBools, multiClick)
-			   	                         .setPositiveButton(getActivity().getResources().getString(R.string.yes), new OnClickListener(){
-			   	                        	 	@Override
-			   		    						public void onClick(DialogInterface dialog, int which) {
-			   	                        	 		dialog.dismiss();
-			   	                        	 		dialog.cancel();
-			   	                        	 		loadChannel();			   	                        	 		
-			   		    						}
-			   		            			})
-			   	                         .setNegativeButton(getActivity().getResources().getString(R.string.no),  null).create();  
-			   	                dialog.show();
+            					if(msg.arg2 == SYNC){
+            						OnMultiChoiceClickListener multiClick = new OnMultiChoiceClickListener(){
+                				    	
+                						@Override
+                						public void onClick(DialogInterface dialog, int which, boolean isChecked) {
+                							if(isChecked){
+                								FeedlyParser parser = new FeedlyParser();
+                								parser.addRss(urls[which], recommends[which], null);            								
+                							}
+                						}
+                	        		};
+                					
+                					AlertDialog dialog = new AlertDialog.Builder(getActivity())  
+    			   	                         .setIcon(android.R.drawable.btn_star_big_on)  
+    			   	                         .setTitle(getActivity().getResources().getString(R.string.recommend_add))
+    			   	                         .setMultiChoiceItems(recommends, chsBools, multiClick)
+    			   	                         .setPositiveButton(getActivity().getResources().getString(R.string.yes), new OnClickListener(){
+    			   	                        	 	@Override
+    			   		    						public void onClick(DialogInterface dialog, int which) {
+    			   	                        	 		dialog.dismiss();
+    			   	                        	 		dialog.cancel();
+    			   	                        	 		loadChannel();			   	                        	 		
+    			   		    						}
+    			   		            			})
+    			   	                         .setNegativeButton(getActivity().getResources().getString(R.string.no),  null).create();
+    			   	                dialog.show();
+            					}            					
             				}
             			}
             			
@@ -480,6 +485,7 @@ public class FeedListFragment extends SherlockFragment {
     	        		Message m = myHandler.obtainMessage();                    				
         				m.what = RssTab.Home.ordinal();
         	            m.obj = Helper.getChannels();
+        	            m.arg1 = LOCAL;
         				myHandler.sendMessage(m);
     	        	//}
     	        }
@@ -631,6 +637,7 @@ public class FeedListFragment extends SherlockFragment {
                 			Message m = myHandler.obtainMessage();
 	        	            m.what = RssTab.Home.ordinal();
 	        	            m.obj = channels;
+	        	            m.arg1 = LOCAL;
 	        				myHandler.sendMessage(m);
                 		}
                 	}
@@ -653,6 +660,7 @@ public class FeedListFragment extends SherlockFragment {
                     				Message m = myHandler.obtainMessage();                    				
                     				m.what = RssTab.Home.ordinal();
                     	            m.obj = feedly.getChannels();
+                    	            m.arg1 = SYNC;
                     				myHandler.sendMessage(m);
                     				
                     				Helper.vibrate();

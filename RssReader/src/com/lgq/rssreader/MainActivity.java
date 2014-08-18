@@ -232,15 +232,16 @@ public class MainActivity extends SlidingFragmentActivity
         btnRight.setOnClickListener(new OnClickListener(){
         	@Override
             public void onClick(final View v) {        		
-        		ViewPager pager = (ViewPager)findViewById(R.id.pager);
-        		PivotPagerAdapter pivot = (PivotPagerAdapter)pager.getAdapter();
-
-    			FeedListFragment channel = (FeedListFragment)pivot.getItem(RssTab.Home.ordinal());
-    			
-    			Animation anim = AnimationUtils.loadAnimation(MainActivity.this, R.anim.rotate);    	        
-    	        v.startAnimation(anim);
-    			    	        
-    			channel.loadChannel();
+//        		ViewPager pager = (ViewPager)findViewById(R.id.pager);
+//        		PivotPagerAdapter pivot = (PivotPagerAdapter)pager.getAdapter();
+//
+//    			FeedListFragment channel = (FeedListFragment)pivot.getItem(RssTab.Home.ordinal());
+//    			
+//    			Animation anim = AnimationUtils.loadAnimation(MainActivity.this, R.anim.rotate);    	        
+//    	        v.startAnimation(anim);
+//    			    	        
+//    			channel.loadChannel();
+        		loadChannel();
             }
         });
         

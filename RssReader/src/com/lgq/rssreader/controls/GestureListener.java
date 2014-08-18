@@ -23,28 +23,33 @@ public class GestureListener extends GestureDetector.SimpleOnGestureListener imp
     boolean isScrolling = false;
     MoveDirection direction;
     float xDistance = 0;
-    int SWIPE_THRESHOLD_DISTANCE = -1;
+    float yDistance = 0;
+    int SWIPE_THRESHOLD_XDISTANCE = -1;
+    int SWIPE_THRESHOLD_YDISTANCE = -1;
     IGestureListener listner;
     View target;
     
     public interface IGestureListener{
-    	public void onLoad();
+    	public void onDoubleTap();
     	public void onLeft();
     	public void onRight();
+    	public void onDown();
+    	public void onUp();
     	public void onScale(double scale);
     }
 	
-	public GestureListener(IGestureListener iGestureListener, View target, int threshold) {
+	public GestureListener(IGestureListener iGestureListener, View target, int xThreshold, int yThreshold) {
 		this.listner = iGestureListener;
 		this.target = target;
-		SWIPE_THRESHOLD_DISTANCE = threshold;
+		SWIPE_THRESHOLD_XDISTANCE = xThreshold;
+		SWIPE_THRESHOLD_YDISTANCE = yThreshold;
 	}
 
 	@Override
     public boolean onDoubleTap(MotionEvent e) {
 		
 		if(listner != null){
-			listner.onLoad();
+			listner.onDoubleTap();
 		}
 		
         return true;
@@ -54,9 +59,10 @@ public class GestureListener extends GestureDetector.SimpleOnGestureListener imp
     public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
     	
     	xDistance = xDistance + distanceX;
+    	yDistance = yDistance + distanceY;
     	    	
     	//if(Math.abs(distanceX) > 50){
-    	if(Math.abs(xDistance) > SWIPE_THRESHOLD_DISTANCE){
+    	if(Math.abs(xDistance) > SWIPE_THRESHOLD_XDISTANCE && Math.abs(yDistance) < SWIPE_THRESHOLD_YDISTANCE){
     		if(distanceX > 0 )
         		direction = MoveDirection.Left;
         	else
@@ -71,29 +77,54 @@ public class GestureListener extends GestureDetector.SimpleOnGestureListener imp
         	animation.start();
     		
         	isScrolling = true;
+        	
+        	return true;
     	}
+    	
+    	if(Math.abs(xDistance) < SWIPE_THRESHOLD_XDISTANCE && Math.abs(yDistance) > SWIPE_THRESHOLD_YDISTANCE){
+    		
+    		if(distanceY > 0 )
+        		direction = MoveDirection.Down;
+        	else
+        		direction = MoveDirection.Up;
+    		
+        	isScrolling = true;
+        	
+        	return true;
+    	}
+    	
     	
     	return true;
     }
-    
+        
     public void onScrollComplete(MotionEvent e){
     	isScrolling = false;    	
     	    	    
     	Log.i("RssReader", "Scroll ends");
     	
-    	if(Math.abs(xDistance) > SWIPE_THRESHOLD_DISTANCE){
-    		
-    		if(direction != MoveDirection.Left){
-        		//012=>201    			
-    			
-    			listner.onLeft();
-        	}else{
-        		//move left 012=>120
-        		listner.onRight();
+    	if(Math.abs(xDistance) > SWIPE_THRESHOLD_XDISTANCE){    		
+    		if(direction == MoveDirection.Right){
+        		listner.onLeft();
         	}
-    	}    	
+    		if(direction == MoveDirection.Left){
+        		listner.onRight();
+        	}    		
+    	}
+    	
+		if(Math.abs(yDistance) > SWIPE_THRESHOLD_YDISTANCE){
+			if(direction == MoveDirection.Down){
+	    		listner.onDown();
+	    	}			
+    	}
+		
+		if(e.getAction() == MotionEvent.ACTION_UP && Math.abs(yDistance) * 2 > SWIPE_THRESHOLD_YDISTANCE){
+			if(direction == MoveDirection.Up){
+	    		listner.onUp();
+	    	}
+		}
     	
     	xDistance = 0;
+    	yDistance = 0;
     }
     
     @Override 
