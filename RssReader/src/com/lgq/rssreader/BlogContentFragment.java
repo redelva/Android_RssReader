@@ -174,6 +174,11 @@ public class BlogContentFragment extends Fragment{
     private Blog current;
     
     /**
+     * The Activity this fragment is attached.
+     */
+    private Activity mActivity;
+    
+    /**
      * Read Settings.
      */
     private View readSetting;
@@ -185,6 +190,11 @@ public class BlogContentFragment extends Fragment{
      * represents.
      */
     public static final String ARG_TAB_ID = "tsstab";
+    
+    /**
+     * The fragment argument representing the uioptions
+     */
+    public static final String UI_OPTIONS = "uioptions";
     
     /**
      * The data source of this fragment represents.
@@ -204,6 +214,16 @@ public class BlogContentFragment extends Fragment{
      * The view container
      */
     private List<View> views;
+    
+    /**
+     * Identify the IMMERSIVE mode status
+     */
+    private boolean immersiveMode;
+        
+    /**
+     * Identify the initial status
+     */
+    private int uiOptions;
     
     /**
      * The WebView of this fragment to present.
@@ -549,7 +569,6 @@ public class BlogContentFragment extends Fragment{
 //            })
 //        ;
 //    }
-    
     
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -1305,7 +1324,7 @@ public class BlogContentFragment extends Fragment{
 								oks.setDialogMode();
 
 								// 在自动授权时可以禁用SSO方式
-								//oks.disableSSOWhenAuthorize();
+								oks.disableSSOWhenAuthorize();
 
 								oks.setNotification(R.drawable.ic_launcher, getActivity().getString(R.string.app_name));
 								oks.setAddress(ReaderApp.getProfile().Email);
@@ -1314,9 +1333,7 @@ public class BlogContentFragment extends Fragment{
 								oks.setText(HtmlHelper.HtmlToText(HtmlHelper.filterHtml(current.Content != null && current.Content.length() > 0 ? current.Content : current.Description)));								
 								oks.setUrl(current.Link);
 								oks.setVenueName("RssReader");
-								oks.setVenueDescription("RssReader offers better experience!");								
-								oks.setText(HtmlHelper.ConvertHtmlToEnml(current.Content != null && current.Content.length() != 0 ? current.Content : current.Description));								
-								oks.setText(HtmlHelper.ConvertHtmlToEnml(current.Content != null && current.Content.length() != 0 ? current.Content : current.Description));								
+								oks.setVenueDescription("RssReader offers better experience!");
 								oks.setUrl(current.Link);								
 								oks.setSite(getActivity().getString(R.string.app_name));
 								oks.setSiteUrl(current.Link);								
@@ -1417,6 +1434,15 @@ public class BlogContentFragment extends Fragment{
 						break;
 					case 4: 
 						
+						if(!ReaderApp.getSettings().FullScreen){
+							Helper.hideSystemUI(getActivity());
+							Toast.makeText(getActivity(), ReaderApp.getAppContext().getString(R.string.content_immersiveon), Toast.LENGTH_SHORT).show();
+						}
+		    			else{
+		    				Helper.showSystemUI(getActivity(), uiOptions);
+		    				Toast.makeText(getActivity(), ReaderApp.getAppContext().getString(R.string.content_immersiveoff), Toast.LENGTH_SHORT).show();
+		    			}
+						
 						new Thread(){
 							public void run(){
 								ReaderApp.getSettings().FullScreen = !ReaderApp.getSettings().FullScreen;
@@ -1426,21 +1452,10 @@ public class BlogContentFragment extends Fragment{
 				    			e.putBoolean("view_fullscreen", ReaderApp.getSettings().FullScreen).commit();
 				    			
 				    			ReaderApp.saveSettings();
-				    			
-				    			if(ReaderApp.getSettings().FullScreen)
-				    				Toast.makeText(getActivity(), ReaderApp.getAppContext().getString(R.string.content_immersiveon), Toast.LENGTH_SHORT).show();
-				    			else
-				    				Toast.makeText(getActivity(), ReaderApp.getAppContext().getString(R.string.content_immersiveoff), Toast.LENGTH_SHORT).show();
 							}
 						}.start();						
-		    			
-		    			//View view = getActivity().getWindow().getDecorView();		    			
-		    			
-		    			//toggleHideyBar();
-						
-						
 		    					    			
-		    			Helper.toggleImmersiveMode(getActivity());
+		    			//Helper.toggleImmersiveMode(getActivity());						
 		    				
 						break;
 					case 5: 
@@ -1458,6 +1473,15 @@ public class BlogContentFragment extends Fragment{
 			}
 		});
     }
+    
+    @Override
+    public void onPause(){
+    	super.onPause();
+    	if(immersiveMode){
+    		immersiveMode = false;
+        	Helper.showSystemUI(getActivity(), uiOptions);
+    	}    	
+    }
 
     @SuppressLint("NewApi")
 	@Override
@@ -1467,8 +1491,12 @@ public class BlogContentFragment extends Fragment{
         menu = (SatelliteMenu)rootView.findViewById(R.id.pathmenu);
         initPathMenu();
         
-        if(ReaderApp.getSettings().FullScreen)
-        	Helper.toggleImmersiveMode(getActivity());
+        if(ReaderApp.getSettings().FullScreen){
+        	//Helper.toggleImmersiveMode(getActivity());
+        	uiOptions = getActivity().getWindow().getDecorView().getSystemUiVisibility();
+        	Helper.hideSystemUI(getActivity());
+        	immersiveMode = true;
+        }        	
 
         browser = (WebView)rootView.findViewById(R.id.browser);
         browser.getSettings().setJavaScriptEnabled(true);
@@ -1490,25 +1518,33 @@ public class BlogContentFragment extends Fragment{
         			showProcess("");
         		}
     			else{
-    				Toast.makeText(getActivity(), getActivity().getResources().getString(R.string.content_nonextitem), Toast.LENGTH_SHORT).show();    				
+    				Toast.makeText(mActivity, mActivity.getResources().getString(R.string.content_nonextitem), Toast.LENGTH_SHORT).show();    				
     			}
     		}
     		
     		public void onUp(){
-    			int uiOptions = getActivity().getWindow().getDecorView().getSystemUiVisibility();    	        
-    	        boolean isImmersiveModeEnabled =((uiOptions | View.SYSTEM_UI_FLAG_IMMERSIVE) == uiOptions);
-    	        
-    	        if(ReaderApp.getSettings().FullScreen && !isImmersiveModeEnabled)
-    	        	Helper.toggleImmersiveMode(getActivity());
+    			//int uiOptions = getActivity().getWindow().getDecorView().getSystemUiVisibility();    	        
+    	        //boolean isImmersiveModeEnabled =((uiOptions | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY) == uiOptions);
+    			
+    	        if(ReaderApp.getSettings().FullScreen && immersiveMode){
+    	        	//Helper.toggleImmersiveMode(getActivity());
+    	        	Helper.showSystemUI(mActivity, uiOptions);
+    	        	immersiveMode = false;
+    	        }
     		}
     		
     		@Override
     		public void onDown(){
-    			int uiOptions = getActivity().getWindow().getDecorView().getSystemUiVisibility();    	        
-    	        boolean isImmersiveModeEnabled =((uiOptions | View.SYSTEM_UI_FLAG_IMMERSIVE) == uiOptions);
+    			//int uiOptions = getActivity().getWindow().getDecorView().getSystemUiVisibility();    	        
+    	        //boolean isImmersiveModeEnabled =((uiOptions | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY) == uiOptions);
     	        
-    	        if(ReaderApp.getSettings().FullScreen && isImmersiveModeEnabled)
-    	        	Helper.toggleImmersiveMode(getActivity());
+    	        if(ReaderApp.getSettings().FullScreen && !immersiveMode){
+    	        	//Helper.toggleImmersiveMode(getActivity());
+    	        	
+    	        	Helper.hideSystemUI(mActivity);
+    	        	
+    	        	immersiveMode = true;
+    	        }
     		}
     		
     		@Override
@@ -1516,16 +1552,16 @@ public class BlogContentFragment extends Fragment{
     			if(readSetting != null && readSetting.getVisibility() == View.GONE){
 	    			jsEvent.reset();
 	    			    			
-	    			mProgressDialog = new ProgressDialog(getActivity());
+	    			mProgressDialog = new ProgressDialog(mActivity);
 	    			
 	    			mProgressDialog.getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE, WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE);
 	    			
 	    	        mProgressDialog.setCanceledOnTouchOutside(false);
 	    	        mProgressDialog.setIcon(R.id.process);		        
-	    	        mProgressDialog.setMessage(getActivity().getResources().getString(R.string.content_loading) + "...");
+	    	        mProgressDialog.setMessage(mActivity.getResources().getString(R.string.content_loading) + "...");
 	    	        mProgressDialog.show();
 	    	        
-	    	        mProgressDialog.getWindow().getDecorView().setSystemUiVisibility(getActivity().getWindow().getDecorView().getSystemUiVisibility());
+	    	        mProgressDialog.getWindow().getDecorView().setSystemUiVisibility(mActivity.getWindow().getDecorView().getSystemUiVisibility());
 	        		//Clear the not focusable flag from the window
 	    	        mProgressDialog.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE);
 	    	        
@@ -1543,7 +1579,7 @@ public class BlogContentFragment extends Fragment{
         			showProcess("");
         		}
     			else{
-    				Toast.makeText(getActivity(), getActivity().getResources().getString(R.string.content_nopreviousitem), Toast.LENGTH_SHORT).show();
+    				Toast.makeText(mActivity, mActivity.getResources().getString(R.string.content_nopreviousitem), Toast.LENGTH_SHORT).show();
     			}
     		}
     		
@@ -1564,7 +1600,7 @@ public class BlogContentFragment extends Fragment{
     			
     			ReaderApp.saveSettings();
     			
-    			Helper.saveHtml(getActivity(), true);
+    			Helper.saveHtml(mActivity, true);
     			
     			browser.loadUrl("javascript: fontsize(" + size + ")");
     			
@@ -1654,5 +1690,16 @@ public class BlogContentFragment extends Fragment{
         outState.putSerializable(CURRENT, current);
         outState.putSerializable(CHANNEL, channel);
         outState.putSerializable(ARG_TAB_ID, from);
+        outState.putSerializable(UI_OPTIONS, uiOptions);
+    }
+    
+    public void onAttach(Activity activity){
+    	super.onAttach(activity);
+    	mActivity = activity;
+    }
+    
+    public void onDetach(){
+    	super.onDetach();
+    	mActivity = null;
     }
 }

@@ -54,12 +54,29 @@ public class GestureListener extends GestureDetector.SimpleOnGestureListener imp
 		
         return true;
     }
+	
+	void printSamples(MotionEvent ev) {      
+		final int historySize = ev.getHistorySize();      
+		final int pointerCount = ev.getPointerCount();      
+//		for (int h = 0; h < historySize; h++) {          
+//			System.out.printf("At time %d:", ev.getHistoricalEventTime(h));          
+//			for (int p = 0; p < pointerCount; p++) {              
+//				System.out.printf("  pointer %d: (%f,%f)", ev.getPointerId(p), ev.getHistoricalX(p, h), ev.getHistoricalY(p, h));          
+//			}      
+//		}      
+		//System.out.printf("At time %d:", ev.getEventTime());      
+		for (int p = 0; p < pointerCount; p++) {          
+			Log.i("RssReader", "pointer " + ev.getPointerId(p) + ": (" + ev.getX(p) + "," + ev.getY(p) + ")");      
+		}  
+	} 
 
     @Override
     public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
     	
     	xDistance = xDistance + distanceX;
     	yDistance = yDistance + distanceY;
+    	
+    	printSamples(e2);
     	    	
     	//if(Math.abs(distanceX) > 50){
     	if(Math.abs(xDistance) > SWIPE_THRESHOLD_XDISTANCE && Math.abs(yDistance) < SWIPE_THRESHOLD_YDISTANCE){

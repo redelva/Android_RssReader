@@ -31,7 +31,7 @@ public class SDCardListener extends FileObserver {
 	        case FileObserver.MOVED_FROM:
 	        case FileObserver.MOVED_TO:
 	        case FileObserver.DELETE:
-	            Log.d("RssReader", "path:"+ path);
+	            //Log.d("RssReader", "path:"+ path);
 	            
 	            Helper.saveHtml(ReaderApp.getAppContext(), true);
 	            

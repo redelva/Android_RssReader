@@ -86,28 +86,28 @@
         Id="4"
         SortId="4"
         AppId="wx06b3b70ad11ba41f"
-        BypassApproval="true"
+        BypassApproval="false"
         Enable="true" />
     
     <WechatMoments
         Id="5"
         SortId="5"
         AppId="wx06b3b70ad11ba41f"
-        BypassApproval="true"        
+        BypassApproval="false"        
         Enable="true" />
         
 	<WechatFavorite
         Id="6"
         SortId="19"
         AppId="wx06b3b70ad11ba41f" 
-        BypassApproval="true"       
+        BypassApproval="false"       
         Enable="true" />
     
 	<QQ
         Id="7"
         SortId="7"
         AppId="100371282"
-        ShareByAppClient="true"
+        ShareByAppClient="false"
         AppKey="aed9b0303e3ed1e27bae87c33761161d"
         Enable="true" />
     

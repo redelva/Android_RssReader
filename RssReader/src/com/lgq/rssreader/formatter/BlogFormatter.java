@@ -426,6 +426,16 @@ import com.loopj.android.http.JsonHttpResponseHandler;
                 c.attr("style", c.attr("style").toLowerCase().replace("background", "b"));
             }
         	
+        	for(Element c : doc.getElementsByAttribute("height")){
+                //c.attr("height", c.attr("height").toLowerCase().replace("height", "h"));
+        		c.removeAttr("height");
+            }
+        	
+        	for(Element c : doc.getElementsByAttribute("width")){
+                //c.attr("width", c.attr("width").toLowerCase().replace("width", "w"));
+        		c.removeAttr("width");
+            }
+        	
         	for(Element c : doc.getElementsByTag("object")){
                 c.attr("style", c.attr("style").toLowerCase().replace("width", "w"));
                 c.attr("style", c.attr("style").toLowerCase().replace("height", "h"));
@@ -444,6 +454,36 @@ import com.loopj.android.http.JsonHttpResponseHandler;
                 c.removeAttr("height");
                 c.attr("width", "350px");
                 c.attr("height", "290px");
+            }
+        	
+        	for(Element c : doc.getElementsByTag("iframe")){
+        		
+        		if(c.hasAttr("style")){
+        			
+        			if(c.attr("style").toLowerCase().contains("width")){
+        				String[] attrs = c.attr("style").split(";");
+                        for(String attr  : attrs){
+                        	if(attr.toLowerCase().contains("width")){
+                        		c.attr("style", c.attr("style").toLowerCase().replace(attr.toLowerCase(), "width:99%"));
+                        	}
+                        }
+        			}else{
+        				c.attr("style", c.attr("style") + "width:99%;");
+        			}
+        			
+//        			if(c.attr("style").toLowerCase().contains("height")){
+//        				String[] attrs = c.attr("style").split(";");
+//                        for(String attr  : attrs){                        	
+//                        	if(attr.toLowerCase().contains("height")){
+//                        		c.attr("style", c.attr("style").toLowerCase().replace(attr.toLowerCase(), "height:100%"));
+//                        	}
+//                        }
+//        			}else{
+//        				c.attr("style", c.attr("style") + "height:100%;");
+//        			}
+        		}else{
+        			c.attr("style", "width:100%;");
+        		}
             }
         	
         	return doc;

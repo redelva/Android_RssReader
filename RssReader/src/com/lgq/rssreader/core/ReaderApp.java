@@ -20,6 +20,7 @@ import com.lgq.rssreader.enums.Theme;
 import com.lgq.rssreader.enums.Token;
 import com.lgq.rssreader.utils.FileHelper;
 
+import android.annotation.SuppressLint;
 import android.app.AlarmManager;
 import android.app.AlertDialog;
 import android.app.Application;
@@ -30,7 +31,10 @@ import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
+import android.os.Build;
+import android.os.Build.VERSION;
 import android.preference.PreferenceManager;
+import android.view.ViewConfiguration;
 import android.widget.Toast;
 
 public class ReaderApp extends Application{
@@ -237,7 +241,8 @@ public class ReaderApp extends Application{
     	settings = null;
     }
     
-    public static RssSettings getSettings(){
+    @SuppressLint("NewApi")
+	public static RssSettings getSettings(){
     	SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(context);
     	
     	if(settings == null){
@@ -263,7 +268,10 @@ public class ReaderApp extends Application{
     		settings.ShowAllFeeds = pref.getBoolean("view_showallchannel", true);
     		settings.ShowAllItems = pref.getBoolean("view_showallitem", true);
     		settings.NoImageMode = pref.getBoolean("view_noimage", false);
-    		settings.FullScreen = pref.getBoolean("view_fullscreen", false);
+    		if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH)
+    			settings.FullScreen = pref.getBoolean("view_fullscreen", ViewConfiguration.get(ReaderApp.context).hasPermanentMenuKey());
+    		else
+    			settings.FullScreen = pref.getBoolean("view_fullscreen", false);
     		settings.BackgroundColor = pref.getString("view_backgroundcolor", "#ffffffff");
     		settings.FontColor = pref.getString("view_foregroundcolor", "#ff000000");
     		settings.Brightness = pref.getInt("view_brightness", 100);

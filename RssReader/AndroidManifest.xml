@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.lgq.rssreader"
-    android:versionCode="9"
-    android:versionName="1.0.9.0" >
+    android:versionCode="10"
+    android:versionName="1.0.10.0" >
 
     <uses-sdk
         android:minSdkVersion="11"
@@ -30,7 +30,7 @@
         android:theme="@style/AppTheme" >
         <activity 
             android:windowAnimationStyle="@android:style/Animation.Translucent" 
-            android:name=".SplashActivity"             
+            android:name="com.lgq.rssreader.SplashActivity"             
             android:configChanges="keyboardHidden"            
             android:label="@string/app_name">
             <intent-filter>
@@ -52,7 +52,7 @@
         </activity>
         <activity
             android:configChanges="locale"
-            android:name="com.lgq.rssreader.BlogContentActivity"
+            android:name="com.lgq.rssreader.BlogContentActivity"            
             android:label="@string/title_blog_detail"
             android:hardwareAccelerated="true"
             android:uiOptions="splitActionBarWhenNarrow"
@@ -116,14 +116,7 @@
 		</activity>
 		
         <activity
-		  android:name=".wxapi.WXEntryActivity"
-		  android:theme="@android:style/Theme.Translucent.NoTitleBar"
-		  android:configChanges="keyboardHidden|orientation|screenSize"
-		  android:exported="true"
-		  android:screenOrientation="portrait" />
-        
-        <activity
-		  android:name=".wxapi.WXEntryActivity"
+		  android:name="com.lgq.rssreader.wxapi.WXEntryActivity"
 		  android:theme="@android:style/Theme.Translucent.NoTitleBar"
 		  android:configChanges="keyboardHidden|orientation|screenSize"
 		  android:exported="true"

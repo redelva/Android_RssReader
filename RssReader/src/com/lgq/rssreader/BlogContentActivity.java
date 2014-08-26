@@ -76,10 +76,22 @@ public class BlogContentActivity extends SherlockFragmentActivity  {
         		
         setContentView(R.layout.activity_blog_detail);
         
-        mEvernoteSession = EvernoteSession.getInstance(this, "redelva", "453e8a5fdee809be", EVERNOTE_SERVICE);
+        processExtraData(null);
+	}
+    
+    public void onNewIntent(Intent intent){
+    	super.onNewIntent(intent);
+    	
+    	setIntent(intent);
+    	
+    	processExtraData(intent.getExtras());
+    }
+    
+    private void processExtraData(Bundle savedInstanceState){
+    	mEvernoteSession = EvernoteSession.getInstance(this, "redelva", "453e8a5fdee809be", EVERNOTE_SERVICE);
         ShareSDK.initSDK(this);
 
-        Blogs = new ArrayList<Blog>();
+        Blogs = new ArrayList<Blog>();       
         
         // Show the Up button in the action bar.
         //getActionBar().setDisplayHomeAsUpEnabled(true);
@@ -93,16 +105,20 @@ public class BlogContentActivity extends SherlockFragmentActivity  {
         //
         // http://developer.android.com/guide/components/fragments.html
         //
+        fragment = new BlogContentFragment();
+        fragment.setArguments(getIntent().getExtras());
         if (savedInstanceState == null) {
             // Create the detail fragment and add it to the activity
-            // using a fragment transaction.            
-            fragment = new BlogContentFragment();
-            fragment.setArguments(getIntent().getExtras());
+            // using a fragment transaction.                        
             getSupportFragmentManager().beginTransaction()
                     .add(R.id.blog_detail_container, fragment)
                     .commit();
-        } 
-	}
+        }else{
+        	getSupportFragmentManager().beginTransaction()
+            .replace(R.id.blog_detail_container, fragment)
+            .commit();
+        }
+    }
     
     @Override
     public void onDestroy(){
