@@ -2,15 +2,22 @@ package com.lgq.rssreader.utils;
 
 import static cn.sharesdk.framework.utils.R.getStringRes;
 
+import java.io.File;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 import cn.sharesdk.framework.utils.UIHandler;
 
+import com.lgq.rssreader.MainActivity;
 import com.lgq.rssreader.R;
 import com.lgq.rssreader.R.string;
 import com.lgq.rssreader.core.ReaderApp;
+import com.lgq.rssreader.dal.BlogDalHelper;
+import com.lgq.rssreader.dal.ImageRecordDalHelper;
+import com.lgq.rssreader.entity.Blog;
 import com.lgq.rssreader.entity.Channel;
+import com.lgq.rssreader.entity.ImageRecord;
 import com.lgq.rssreader.enums.RssAction;
 import com.lgq.rssreader.task.DownloadTask;
 
@@ -28,6 +35,7 @@ import android.opengl.Visibility;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v4.app.NotificationCompat;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.WindowManager;
@@ -337,5 +345,65 @@ public class NotificationHelper {
         d.getWindow().setAttributes(lp);
         
         return d;
-    }    
+    }
+    
+    public static AlertDialog BuildDialogForClean(Context context, long size){
+    	//final TextView msg = new TextView(context);					
+    	//msg.setText(String.format(context.getResources().getString(R.string.cache_msg), String.valueOf(size)));
+    	AlertDialog dialog = new AlertDialog.Builder(context)  
+	     	.setIcon(android.R.drawable.btn_star_big_on)  
+	     	//.setTitle(R.string.cache_clean)
+	     	.setTitle(String.format(context.getResources().getString(R.string.cache_msg), String.valueOf(size)))
+	     	//.setView(msg)				     	
+	     	.setPositiveButton(R.string.yes, new OnClickListener(){
+				@Override
+				public void onClick(DialogInterface dialog, int which) {
+					Log.i("RssReader", "You had clicked " + which);
+					new Thread(){
+						@Override
+						public void run() {
+							//delete blog a month ago
+							Calendar calendar = Calendar.getInstance();					
+							calendar.add(Calendar.DATE, -7);    //得到前一个星期
+							BlogDalHelper blogHelper = new BlogDalHelper();
+							ImageRecordDalHelper imgHelper = new ImageRecordDalHelper();
+							List<Blog> toDeleteBlogs = blogHelper.GetBlogList(calendar.getTime());
+							
+							//find related imgs by blogid
+							List<ImageRecord> records = imgHelper.GetImageRecordByBlog(toDeleteBlogs);
+							
+							//List<Blog> toDeleteBlogs = blogHelper.GetBlogList(0.2);
+							//List<ImageRecord> records = imgHelper.GetImageRecordByBlog(toDeleteBlogs);
+							
+							String sDStateString = android.os.Environment.getExternalStorageState();
+
+							if (sDStateString.equals(android.os.Environment.MEDIA_MOUNTED)) {
+								try {														
+									File SDFile = android.os.Environment.getExternalStorageDirectory();
+									
+									for(ImageRecord record: records){
+										File img = new File(SDFile.getAbsolutePath() + record.StoredName);
+										if(img.exists()){
+											img.delete();
+										}
+									}
+									
+									blogHelper.DeleteBlog(toDeleteBlogs);
+									imgHelper.DeleteRecords(records);
+								}
+								catch(Exception e){
+									Log.e("RssReader", e.getMessage());
+								}
+							}
+							
+							blogHelper.Close();
+							imgHelper.Close();
+						}
+					}.start();
+				}
+			})
+	     	.setNegativeButton(R.string.no,  null).create();
+    	
+    	return dialog;
+    }
 }

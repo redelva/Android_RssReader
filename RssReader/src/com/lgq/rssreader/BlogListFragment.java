@@ -145,8 +145,9 @@ public class BlogListFragment extends Fragment implements IXListViewListener {
     
     public static final int LOADDATA = 1;
     public static final int UPDATESTATE = 2;
-    public static final int UPDATECOUNT = 3;
+    public static final int UPDATECOUNT = 3;       
     public static final int EMPTY = 4;
+    public static final int ONLOAD = 5;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -170,16 +171,21 @@ public class BlogListFragment extends Fragment implements IXListViewListener {
 	            	}else{
 	            		List<Blog> blogs = ((List<Blog>) msg.obj);
 	            		
-	            		for(Blog b : blogs){
-	            			if(!data.contains(b)){
-	            				data.add(b);
-	            			}
+	            		if(msg.arg1 == 0){
+	            			for(Blog b : blogs){
+		            			if(!data.contains(b)){
+		            				data.add(b);
+		            			}
+		            		}
+		            		Collections.sort(data, new Comparator<Blog>(){
+		         	           public int compare(Blog arg0, Blog arg1) {   
+		         	               return (int)(arg1.TimeStamp - arg0.TimeStamp);
+		         	            }
+		         	        });
 	            		}
-	            		Collections.sort(data, new Comparator<Blog>(){
-	         	           public int compare(Blog arg0, Blog arg1) {   
-	         	               return (int)(arg1.TimeStamp - arg0.TimeStamp);
-	         	            }
-	         	        });
+	            		else{
+	            			data = blogs;
+	            		}
 	            	}
 	            	adapter.notifyDataSetChanged();
 	            	
@@ -236,6 +242,9 @@ public class BlogListFragment extends Fragment implements IXListViewListener {
 					});        					
 					emptyLayout.showEmpty();
 	            	break;
+	            case ONLOAD:
+	                onLoad();
+	            	break;
             }
             
             super.handleMessage(msg);
@@ -264,6 +273,7 @@ public class BlogListFragment extends Fragment implements IXListViewListener {
                     		Message m = myHandler.obtainMessage();                    				
             	            m.what = LOADDATA;
             	            m.obj = data;
+            	            m.arg1 = 0;
             				myHandler.sendMessage(m);            				
                     	}else{
                     		onEmpty();
@@ -397,7 +407,7 @@ public class BlogListFragment extends Fragment implements IXListViewListener {
 		
         feedly.getRssBlog(channel, tmp, 30, new HttpResponseHandler(){
         	@Override
-        	public <Blog> void onCallback(List<Blog> blogs, boolean result, String msg, boolean hasMore){
+        	public <Blog> void onCallback(List<Blog> blogs, boolean result, String msg, boolean hasMore, int page){
         		if(result){
         			BlogDalHelper helper = new BlogDalHelper();
         			
@@ -409,6 +419,7 @@ public class BlogListFragment extends Fragment implements IXListViewListener {
         				Message m = myHandler.obtainMessage();
         	            m.what = LOADDATA;
         	            m.obj = blogs;
+        	            m.arg1 = 0;
         				myHandler.sendMessage(m);
         			}
         			
@@ -417,6 +428,7 @@ public class BlogListFragment extends Fragment implements IXListViewListener {
         			Message m = myHandler.obtainMessage();
     	            m.what = EMPTY;
     	            m.obj = blogs;
+    	            m.arg1 = 0;
     				myHandler.sendMessage(m);
         			Toast.makeText(ReaderApp.getAppContext(), msg, Toast.LENGTH_SHORT).show();
         		}
@@ -430,41 +442,50 @@ public class BlogListFragment extends Fragment implements IXListViewListener {
 		
 		FeedlyParser parser = new FeedlyParser();
 		
-		parser.getRssBlog(channel, b, 30, new HttpResponseHandler(){
+		parser.getRssBlog(channel, b, ReaderApp.getSettings().NumPerRequest, new HttpResponseHandler(){
         	@Override
-        	public <Blog> void onCallback(List<Blog> blogs, boolean result, String msg, boolean hasMore){
+        	public <Blog> void onCallback(final List<Blog> blogs, boolean result, String msg, boolean hasMore, int page){
         		if(result){
-        			
-        			BlogDalHelper helper = new BlogDalHelper();
-        			helper.SynchronyData2DB((List<com.lgq.rssreader.entity.Blog>) blogs);
-        			helper.Close();
+        			new Thread(){
+        				public void run(){
+        					BlogDalHelper helper = new BlogDalHelper();
+                			helper.SynchronyData2DB((List<com.lgq.rssreader.entity.Blog>) blogs);
+                			helper.Close();   
+        				}
+        			}.start();
         			
         			//only first page show in UI thread
-        			if(blogs.size() > 0){
+        			if(blogs.size() > 0 && page == 0){
         				Message m = myHandler.obtainMessage();
         	            m.what = LOADDATA;
         	            m.obj = blogs;
+        	            m.arg1 = hasMore ? 1 : 0;        	            
         				myHandler.sendMessage(m);
         			}
         			
         			if(hasMore){
         				Toast.makeText(ReaderApp.getAppContext(), ReaderApp.getAppContext().getResources().getString(R.string.list_loadingmore), Toast.LENGTH_SHORT).show();
-        			}else{
-        				onLoad();
+        			}else{        				
+        				Message m = myHandler.obtainMessage();
+        	            m.what = ONLOAD;        	                    	           
+        				myHandler.sendMessage(m);        				
         				Helper.sound();
         			}
         		}else{
-        			onLoad();
+        			Message m = myHandler.obtainMessage();
+    	            m.what = ONLOAD;        	                    	           
+    				myHandler.sendMessage(m);
         			Toast.makeText(ReaderApp.getAppContext(), msg, Toast.LENGTH_SHORT).show();        			
         		}
         	}
-		});
+		}, 0);
 	}
 
 	@Override
 	public void onLoadMore() {
 		
-		new Thread(){public void run(){
+		new Thread(){
+			public void run(){
 			final BlogDalHelper helper = new BlogDalHelper();
 			
 			pageIndex = pageIndex + 1;
@@ -475,6 +496,7 @@ public class BlogListFragment extends Fragment implements IXListViewListener {
 				Message m = myHandler.obtainMessage();                    				
 	            m.what = LOADDATA;
 	            m.obj = blogs;
+	            m.arg1 = 0;
 				myHandler.sendMessage(m);
 				//getActivity().runOnUiThread(new Runnable(){public void run(){onLoad();}});
 				
@@ -487,17 +509,23 @@ public class BlogListFragment extends Fragment implements IXListViewListener {
 				
 				FeedlyParser parser = new FeedlyParser();
 				
-				parser.getRssBlog(channel, b, 30, new HttpResponseHandler(){
+				parser.getRssBlog(channel, b, ReaderApp.getSettings().NumPerRequest, new HttpResponseHandler(){
 		        	@Override
-		        	public <Blog> void onCallback(List<Blog> blogs, boolean result, String msg, boolean hasMore){
-		        		if(result){        			
-		        			helper.SynchronyData2DB((List<com.lgq.rssreader.entity.Blog>) blogs);
-		        			helper.Close();
+		        	public <Blog> void onCallback(final List<Blog> blogs, boolean result, String msg, boolean hasMore, int page){
+		        		if(result){
+		        			
+		        			new Thread(){
+		        				public void run(){
+		        					helper.SynchronyData2DB((List<com.lgq.rssreader.entity.Blog>) blogs);
+				        			helper.Close();
+		        				}
+		        			}.start();	        			
 		        			
 		        			if(blogs.size() > 0){
 		        				Message m = myHandler.obtainMessage();                    				
 		        	            m.what = LOADDATA;
 		        	            m.obj = blogs;
+		        	            m.arg1 = 0;
 		        				myHandler.sendMessage(m);
 		        			}
 		        			

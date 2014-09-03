@@ -152,63 +152,16 @@ public class MainActivity extends SlidingFragmentActivity
 	                MainActivity.this.startService(i);
 				}
 				
-				long size = FileHelper.getImageFolderSize();
+				final long size = FileHelper.getImageFolderSize();
 				
 				if(size > ReaderApp.getSettings().CacheSize){
-					
-					//BuildDialogForClean();
-					final EditText msg = new EditText(MainActivity.this);
-			    	msg.setText(String.format(MainActivity.this.getResources().getString(R.string.cache_msg), String.valueOf(size)));
-			    	AlertDialog dialog = new AlertDialog.Builder(MainActivity.this)  
-				     	.setIcon(android.R.drawable.btn_star_big_on)  
-				     	.setTitle(R.string.cache_clean)
-				     	.setView(msg)				     	
-				     	.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener(){
-							@Override
-							public void onClick(DialogInterface dialog, int which) {
-								new Thread(){
-
-									@Override
-									public void run() {
-										//delete blog a month ago
-										Calendar calendar = Calendar.getInstance();					
-										calendar.add(Calendar.MONTH, -1);    //得到前一个月 
-										BlogDalHelper blogHelper = new BlogDalHelper();
-										ImageRecordDalHelper imgHelper = new ImageRecordDalHelper();
-										List<Blog> toDeleteBlogs = blogHelper.GetBlogList(calendar.getTime());
-										
-										//find related imgs by blogid
-										List<ImageRecord> records = imgHelper.GetImageRecordByBlog(toDeleteBlogs);
-										
-										String sDStateString = android.os.Environment.getExternalStorageState();
-		
-										if (sDStateString.equals(android.os.Environment.MEDIA_MOUNTED)) {
-											try {														
-												File SDFile = android.os.Environment.getExternalStorageDirectory();
-												
-												for(ImageRecord record: records){
-													File img = new File(SDFile.getAbsolutePath() + record.StoredName);
-													if(img.exists()){
-														img.deleteOnExit();									
-													}
-												}
-												
-												blogHelper.DeleteBlog(toDeleteBlogs);
-												imgHelper.DeleteRecords(records);
-											}
-											catch(Exception e){
-												Log.e("RssReader", e.getMessage());
-											}
-										}
-										
-										blogHelper.Close();
-										imgHelper.Close();
-									}
-								}.start();
-							}
-						})
-				     	.setNegativeButton(R.string.no,  null).create();		
-					dialog.show();
+					MainActivity.this.runOnUiThread(new Runnable(){
+						public void run(){
+							AlertDialog dialog = NotificationHelper.BuildDialogForClean(MainActivity.this, size);
+							
+							dialog.show();
+						}
+					});
 				}
 			}
         	
@@ -265,7 +218,7 @@ public class MainActivity extends SlidingFragmentActivity
 		
 		Animation anim = AnimationUtils.loadAnimation(MainActivity.this, R.anim.rotate);    	        
 		findViewById(R.id.ivTitleBtnRight).startAnimation(anim);
-    }
+    }   
     
     @Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data)

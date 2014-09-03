@@ -262,7 +262,7 @@ public class ReaderApp extends Application{
     		settings.NumPerRequest = Integer.parseInt(pref.getString("cache_numbers", "30"));
     		settings.SyncOnlyWifi = pref.getBoolean("cache_wifi", false);
     		settings.EnableCacheImage = pref.getBoolean("cache_image", false);
-    		settings.CacheSize = Integer.parseInt(pref.getString("cache_size", "200"));
+    		settings.CacheSize = Integer.parseInt(pref.getString("cache_size", "400"));
     		
     		settings.ImgLoadNum = Integer.parseInt(pref.getString("view_imgnum", "10"));
     		settings.ShowAllFeeds = pref.getBoolean("view_showallchannel", true);

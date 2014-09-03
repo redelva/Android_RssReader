@@ -20,6 +20,7 @@ public abstract class RssParser {
 	public abstract void markTag(Blog blog, RssAction action, HttpResponseHandler handler);
 	public abstract void markTag(Channel displayObj, RssAction action, HttpResponseHandler handler);
 	public abstract void getRssBlog(Channel channel, Blog blog, int count, HttpResponseHandler handler);
+	public abstract void getRssBlog(Channel channel, Blog blog, int count, HttpResponseHandler handler, int page);
 	public abstract void getFavor(String tag, Blog blog, int count, HttpResponseHandler handler);
 	public abstract void addRss(String rssUrl, String searchResultTitle, HttpResponseHandler handler);
 	public abstract void assignFolder(Channel folder, Channel single, HttpResponseHandler handler);

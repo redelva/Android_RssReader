@@ -225,29 +225,37 @@ public class FeedlyParser extends RssParser {
     	}
     	
     	client.post(null, FEEDLYLOGINURL, se, "application/x-www-form-urlencoded", new JsonHttpResponseHandler(){
-        	public void onFailure(Throwable t, String error){
-        		String result = "";
-        		if(error != null){
-        			result = error;
-        		}else{
-        			result = t.getCause().getMessage();
-        		}
-        		
-        		Log.e("RssReader", result);
-        		handler.onCallback("", false, result);
+        	public void onFailure(final Throwable t, final String error){
+        		new Thread(){
+        			public void run(){
+        				String result = "";
+                		if(error != null){
+                			result = error;
+                		}else{
+                			result = t.getCause().getMessage();
+                		}
+                		
+                		Log.e("RssReader", result);
+                		handler.onCallback("", false, result);
+        			}
+        		}.start();
         	}
         	
-        	public void onSuccess(JSONObject result){
-        		try {
-					ReaderApp.setToken(Token.AccessToken, result.getString("access_token"));
-					
-					handler.onCallback(result.getString("access_token"), true, "");
-				} catch (JSONException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-					
-					handler.onCallback("", false, e.getMessage());
-				}
+        	public void onSuccess(final JSONObject result){
+        		new Thread(){
+        			public void run(){
+        				try {
+        					ReaderApp.setToken(Token.AccessToken, result.getString("access_token"));
+        					
+        					handler.onCallback(result.getString("access_token"), true, "");
+        				} catch (JSONException e) {
+        					// TODO Auto-generated catch block
+        					e.printStackTrace();
+        					
+        					handler.onCallback("", false, e.getMessage());
+        				}
+        			}
+        		}.start();        		
         	}
         });
 	}
@@ -270,74 +278,82 @@ public class FeedlyParser extends RssParser {
         client.addHeader("X-Feedly-Access-Token", ReaderApp.getToken(Token.AccessToken));
     	
         client.get(PROFILEURL, new JsonHttpResponseHandler(){
-        	public void onFailure(Throwable e, String errorResponse){
-        		String error = "";
+        	public void onFailure(final Throwable e, final String errorResponse){
         		
-        		if(errorResponse == null)
-        			error = e.getCause().getMessage();
-        		else
-        			error = errorResponse;
-        		
-        		if (error != null && error.contains("expire")){
-        			//now token is expired, we need to relogin        			
-        			refreshToken(new HttpResponseHandler(){
-        				public void onCallback(String token, boolean result, String msg){
-        					if(result){
-        						getProfile(handler);
-        					}else{
-        						if (handler != null)
-        	        			{
-        	        				handler.sendResponseMessage(null, false, ReaderApp.getAppContext().getResources().getString(R.string.feedly_failedtogetprofile));
-        	        			}
-        					}
-        				}
-        			});
-        			
-        			Log.e("RssReader", error);
-       		 	}
-        		else
-        		{
-        			if (handler != null)
-        			{
-        				handler.sendResponseMessage(null, false, ReaderApp.getAppContext().getResources().getString(R.string.feedly_failedtogetprofile));
+        		new Thread(){
+        			public void run(){
+        				String error = "";
+                		
+                		if(errorResponse == null)
+                			error = e.getCause().getMessage();
+                		else
+                			error = errorResponse;
+                		
+                		if (error != null && error.contains("expire")){
+                			//now token is expired, we need to relogin        			
+                			refreshToken(new HttpResponseHandler(){
+                				public void onCallback(String token, boolean result, String msg){
+                					if(result){
+                						getProfile(handler);
+                					}else{
+                						if (handler != null)
+                	        			{
+                	        				handler.sendResponseMessage(null, false, ReaderApp.getAppContext().getResources().getString(R.string.feedly_failedtogetprofile));
+                	        			}
+                					}
+                				}
+                			});
+                			
+                			Log.e("RssReader", error);
+               		 	}
+                		else
+                		{
+                			if (handler != null)
+                			{
+                				handler.sendResponseMessage(null, false, ReaderApp.getAppContext().getResources().getString(R.string.feedly_failedtogetprofile));
+                			}
+                		}
         			}
-        		}        	
+        		}.start();
         	}
         	
-        	public void onSuccess(JSONObject result){
-        		try
-	            {
-        			Profile p = new Profile();
-        			
-        			p.Email = result.getString("email");
-        			p.FamilyName = result.getString("familyName");
-        			p.Gender = result.has("gender") ? result.getString("gender") : "";
-        			p.GivenName = result.getString("givenName");
-        			p.Google = result.getString("google");
-        			p.Id = result.getString("id");
-        			p.Locale = result.getString("locale");
-        			p.Picture = result.getString("picture").replace("?sz=50", "?sz=420");
-        			p.Reader = result.has("reader") ?result.getString("reader") : "";
-        			p.Wave = result.getString("wave");
-        			
-        			ReaderApp.setProfile(p);
-        			
-        			if (handler != null)
-	                {
-	            		handler.sendResponseMessage(p, true, ReaderApp.getAppContext().getResources().getString(R.string.feedly_successtogetprofile));
-	                }
-        			
-	            }catch(JSONException e){	            	
-	            	e.printStackTrace();
-	            	
-	                Log.i("RssReader", "Error Happen Profile" + e.getMessage());
-	            }
+        	public void onSuccess(final JSONObject result){
+        		new Thread(){
+        			public void run(){
+        				try
+        	            {
+                			Profile p = new Profile();
+                			
+                			p.Email = result.getString("email");
+                			p.FamilyName = result.getString("familyName");
+                			p.Gender = result.has("gender") ? result.getString("gender") : "";
+                			p.GivenName = result.getString("givenName");
+                			p.Google = result.getString("google");
+                			p.Id = result.getString("id");
+                			p.Locale = result.getString("locale");
+                			p.Picture = result.getString("picture").replace("?sz=50", "?sz=420");
+                			p.Reader = result.has("reader") ?result.getString("reader") : "";
+                			p.Wave = result.getString("wave");
+                			
+                			ReaderApp.setProfile(p);
+                			
+                			if (handler != null)
+        	                {
+        	            		handler.sendResponseMessage(p, true, ReaderApp.getAppContext().getResources().getString(R.string.feedly_successtogetprofile));
+        	                }
+                			
+        	            }catch(JSONException e){	            	
+        	            	e.printStackTrace();
+        	            	
+        	                Log.i("RssReader", "Error Happen Profile" + e.getMessage());
+        	            }
+        			}
+        		}.start();        		
         	}
         });
 	}
 
-	private void syncToFeedly(List<SyncState> unsync, HttpResponseHandler handler)
-    {
+	private void syncToFeedly(List<SyncState> unsync, HttpResponseHandler handler){				
 		if(unsync == null || unsync.size() == 0)
 			return ;
 		
@@ -445,128 +461,136 @@ public class FeedlyParser extends RssParser {
     	
         client.get(SUBSCRIPTIONURL + "&ck=" + System.currentTimeMillis(), new JsonHttpResponseHandler(){
         	@Override
-        	public void onFailure(Throwable e, String errorResponse){
-        		String error = "";
-        		
-        		if(errorResponse == null)
-        			error = e.getCause().getMessage();
-        		else
-        			error = errorResponse;
-        		
-        		if (error != null && error.contains("expire")){
-        			//now token is expired, we need to relogin        			
-        			refreshToken(new HttpResponseHandler(){
-        				public void onCallback(String token, boolean result, String msg){
-        					if(result){
-        						getSubsciptions(handler);
-        					}else{
-        						if (handler != null)
-        	        			{
-        	        				handler.sendResponseMessage(null, null, false, ReaderApp.getAppContext().getResources().getString(R.string.feedly_failedtogettags));
-        	        			}
-        					}
-        				}
-        			});
-        			
-        			Log.e("RssReader", error);
-       		 	}
-        		else
-        		{
-        			if (handler != null)
-        			{
-        				handler.sendResponseMessage(null, null, false, ReaderApp.getAppContext().getResources().getString(R.string.feedly_failedtogettags));
+        	public void onFailure(final Throwable e, final String errorResponse){
+        		new Thread(){
+        			public void run(){
+        				String error = "";
+                		
+                		if(errorResponse == null)
+                			error = e.getCause().getMessage();
+                		else
+                			error = errorResponse;
+                		
+                		if (error != null && error.contains("expire")){
+                			//now token is expired, we need to relogin        			
+                			refreshToken(new HttpResponseHandler(){
+                				public void onCallback(String token, boolean result, String msg){
+                					if(result){
+                						getSubsciptions(handler);
+                					}else{
+                						if (handler != null)
+                	        			{
+                	        				handler.sendResponseMessage(null, null, false, ReaderApp.getAppContext().getResources().getString(R.string.feedly_failedtogettags));
+                	        			}
+                					}
+                				}
+                			});
+                			
+                			Log.e("RssReader", error);
+               		 	}
+                		else
+                		{
+                			if (handler != null)
+                			{
+                				handler.sendResponseMessage(null, null, false, ReaderApp.getAppContext().getResources().getString(R.string.feedly_failedtogettags));
+                			}
+                		}
         			}
-        		}        		
+        		}.start();        		
         	}
         	
-        	public void onSuccess(JSONArray items){
-        		try
-	            {
-        			List<Tag> tags = new ArrayList<Tag>();
-	                for(int i=0; i < items.length(); i++)
-	                {
-	                	if(items.getJSONObject(i).has("categories"))
-	                	{
-	                		Tag t = new Tag();
-		                    JSONArray categories = items.getJSONObject(i).getJSONArray("categories");
-		                    
-		                    JSONObject node = null;
-		                    for(int j=0; j< categories.length();j++)
-		                    {
-		                    	if(categories.getJSONObject(j).get("id") != null)
-		                    	{
-		                    		node = categories.getJSONObject(j);
-		                    		t.Id = node.getString("id");
-			                        t.Label = node.getString("label");
-					                        
-			                        if (!tags.contains(t))
-			                            tags.add(t);
-		                    	}
-		                    }		                    
-	                	}
-	                }
-	
-	                Tags = tags;
-	
-	                Log.i("RssReader", "Finish tags");
-	                	                
-	                if (handler != null)
-	                {
-	                	handler.sendResponseMessage(null, null, true, ReaderApp.getAppContext().getResources().getString(R.string.feedly_successtogettags));
-	                }
-	                
-	                List<Subscription> subs = new ArrayList<Subscription>();
-	
-	                for(int i=0; i< items.length();i++)
-	                {
-	                    Subscription s = new Subscription();
-                    	
-	                    JSONObject subscription = items.getJSONObject(i);
-	                    
-	                    s.Id = subscription.getString("id");
-	                    s.Title = subscription.getString("title");
-	                    s.Categories = new ArrayList<Tag>();
-	                    if (subscription.has("categories") && subscription.getJSONArray("categories").length() > 0)
-	                    {
-	                    	JSONArray categories = subscription.getJSONArray("categories");
-	                        for(int j=0; j< categories.length(); j++)
-	                        {
-	                        	JSONObject category = categories.getJSONObject(j);
-	                            Tag t = new Tag();
-	                            t.Id = category.getString("id");
-	                            t.Label = category.getString("label");                                     
-	                            s.Categories.add(t);
-	                        }                                
-	                    }
-	                    
-	                    if (subscription.has("updated"))
-	                        s.FirstItemMSEC = new Date(subscription.getLong("updated"));
-	                    else
-	                        s.FirstItemMSEC = new Date();
-	
-	                    subs.add(s);
-	                }
+        	public void onSuccess(final JSONArray items){
+        		new Thread(){
+        			public void run(){
+        				try
+        	            {
+                			List<Tag> tags = new ArrayList<Tag>();
+        	                for(int i=0; i < items.length(); i++)
+        	                {
+        	                	if(items.getJSONObject(i).has("categories"))
+        	                	{
+        	                		Tag t = new Tag();
+        		                    JSONArray categories = items.getJSONObject(i).getJSONArray("categories");
+        		                    
+        		                    JSONObject node = null;
+        		                    for(int j=0; j< categories.length();j++)
+        		                    {
+        		                    	if(categories.getJSONObject(j).get("id") != null)
+        		                    	{
+        		                    		node = categories.getJSONObject(j);
+        		                    		t.Id = node.getString("id");
+        			                        t.Label = node.getString("label");
+        					                        
+        			                        if (!tags.contains(t))
+        			                            tags.add(t);
+        		                    	}
+        		                    }		                    
+        	                	}
+        	                }
+        	
+        	                Tags = tags;
+        	
+        	                Log.i("RssReader", "Finish tags");
+        	                	                
+        	                if (handler != null)
+        	                {
+        	                	handler.sendResponseMessage(null, null, true, ReaderApp.getAppContext().getResources().getString(R.string.feedly_successtogettags));
+        	                }
+        	                
+        	                List<Subscription> subs = new ArrayList<Subscription>();
+        	
+        	                for(int i=0; i< items.length();i++)
+        	                {
+        	                    Subscription s = new Subscription();
+                            	
+        	                    JSONObject subscription = items.getJSONObject(i);
+        	                    
+        	                    s.Id = subscription.getString("id");
+        	                    s.Title = subscription.getString("title");
+        	                    s.Categories = new ArrayList<Tag>();
+        	                    if (subscription.has("categories") && subscription.getJSONArray("categories").length() > 0)
+        	                    {
+        	                    	JSONArray categories = subscription.getJSONArray("categories");
+        	                        for(int j=0; j< categories.length(); j++)
+        	                        {
+        	                        	JSONObject category = categories.getJSONObject(j);
+        	                            Tag t = new Tag();
+        	                            t.Id = category.getString("id");
+        	                            t.Label = category.getString("label");                                     
+        	                            s.Categories.add(t);
+        	                        }                                
+        	                    }
+        	                    
+        	                    if (subscription.has("updated"))
+        	                        s.FirstItemMSEC = new Date(subscription.getLong("updated"));
+        	                    else
+        	                        s.FirstItemMSEC = new Date();
+        	
+        	                    subs.add(s);
+        	                }
 
-	                Subscriptions = subs;                        
-	
-	                if (handler != null)
-	                {
-	                	handler.sendResponseMessage(null, null, true, ReaderApp.getAppContext().getResources().getString(R.string.feedly_successtogetsubscriptions));
-	                }
-	                	                
-	                Log.i("RssReader", "Finish Subscriptions");
-	            }
-	            catch (JSONException e)
-	            {
-	            	if (handler != null)
-	                {
-	            		handler.sendResponseMessage(null, null, false, ReaderApp.getAppContext().getResources().getString(R.string.feedly_failedtogetsubscriptions));
-	                }
-	            	
-	            	e.printStackTrace();
-	            	
-	                Log.i("RssReader", "Error Happen Subscriptions" + e.getMessage());
-	            }
+        	                Subscriptions = subs;                        
+        	
+        	                if (handler != null)
+        	                {
+        	                	handler.sendResponseMessage(null, null, true, ReaderApp.getAppContext().getResources().getString(R.string.feedly_successtogetsubscriptions));
+        	                }
+        	                	                
+        	                Log.i("RssReader", "Finish Subscriptions");
+        	            }
+        	            catch (JSONException e)
+        	            {
+        	            	if (handler != null)
+        	                {
+        	            		handler.sendResponseMessage(null, null, false, ReaderApp.getAppContext().getResources().getString(R.string.feedly_failedtogetsubscriptions));
+        	                }
+        	            	
+        	            	e.printStackTrace();
+        	            	
+        	                Log.i("RssReader", "Error Happen Subscriptions" + e.getMessage());
+        	            }
+        			}
+        		}.start();        		
         	}
         });
     }
@@ -580,75 +604,83 @@ public class FeedlyParser extends RssParser {
     	//client.get(UNREADURL + "&ck=" + System.currentTimeMillis() + "&steamId=" + HtmlHelper.UrlEncodeUpper(feedId), new JsonHttpResponseHandler(){
         client.get(UNREADURL + "&ck=" + System.currentTimeMillis() + "&steamId=" + URLEncoder.encode(feedId), new JsonHttpResponseHandler(){
     		@Override
-    		public void onFailure(Throwable e, String errorResponse){
-        		String error = "";
-        		
-        		if(errorResponse == null)
-        			error = e.getCause().getMessage();
-        		else
-        			error = errorResponse;
-        		
-        		if (error != null && error.contains("expire"))
-       		 	{
-        			//now token is expired, we need to relogin        			
-        			refreshToken(new HttpResponseHandler(){
-        				public void onCallback(String token, boolean result, String msg){
-        					if(result){
-        						getCount(feedId, handler);
-        					}else{
-        						if (handler != null)
-        	        			{
-        	        				handler.sendResponseMessage(null, null, false, ReaderApp.getAppContext().getResources().getString(R.string.feedly_failedtogetunreadcounts));
-        	        			}
-        					}
-        				}
-        			});
-        			
-        			Log.e("RssReader", error);
-       		 	}
-        		else
-        		{
-        			if (handler != null)
-        			{
-        				handler.sendResponseMessage(null, null, false, ReaderApp.getAppContext().getResources().getString(R.string.feedly_failedtogetunreadcounts));
+    		public void onFailure(final Throwable e, final String errorResponse){
+    			new Thread(){
+        			public void run(){
+        				String error = "";
+                		
+                		if(errorResponse == null)
+                			error = e.getCause().getMessage();
+                		else
+                			error = errorResponse;
+                		
+                		if (error != null && error.contains("expire"))
+               		 	{
+                			//now token is expired, we need to relogin        			
+                			refreshToken(new HttpResponseHandler(){
+                				public void onCallback(String token, boolean result, String msg){
+                					if(result){
+                						getCount(feedId, handler);
+                					}else{
+                						if (handler != null)
+                	        			{
+                	        				handler.sendResponseMessage(null, null, false, ReaderApp.getAppContext().getResources().getString(R.string.feedly_failedtogetunreadcounts));
+                	        			}
+                					}
+                				}
+                			});
+                			
+                			Log.e("RssReader", error);
+               		 	}
+                		else
+                		{
+                			if (handler != null)
+                			{
+                				handler.sendResponseMessage(null, null, false, ReaderApp.getAppContext().getResources().getString(R.string.feedly_failedtogetunreadcounts));
+                			}
+                		}
         			}
-        		}        		
+        		}.start();        		
         	}
     		
-    		public void onSuccess(JSONObject root){
-    			try
-                {
-    				for(int i=0, len=root.getJSONArray("unreadcounts").length(); i<len;i++){
-    					JSONObject obj = root.getJSONArray("unreadcounts").getJSONObject(i);
-    					
-    					if(obj.getString("id").equals(feedId)){
-    						int count = obj.getInt("count");                       
+    		public void onSuccess(final JSONObject root){
+    			new Thread(){
+        			public void run(){
+        				try
+                        {
+            				for(int i=0, len=root.getJSONArray("unreadcounts").length(); i<len;i++){
+            					JSONObject obj = root.getJSONArray("unreadcounts").getJSONObject(i);
+            					
+            					if(obj.getString("id").equals(feedId)){
+            						int count = obj.getInt("count");                       
 
-    	                    if (handler != null)
-    	                    {
-    	                    	handler.sendResponseMessage(count, true, ReaderApp.getAppContext().getResources().getString(R.string.feedly_successtogetunreadcounts));
-    	                    }
-    	                    
-    	                    return;
-    					}
-    				}
-    				
-    				if (handler != null)
-                    {
-                    	handler.sendResponseMessage(-1, false, ReaderApp.getAppContext().getResources().getString(R.string.feedly_failedtogetunreadcounts));
-                    }
+            	                    if (handler != null)
+            	                    {
+            	                    	handler.sendResponseMessage(count, true, ReaderApp.getAppContext().getResources().getString(R.string.feedly_successtogetunreadcounts));
+            	                    }
+            	                    
+            	                    return;
+            					}
+            				}
+            				
+            				if (handler != null)
+                            {
+                            	handler.sendResponseMessage(-1, false, ReaderApp.getAppContext().getResources().getString(R.string.feedly_failedtogetunreadcounts));
+                            }
 
 
-                    Log.i("RssReader","Finish unreadcount");
-                }
-                catch (Exception ex)
-                {
-                    if (handler != null)
-                    {
-                    	handler.sendResponseMessage(0, false, ReaderApp.getAppContext().getResources().getString(R.string.feedly_failedtogetunreadcounts));
-                    }
-                    Log.i("RssReader","Error Happen unreadcount" + ex.getMessage());
-                }
+                            Log.i("RssReader","Finish unreadcount");
+                        }
+                        catch (Exception ex)
+                        {
+                            if (handler != null)
+                            {
+                            	handler.sendResponseMessage(0, false, ReaderApp.getAppContext().getResources().getString(R.string.feedly_failedtogetunreadcounts));
+                            }
+                            Log.i("RssReader","Error Happen unreadcount" + ex.getMessage());
+                        }
+        			}
+        		}.start();    			
     		}
     	});
     }
@@ -661,80 +693,84 @@ public class FeedlyParser extends RssParser {
         client.addHeader("X-Feedly-Access-Token", ReaderApp.getToken(Token.AccessToken));
     	client.get(UNREADURL + "&ck=" + System.currentTimeMillis(), new JsonHttpResponseHandler(){
     		@Override
-    		public void onFailure(Throwable e, String errorResponse){
-        		String error = "";
-        		
-        		if(errorResponse == null)
-        			error = e.getCause().getMessage();
-        		else
-        			error = errorResponse;
-        		
-        		if (error != null && error.contains("expire"))
-       		 	{
-        			//now token is expired, we need to relogin        			
-        			refreshToken(new HttpResponseHandler(){
-        				public void onCallback(String token, boolean result, String msg){
-        					if(result){
-        						getUnReadCount(handler);
-        					}else{
-        						if (handler != null)
-        	        			{
-        	        				handler.sendResponseMessage(null, null, false, ReaderApp.getAppContext().getResources().getString(R.string.feedly_failedtogetunreadcounts));
-        	        			}
-        					}
-        				}
-        			});
-        			
-        			Log.e("RssReader", error);
-       		 	}
-        		else
-        		{
-        			if (handler != null)
-        			{
-        				handler.sendResponseMessage(null, null, false, ReaderApp.getAppContext().getResources().getString(R.string.feedly_failedtogetunreadcounts));
+    		public void onFailure(final Throwable e, final String errorResponse){
+    			new Thread(){
+        			public void run(){
+        				String error = "";
+                		
+                		if(errorResponse == null)
+                			error = e.getCause().getMessage();
+                		else
+                			error = errorResponse;
+                		
+                		if (error != null && error.contains("expire")){
+                			//now token is expired, we need to relogin        			
+                			refreshToken(new HttpResponseHandler(){
+                				public void onCallback(String token, boolean result, String msg){
+                					if(result){
+                						getUnReadCount(handler);
+                					}else{
+                						if (handler != null){
+                	        				handler.sendResponseMessage(null, null, false, ReaderApp.getAppContext().getResources().getString(R.string.feedly_failedtogetunreadcounts));
+                	        			}
+                					}
+                				}
+                			});
+                			
+                			Log.e("RssReader", error);
+               		 	}
+                		else{
+                			if (handler != null){
+                				handler.sendResponseMessage(null, null, false, ReaderApp.getAppContext().getResources().getString(R.string.feedly_failedtogetunreadcounts));
+                			}
+                		} 
         			}
-        		}        		
+        		}.start();       		
         	}
     		
-    		public void onSuccess(JSONObject root){
-    			try
-                {
-    				Unread unRead = new Unread();
-                    //unRead.Max = root["max"].Value<int>();
+    		public void onSuccess(final JSONObject root){
+    			new Thread(){
+        			public void run(){
+        				try
+                        {
+            				Unread unRead = new Unread();
+                            //unRead.Max = root["max"].Value<int>();
 
-                    unRead.Unreads = new ArrayList<UnReadCount>();
-                    
-                    JSONArray unreadcounts = root.getJSONArray("unreadcounts");
-                    
-                    for(int i=0; i< unreadcounts.length();i++)
-                    {
-                    	JSONObject count = unreadcounts.getJSONObject(i);
-                    	
-                        UnReadCount u = new UnReadCount();
-                        u.Id = count.getString("id");
-                        u.Count = count.getInt("count");
-                        u.NewestItemStamp = new Date(count.getLong("updated"));
+                            unRead.Unreads = new ArrayList<UnReadCount>();
+                            
+                            JSONArray unreadcounts = root.getJSONArray("unreadcounts");
+                            
+                            for(int i=0; i< unreadcounts.length();i++)
+                            {
+                            	JSONObject count = unreadcounts.getJSONObject(i);
+                            	
+                                UnReadCount u = new UnReadCount();
+                                u.Id = count.getString("id");
+                                u.Count = count.getInt("count");
+                                u.NewestItemStamp = new Date(count.getLong("updated"));
 
-                        unRead.Unreads.add(u);
-                    }
+                                unRead.Unreads.add(u);
+                            }
 
-                    Unreads = unRead;                       
+                            Unreads = unRead;                       
 
-                    if (handler != null)
-                    {
-                    	handler.sendResponseMessage(null, null, true, ReaderApp.getAppContext().getResources().getString(R.string.feedly_successtogetunreadcounts));
-                    }
+                            if (handler != null)
+                            {
+                            	handler.sendResponseMessage(null, null, true, ReaderApp.getAppContext().getResources().getString(R.string.feedly_successtogetunreadcounts));
+                            }
 
-                    Log.i("RssReader","Finish unreadcount");
-                }
-                catch (Exception ex)
-                {
-                    if (handler != null)
-                    {
-                    	handler.sendResponseMessage(null, null, true, ReaderApp.getAppContext().getResources().getString(R.string.feedly_failedtogetunreadcounts));
-                    }
-                    Log.i("RssReader","Error Happen unreadcount" + ex.getMessage());
-                }
+                            Log.i("RssReader","Finish unreadcount");
+                        }
+                        catch (Exception ex)
+                        {
+                            if (handler != null)
+                            {
+                            	handler.sendResponseMessage(null, null, true, ReaderApp.getAppContext().getResources().getString(R.string.feedly_failedtogetunreadcounts));
+                            }
+                            Log.i("RssReader","Error Happen unreadcount" + ex.getMessage());
+                        }
+        			}
+        		}.start();    			
     		}
     	});
     }
@@ -747,74 +783,82 @@ public class FeedlyParser extends RssParser {
         client.addHeader("X-Feedly-Access-Token", ReaderApp.getToken(Token.AccessToken));
     	client.get("http://cloud.feedly.com/v3/preferences?ct=feedly.desktop&ck=" + System.currentTimeMillis(), new JsonHttpResponseHandler(){
     		@Override
-    		public void onFailure(Throwable e, String errorResponse){
-        		String error = "";
-        		
-        		if(errorResponse == null)
-        			error = e.getCause().getMessage();
-        		else
-        			error = errorResponse;
-        		
-        		if (error != null && error.contains("expire"))
-       		 	{
-        			//now token is expired, we need to relogin        			
-        			refreshToken(new HttpResponseHandler(){
-        				public void onCallback(String token, boolean result, String msg){
-        					if(result){
-        						getSortList(handler);
-        					}else{
-        						if (handler != null)
-        	        			{
-        	        				handler.sendResponseMessage(null, null, false, ReaderApp.getAppContext().getResources().getString(R.string.feedly_failedtogetsortorder));
-        	        			}
-        					}
-        				}
-        			});
-        			
-        			Log.e("RssReader", error);
-       		 	}
-        		else
-        		{
-        			if (handler != null)
-        			{
-        				handler.sendResponseMessage(null, null, false, ReaderApp.getAppContext().getResources().getString(R.string.feedly_failedtogetsortorder));
+    		public void onFailure(final Throwable e, final String errorResponse){
+    			new Thread(){
+        			public void run(){
+        				String error = "";
+                		
+                		if(errorResponse == null)
+                			error = e.getCause().getMessage();
+                		else
+                			error = errorResponse;
+                		
+                		if (error != null && error.contains("expire"))
+               		 	{
+                			//now token is expired, we need to relogin        			
+                			refreshToken(new HttpResponseHandler(){
+                				public void onCallback(String token, boolean result, String msg){
+                					if(result){
+                						getSortList(handler);
+                					}else{
+                						if (handler != null)
+                	        			{
+                	        				handler.sendResponseMessage(null, null, false, ReaderApp.getAppContext().getResources().getString(R.string.feedly_failedtogetsortorder));
+                	        			}
+                					}
+                				}
+                			});
+                			
+                			Log.e("RssReader", error);
+               		 	}
+                		else
+                		{
+                			if (handler != null)
+                			{
+                				handler.sendResponseMessage(null, null, false, ReaderApp.getAppContext().getResources().getString(R.string.feedly_failedtogetsortorder));
+                			}
+                		}
         			}
-        		}        		
+        		}.start();        		
         	}
     		
-        	public void onSuccess(JSONObject result){
-        		try{
-        			if(result.has("categoriesOrdering"))
-                    {
-        				JSONArray orders = new JSONArray(result.getString("categoriesOrdering"));        				        			
-                        
-                        SortList = new ArrayList<String>();
-                        
-                        int length = orders.length();
-                        for(int i = 0; i<length; i++){
-                        	SortList.add(orders.getString(i));
-                        }                		
-                    }
-                    else
-                    {
-                        SortList = new ArrayList<String>();
-                    }
+        	public void onSuccess(final JSONObject result){
+        		new Thread(){
+        			public void run(){
+        				try{
+                			if(result.has("categoriesOrdering"))
+                            {
+                				JSONArray orders = new JSONArray(result.getString("categoriesOrdering"));        				        			
+                                
+                                SortList = new ArrayList<String>();
+                                
+                                int length = orders.length();
+                                for(int i = 0; i<length; i++){
+                                	SortList.add(orders.getString(i));
+                                }                		
+                            }
+                            else
+                            {
+                                SortList = new ArrayList<String>();
+                            }
 
-                    if (handler != null)
-                    {
-                    	handler.sendResponseMessage(null, null, true, ReaderApp.getAppContext().getResources().getString(R.string.feedly_successtogetsortorder));
-                    }
+                            if (handler != null)
+                            {
+                            	handler.sendResponseMessage(null, null, true, ReaderApp.getAppContext().getResources().getString(R.string.feedly_successtogetsortorder));
+                            }
 
-                    Log.i("RssReader", "Finish Sort List");
-        		}
-        		catch(Exception e){
-        			if (handler != null)
-                    {
-        				handler.sendResponseMessage(null, null, false, ReaderApp.getAppContext().getResources().getString(R.string.feedly_failedtogetsortorder));
-                    }
+                            Log.i("RssReader", "Finish Sort List");
+                		}
+                		catch(Exception e){
+                			if (handler != null)
+                            {
+                				handler.sendResponseMessage(null, null, false, ReaderApp.getAppContext().getResources().getString(R.string.feedly_failedtogetsortorder));
+                            }
 
-                    Log.i("RssReader", "Error Sort List" + e.getMessage());
-        		}
+                            Log.i("RssReader", "Error Sort List" + e.getMessage());
+                		}
+        			}
+        		}.start();        		
         	}
     	});
     }
@@ -835,60 +879,68 @@ public class FeedlyParser extends RssParser {
         
         client.get(url, new JsonHttpResponseHandler(){
         	@Override
-        	public void onFailure(Throwable e, String errorResponse){
-        		String error = "";
-        		
-        		if(errorResponse == null)
-        			error = e.getCause().getMessage();
-        		else
-        			error = errorResponse;
-        		
-        		if (error != null && error.contains("expire")){       		 	
-        			//now token is expired, we need to relogin        			
-        			refreshToken(new HttpResponseHandler(){
-        				public void onCallback(String token, boolean result, String msg){
-        					if(result){
-        						syncFromFeedly(handler);
-        					}else{
-//        						if (handler != null)
-//        	        			{
-//        							handler.sendResponseMessage(null, false, ReaderApp.getAppContext().getResources().getString(R.string.feedly_failedsynctofeedly));
-//        	        			}
-        					}
-        				}
-        			});
-        			
-        			Log.e("RssReader", error);
-       		 	}
-//        		else
-//        		{
-//        			if (handler != null)
-//        			{
-//        				handler.sendResponseMessage(null, false, ReaderApp.getAppContext().getResources().getString(R.string.feedly_failedsynctofeedly));
-//        			}
-//        		}        		
+        	public void onFailure(final Throwable e, final String errorResponse){
+        		new Thread(){
+        			public void run(){
+        				String error = "";
+                		
+                		if(errorResponse == null)
+                			error = e.getCause().getMessage();
+                		else
+                			error = errorResponse;
+                		
+                		if (error != null && error.contains("expire")){       		 	
+                			//now token is expired, we need to relogin        			
+                			refreshToken(new HttpResponseHandler(){
+                				public void onCallback(String token, boolean result, String msg){
+                					if(result){
+                						syncFromFeedly(handler);
+                					}else{
+//                						if (handler != null)
+//                	        			{
+//                							handler.sendResponseMessage(null, false, ReaderApp.getAppContext().getResources().getString(R.string.feedly_failedsynctofeedly));
+//                	        			}
+                					}
+                				}
+                			});
+                			
+                			Log.e("RssReader", error);
+               		 	}
+//                		else
+//                		{
+//                			if (handler != null)
+//                			{
+//                				handler.sendResponseMessage(null, false, ReaderApp.getAppContext().getResources().getString(R.string.feedly_failedsynctofeedly));
+//                			}
+//                		}
+        			}
+        		}.start();        		
         	}
         	
-        	public void onSuccess(JSONObject data){        		
-				try {
-					List<String> entryIds = new ArrayList<String>();
-					
-					for(int i=0, len=data.getJSONArray("entries").length(); i< len; i++){						
-						entryIds.add(data.getJSONArray("entries").getString(i));
-					}
-					
-					editor.putLong("LastTimeSyncUnread", System.currentTimeMillis()).commit();
-					
-					if(handler != null && entryIds.size() > 0)
-						handler.sendResponseMessage(entryIds, true, ReaderApp.getAppContext().getResources().getString(R.string.feedly_successsynctofeedly));
-					
-					Log.i("RssReader", "Sync from feedly complete");
-				} catch (JSONException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-					if(handler != null)
-						handler.sendResponseMessage(null, false, ReaderApp.getAppContext().getResources().getString(R.string.feedly_failedsynctofeedly));
-				}
+        	public void onSuccess(final JSONObject data){
+        		new Thread(){
+        			public void run(){
+        				try {
+        					List<String> entryIds = new ArrayList<String>();
+        					
+        					for(int i=0, len=data.getJSONArray("entries").length(); i< len; i++){						
+        						entryIds.add(data.getJSONArray("entries").getString(i));
+        					}
+        					
+        					editor.putLong("LastTimeSyncUnread", System.currentTimeMillis()).commit();
+        					
+        					if(handler != null && entryIds.size() > 0)
+        						handler.sendResponseMessage(entryIds, true, ReaderApp.getAppContext().getResources().getString(R.string.feedly_successsynctofeedly));
+        					
+        					Log.i("RssReader", "Sync from feedly complete");
+        				} catch (JSONException e) {
+        					// TODO Auto-generated catch block
+        					e.printStackTrace();
+        					if(handler != null)
+        						handler.sendResponseMessage(null, false, ReaderApp.getAppContext().getResources().getString(R.string.feedly_failedsynctofeedly));
+        				}
+        			}
+        		}.start();				
         	}
         });
 	}
@@ -956,46 +1008,53 @@ public class FeedlyParser extends RssParser {
         
         AsyncHttpResponseHandler async = new  AsyncHttpResponseHandler(){
         	public void onSuccess(String response){
-        		if (handler != null)
-                {
-        			handler.sendResponseMessage(action, true, ReaderApp.getAppContext().getResources().getString(R.string.feedly_successupdatestatus));
-                }
+        		new Thread(){
+        			public void run(){
+        				if (handler != null)
+                        {
+                			handler.sendResponseMessage(action, true, ReaderApp.getAppContext().getResources().getString(R.string.feedly_successupdatestatus));
+                        }
+        			}
+        		}.start();        		
         	}
         	
-        	 public void onFailure(Throwable e, String response) {
+        	 public void onFailure(final Throwable e, final String response) {
                  // Response failed :(
-        		 
-        		 String error = "";
-        		 if(response == null){
-        			 error = e.getCause().getMessage();
-        		 }else{
-        			 error = response;
-        		 }
-        		         		 
-         		
-        		 if (error != null && error.contains("expire")){
-        			 //now token is expired, we need to relogin        			
-        			 refreshToken(new HttpResponseHandler(){
-        				 public void onCallback(String token, boolean result, String msg){
-        					 if(result){
-        						 batchMarkTag(blogs, action, handler);
-        					 }else{
-        						 if (handler != null){
-        							 handler.sendResponseMessage(action, false, ReaderApp.getAppContext().getResources().getString(R.string.feedly_failedupdatestatus));
-        						 }
-        					 }
-        				 }
-        			 });
-        			 
-        			 Log.i("RssReader", error);
-		 		 }
-        		 else
-        		 {
-        			 if (handler != null)
-        			 {
-        				 handler.sendResponseMessage(action, false, ReaderApp.getAppContext().getResources().getString(R.string.feedly_failedupdatestatus));
-        			 }
-        		 }				
+        		 new Thread(){
+         			public void run(){
+		        		 String error = "";
+		        		 if(response == null){
+		        			 error = e.getCause().getMessage();
+		        		 }else{
+		        			 error = response;
+		        		 }
+		        		         		 
+		         		
+		        		 if (error != null && error.contains("expire")){
+		        			 //now token is expired, we need to relogin        			
+		        			 refreshToken(new HttpResponseHandler(){
+		        				 public void onCallback(String token, boolean result, String msg){
+		        					 if(result){
+		        						 batchMarkTag(blogs, action, handler);
+		        					 }else{
+		        						 if (handler != null){
+		        							 handler.sendResponseMessage(action, false, ReaderApp.getAppContext().getResources().getString(R.string.feedly_failedupdatestatus));
+		        						 }
+		        					 }
+		        				 }
+		        			 });
+		        			 
+		        			 Log.i("RssReader", error);
+				 		 }
+		        		 else
+		        		 {
+		        			 if (handler != null)
+		        			 {
+		        				 handler.sendResponseMessage(action, false, ReaderApp.getAppContext().getResources().getString(R.string.feedly_failedupdatestatus));
+		        			 }
+		        		 }	
+         			}
+         		}.start();			
         	 }
         };
         
@@ -1064,46 +1123,54 @@ public class FeedlyParser extends RssParser {
         
         AsyncHttpResponseHandler async = new  AsyncHttpResponseHandler(){
         	public void onSuccess(String response){
-        		if (handler != null)
-                {
-        			handler.sendResponseMessage(action, true, ReaderApp.getAppContext().getResources().getString(R.string.feedly_successupdatestatus));
-                }
+        		new Thread(){
+        			public void run(){
+        				if (handler != null)
+                        {
+                			handler.sendResponseMessage(action, true, ReaderApp.getAppContext().getResources().getString(R.string.feedly_successupdatestatus));
+                        }
+        			}
+        		}.start();
+        		
         	}
         	
-        	 public void onFailure(Throwable e, String response) {
+        	 public void onFailure(final Throwable e, final String response) {
                  // Response failed :(
-        		 
-        		 String error = "";
-        		 if(response == null){
-        			 error = e.getCause().getMessage();
-        		 }else{
-        			 error = response;
-        		 }
-        		         		 
-         		
-        		 if (error != null && error.contains("expire")){
-        			 //now token is expired, we need to relogin        			
-        			 refreshToken(new HttpResponseHandler(){
-        				 public void onCallback(String token, boolean result, String msg){
-        					 if(result){
-        						 markTag(blog, action, handler);
-        					 }else{
-        						 if (handler != null){
-        							 handler.sendResponseMessage(action, false, ReaderApp.getAppContext().getResources().getString(R.string.feedly_failedupdatestatus));
-        						 }
-        					 }
-        				 }
-        			 });
-        			 
-        			 Log.e("RssReader", error);
-		 		 }
-        		 else
-        		 {
-        			 if (handler != null)
-        			 {
-        				 handler.sendResponseMessage(action, false, ReaderApp.getAppContext().getResources().getString(R.string.feedly_failedupdatestatus));
-        			 }
-        		 }				
+        		 new Thread(){
+         			public void run(){
+         				String error = "";
+	               		 if(response == null){
+	               			 error = e.getCause().getMessage();
+	               		 }else{
+	               			 error = response;
+	               		 }
+	               		         		 
+	                		
+	               		 if (error != null && error.contains("expire")){
+	               			 //now token is expired, we need to relogin        			
+	               			 refreshToken(new HttpResponseHandler(){
+	               				 public void onCallback(String token, boolean result, String msg){
+	               					 if(result){
+	               						 markTag(blog, action, handler);
+	               					 }else{
+	               						 if (handler != null){
+	               							 handler.sendResponseMessage(action, false, ReaderApp.getAppContext().getResources().getString(R.string.feedly_failedupdatestatus));
+	               						 }
+	               					 }
+	               				 }
+	               			 });
+	               			 
+	               			 Log.e("RssReader", error);
+	       		 		 }
+	               		 else
+	               		 {
+	               			 if (handler != null)
+	               			 {
+	               				 handler.sendResponseMessage(action, false, ReaderApp.getAppContext().getResources().getString(R.string.feedly_failedupdatestatus));
+	               			 }
+	               		 }
+         			}
+         		}.start();
         	 }
         };
         
@@ -1220,44 +1287,52 @@ public class FeedlyParser extends RssParser {
         
         final AsyncHttpResponseHandler async = new  AsyncHttpResponseHandler(){
         	public void onSuccess(String response){
-        		if (handler != null)
-                {
-        			handler.sendResponseMessage(action, true, ReaderApp.getAppContext().getResources().getString(R.string.feedly_successupdatestatus));
-                }
+        		new Thread(){
+        			public void run(){
+        				if (handler != null)
+                        {
+                			handler.sendResponseMessage(action, true, ReaderApp.getAppContext().getResources().getString(R.string.feedly_successupdatestatus));
+                        }
+        			}
+        		}.start();        		
         	}
         	
-        	public void onFailure(Throwable e, String response) {
-        		String error = "";
-       		 	if(response == null){
-       		 		error = e.getCause().getMessage();
-       		 	}else{
-       		 		error = response;
-       		 	}
-       		         		 
-        		
-       		 	if (error != null && error.contains("expire")){
-       		 		//now token is expired, we need to relogin        			
-       		 		refreshToken(new HttpResponseHandler(){
-       		 			public void onCallback(String token, boolean result, String msg){
-       		 				if(result){
-       		 					markTag(channel, action, handler);
-       		 				}else{
-       		 					if (handler != null){
-       		 						handler.sendResponseMessage(action, false, ReaderApp.getAppContext().getResources().getString(R.string.feedly_failedupdatestatus));
-       		 					}
-       		 				}
-       		 			}
-       		 		});
-       		 		
-       		 		Log.e("RssReader", error);
-		 		}
-       		 	else
-       		 	{
-       		 		if (handler != null)
-       		 		{
-       		 			handler.sendResponseMessage(action, false, ReaderApp.getAppContext().getResources().getString(R.string.feedly_failedupdatestatus));
-       		 		}
-       		 	}				
+        	public void onFailure(final Throwable e, final String response) {
+        		new Thread(){
+        			public void run(){
+		        		String error = "";
+		       		 	if(response == null){
+		       		 		error = e.getCause().getMessage();
+		       		 	}else{
+		       		 		error = response;
+		       		 	}
+		       		         		 
+		        		
+		       		 	if (error != null && error.contains("expire")){
+		       		 		//now token is expired, we need to relogin        			
+		       		 		refreshToken(new HttpResponseHandler(){
+		       		 			public void onCallback(String token, boolean result, String msg){
+		       		 				if(result){
+		       		 					markTag(channel, action, handler);
+		       		 				}else{
+		       		 					if (handler != null){
+		       		 						handler.sendResponseMessage(action, false, ReaderApp.getAppContext().getResources().getString(R.string.feedly_failedupdatestatus));
+		       		 					}
+		       		 				}
+		       		 			}
+		       		 		});
+		       		 		
+		       		 		Log.e("RssReader", error);
+				 		}
+		       		 	else
+		       		 	{
+		       		 		if (handler != null)
+		       		 		{
+		       		 			handler.sendResponseMessage(action, false, ReaderApp.getAppContext().getResources().getString(R.string.feedly_failedupdatestatus));
+		       		 		}
+		       		 	}
+        			}
+        		}.start();
             }
         };
         
@@ -1282,7 +1357,12 @@ public class FeedlyParser extends RssParser {
 	}
 
 	@Override
-	public void getRssBlog(final Channel channel, final Blog blog, final int count, final HttpResponseHandler handler) { 
+	public void getRssBlog(final Channel channel, final Blog blog, final int count, final HttpResponseHandler handler) {
+		getRssBlog(channel, blog, count, handler, -1);
+	}
+	
+	@Override
+	public void getRssBlog(final Channel channel, final Blog blog, final int count, final HttpResponseHandler handler, final int page) {		
 		String url = "";		
 		try {		
 	        if(channel.Id.length() > 0)
@@ -1333,187 +1413,202 @@ public class FeedlyParser extends RssParser {
         
         client.get(url, new AsyncHttpResponseHandler(){
         	@Override
-        	public void onFailure(Throwable e, String errorResponse){
-        		String error = "";
-        		
-        		if(errorResponse == null)
-        			error = e.getCause() != null ? e.getCause().getMessage() : e.getMessage();
-        		else
-        			error = errorResponse;
-        		
-        		if (error != null && error.contains("expire")){
-        			//now token is expired, we need to relogin        			
-        			refreshToken(new HttpResponseHandler(){
-        				public void onCallback(String token, boolean result, String msg){
-        					if(result){
-        						getRssBlog(channel, blog, count, handler);
-        					}else{
-        						if (handler != null)
-        	        			{
-        	        				handler.sendResponseMessage(new ArrayList<Blog>(), false, ReaderApp.getAppContext().getResources().getString(R.string.feedly_failedtogetblogs), false);
-        	        			}
-        					}
-        				}
-        			});
-        			
-        			Log.i("RssReader", error);
-       		 	}
-        		else
-        		{
-        			if (handler != null)
-        			{
-        				handler.sendResponseMessage(new ArrayList<Blog>(), false, ReaderApp.getAppContext().getResources().getString(R.string.feedly_failedtogetblogs), false);
+        	public void onFailure(final Throwable e, final String errorResponse){
+        		new Thread(){
+        			public void run(){
+        				String error = "";
+                		
+                		if(errorResponse == null)
+                			error = e.getCause() != null ? e.getCause().getMessage() : e.getMessage();
+                		else
+                			error = errorResponse;
+                		
+                		if (error != null && error.contains("expire")){
+                			//now token is expired, we need to relogin        			
+                			refreshToken(new HttpResponseHandler(){
+                				public void onCallback(String token, boolean result, String msg){
+                					if(result){
+                						getRssBlog(channel, blog, count, handler);
+                					}else{
+                						if (handler != null)
+                	        			{
+                	        				handler.sendResponseMessage(new ArrayList<Blog>(), false, ReaderApp.getAppContext().getResources().getString(R.string.feedly_failedtogetblogs), false, -1);
+                	        			}
+                					}
+                				}
+                			});
+                			
+                			Log.i("RssReader", error);
+               		 	}
+                		else
+                		{
+                			if (handler != null)
+                			{
+                				handler.sendResponseMessage(new ArrayList<Blog>(), false, ReaderApp.getAppContext().getResources().getString(R.string.feedly_failedtogetblogs), false, -1);
+                			}
+                		}
         			}
-        		}        		
+        		}.start();        		
         	}
         	
         	@Override
-        	public void onSuccess(String data){
-        		//get blogs and clean duplicate blogs
-        		
-        		Log.i("RssReader", "Finish get rss blog request at " + new Date());        		
-        		
-        		try{
-        			JSONObject result = new JSONObject(data);
+        	public void onSuccess(final String data){
+        		//get blogs and clean duplicate blogs        		
+        		new Thread(){
+        			public void run(){
+        				Log.i("RssReader", "Finish get rss blog request at " + new Date());        		
+                		
+                		try{
+                			JSONObject result = new JSONObject(data);
+                			
+                			String continuation = !result.has("continuation")
+                                   ? ""
+                                   : result.getString("continuation");
+        				    if (blog.TimeStamp > 0)
+        				    {
+        				        //get lastest
+        				        editor.putString("UP" + channel.Id, continuation).commit();
+        				    }
+        				    else if (blog.TimeStamp <= 0)
+        				    {
+        				        //get older
+        				    	editor.putString("DOWN" + channel.Id, continuation).commit();
+        				    }
+        				
+        				    List<Blog> blogs = new ArrayList<Blog>();
+        				    JSONArray array = result.getJSONArray("items");
+        				    JSONObject item = null;
+        				    for(int i = 0; i < array.length(); i++)
+        					{
+        				     	item = array.getJSONObject(i);
+        							
+        						Blog b = new Blog();
+        					
+        						b.TagId = "";
+        						b.Content = "";
+        						if (item.has("categories"))
+        						{
+        							JSONObject obj = null;
+        							JSONArray categories = item.getJSONArray("categories");
+        							for(int j = 0; j < categories.length(); j++)
+        							{    						
+        								obj = categories.getJSONObject(j);
+        								
+        								if(obj.getString("id").contains("category"))
+        								{
+        									b.TagId = obj.getString("id");
+        									break;
+        								}
+        							}
+        							//b.TagId = item.get("categories").Children().First(c => c["id"].Value<String>().Contains("category"))["id"].Value<String>();
+        						}
+        						b.BlogId = item.getString("id");
+        						b.ChannelId = item.getJSONObject("origin").getString("streamId");
+        						
+        						if(item.has("title"))
+        							b.Title = HtmlHelper.unescape(item.getString("title"));
+        						else
+        							b.Title = HtmlHelper.unescape(item.getJSONObject("origin").getString("title"));
+        						
+        						b.Description = ReaderApp.getAppContext().getResources().getString(R.string.empty);
+        						
+        						if (item.has("summary"))
+        							b.Description = HtmlHelper.unescape(item.getJSONObject("summary").getString("content"));
+        						if (item.has("content"))
+        							b.Description = HtmlHelper.unescape(item.getJSONObject("content").getString("content"));
+        						if (item.has("alternate")){
+        							int alt = item.getJSONArray("alternate").length();
+        							for(int j=0; j<alt; j++){
+        								if(item.getJSONArray("alternate").getJSONObject(j).has("href"))
+        									b.Link = item.getJSONArray("alternate").getJSONObject(j).getString("href");
+        								if(item.getJSONArray("alternate").getJSONObject(j).has("originId"))
+        									b.Link = item.getString("originId");
+        								
+        								if(b.Link.length() > 0)
+        									break;
+        							}
+        						}
+        							
+        						//remove cnbeta ad
+        						if (b.Link.contains("cnbeta.com"))
+        						{
+        							int index = b.Description.indexOf("<img");
+        							if (index != -1)
+        								b.Description = b.Description.substring(0, index);
+        						}
         			
-        			String continuation = !result.has("continuation")
-                           ? ""
-                           : result.getString("continuation");
-				    if (blog.TimeStamp > 0)
-				    {
-				        //get lastest
-				        editor.putString("UP" + channel.Id, continuation).commit();
-				    }
-				    else if (blog.TimeStamp <= 0)
-				    {
-				        //get older
-				    	editor.putString("DOWN" + channel.Id, continuation).commit();
-				    }
-				
-				    List<Blog> blogs = new ArrayList<Blog>();
-				    JSONArray array = result.getJSONArray("items");
-				    JSONObject item = null;
-				    for(int i = 0; i < array.length(); i++)
-					{
-				     	item = array.getJSONObject(i);
-							
-						Blog b = new Blog();
-					
-						b.TagId = "";
-						b.Content = "";
-						if (item.has("categories"))
-						{
-							JSONObject obj = null;
-							JSONArray categories = item.getJSONArray("categories");
-							for(int j = 0; j < categories.length(); j++)
-							{    						
-								obj = categories.getJSONObject(j);
-								
-								if(obj.getString("id").contains("category"))
-								{
-									b.TagId = obj.getString("id");
-									break;
-								}
-							}
-							//b.TagId = item.get("categories").Children().First(c => c["id"].Value<String>().Contains("category"))["id"].Value<String>();
-						}
-						b.BlogId = item.getString("id");
-						b.ChannelId = item.getJSONObject("origin").getString("streamId");
-						
-						if(item.has("title"))
-							b.Title = HtmlHelper.unescape(item.getString("title"));
-						else
-							b.Title = HtmlHelper.unescape(item.getJSONObject("origin").getString("title"));
-						
-						b.Description = ReaderApp.getAppContext().getResources().getString(R.string.empty);
-						
-						if (item.has("summary"))
-							b.Description = HtmlHelper.unescape(item.getJSONObject("summary").getString("content"));
-						if (item.has("content"))
-							b.Description = HtmlHelper.unescape(item.getJSONObject("content").getString("content"));
-						if (item.has("alternate")){
-							int alt = item.getJSONArray("alternate").length();
-							for(int j=0; j<alt; j++){
-								if(item.getJSONArray("alternate").getJSONObject(j).has("href"))
-									b.Link = item.getJSONArray("alternate").getJSONObject(j).getString("href");
-								if(item.getJSONArray("alternate").getJSONObject(j).has("originId"))
-									b.Link = item.getString("originId");
-								
-								if(b.Link.length() > 0)
-									break;
-							}
-						}
-							
-						//remove cnbeta ad
-						if (b.Link.contains("cnbeta.com"))
-						{
-							int index = b.Description.indexOf("<img");
-							if (index != -1)
-								b.Description = b.Description.substring(0, index);
-						}
-			
-						b.PubDate = new Date(item.getLong("crawled"));
-						b.SubsTitle = item.getJSONObject("origin").has("title") ? item.getJSONObject("origin").getString("title") : "";
-						b.TimeStamp = item.getLong("published");
-						b.IsRead = item.has("unread") ? !item.getBoolean("unread") : false;
-						b.Avatar = "";
-			
-						if (item.has("tags"))
-						{
-							JSONObject obj = null;
-							JSONArray tags = item.getJSONArray("tags");
-							for(int j = 0; j< tags.length();j++)
-							{
-								if (tags.getString(j).contains("saved"))
-									b.IsStarred = true;
-							}
-						}
-						
-						b.OriginId = item.getString("id");
-						b.IsRecommend = false;						
-			
-						blogs.add(b);
-					}
-				    
-				    //deal with long time no updates
-	                boolean hasMore = true;
-	                for(Blog b : blogs){
-	                	long between=(b.PubDate.getTime()- blog.PubDate.getTime())/1000;
-	                	
-						if(between > 0L)
-							hasMore = hasMore && true;
-						else
-							hasMore = hasMore && false;
-					}
-	                
-	                if(blog.TimeStamp <= 0L)
-	                	hasMore = false;
-	                
-	                if(hasMore)
-	                {	                    
-	                    if (handler != null)
-	                    {
-	                    	handler.sendResponseMessage(blogs, true, ReaderApp.getAppContext().getResources().getString(R.string.feedly_waitformoreblogs), true);
-	                    }
-	                    	                    
-	                    getRssBlog(channel, blog, count, handler);
-	                }
-	                else
-	                {
-	                    if(blog.TimeStamp > 0)
-	                        editor.putString("UP" + channel.Id, "").commit();	                    
+        						b.PubDate = new Date(item.getLong("crawled"));
+        						b.SubsTitle = item.getJSONObject("origin").has("title") ? item.getJSONObject("origin").getString("title") : "";
+        						b.TimeStamp = item.getLong("published");
+        						b.IsRead = item.has("unread") ? !item.getBoolean("unread") : false;
+        						b.Avatar = "";
+        			
+        						if (item.has("tags"))
+        						{
+        							JSONObject obj = null;
+        							JSONArray tags = item.getJSONArray("tags");
+        							for(int j = 0; j< tags.length();j++)
+        							{
+        								if (tags.getString(j).contains("saved"))
+        									b.IsStarred = true;
+        							}
+        						}
+        						
+        						b.OriginId = item.getString("id");
+        						b.IsRecommend = false;						
+        			
+        						blogs.add(b);
+        					}
+        				    
+        				    //deal with long time no updates
+        	                boolean hasMore = true;
+        	                for(Blog b : blogs){
+        	                	long between=(b.PubDate.getTime()- blog.PubDate.getTime())/1000;
+        	                	
+        						if(between > 0L)
+        							hasMore = hasMore && true;
+        						else
+        							hasMore = hasMore && false;
+        					}
+        	                
+        	                if(blog.TimeStamp <= 0L)
+        	                	hasMore = false;
+        	                
+        	                if(hasMore)
+        	                {	                    
+        	                    if (handler != null)
+        	                    {
+        	                    	if(page == -1)
+        	                    		handler.sendResponseMessage(blogs, true, ReaderApp.getAppContext().getResources().getString(R.string.feedly_waitformoreblogs), true, page);
+        	                    	else{
+        	                    		
+        	                    		handler.sendResponseMessage(blogs, true, ReaderApp.getAppContext().getResources().getString(R.string.feedly_waitformoreblogs), true, page);
+        	                    	}
+        	                    }
+        	                    	     
+        	                    int temp = page;
+                        		temp++;
+        	                    
+        	                    getRssBlog(channel, blog, count, handler, temp);
+        	                }
+        	                else
+        	                {
+        	                    if(blog.TimeStamp > 0)
+        	                        editor.putString("UP" + channel.Id, "").commit();	                    
 
-	                    if (handler != null)
-	                    {
-	                    	handler.sendResponseMessage(blogs, true, ReaderApp.getAppContext().getResources().getString(R.string.feedly_successtogetblogs), false);
-	                    }
-	                }
-        		}
-        		catch(Exception json){
-        			json.printStackTrace();
-        			if (handler != null)
-        				handler.sendResponseMessage(null, false, ReaderApp.getAppContext().getResources().getString(R.string.feedly_failedtogetblogs));                    
-        		}
+        	                    if (handler != null)
+        	                    {	                    	
+        	                    	handler.sendResponseMessage(blogs, true, ReaderApp.getAppContext().getResources().getString(R.string.feedly_successtogetblogs), false, page);
+        	                    }
+        	                }
+                		}
+                		catch(Exception json){
+                			json.printStackTrace();
+                			if (handler != null)
+                				handler.sendResponseMessage(null, false, ReaderApp.getAppContext().getResources().getString(R.string.feedly_failedtogetblogs));                    
+                		}                	
+        			}
+        		}.start();
         	}
         });
 	}
@@ -1550,38 +1645,45 @@ public class FeedlyParser extends RssParser {
         
     	client.post(null, url, entity, "application/json", new AsyncHttpResponseHandler(){
     		@Override
-    		public void onFailure(Throwable e, String response) {
+    		public void onFailure(final Throwable e, final String response) {
     			// Response failed :(
-       		 
-       		 	String error = "";
-       		 	if(response == null){
-       		 		error = e.getCause().getMessage();
-	       		 }else{
-	       			 error = response;
-	       		 }
-	       		 
-       		 	if (error != null && error.contains("expire")){
-                    //now token is expired, we need to relogin
-                    if (handler != null)
-                    {
-                   	 	handler.sendResponseMessage(rssUrl, false, ReaderApp.getAppContext().getResources().getString(R.string.feedly_sessionexpire));
-                    }
+    			new Thread(){
+        			public void run(){
+        				String error = "";
+               		 	if(response == null){
+               		 		error = e.getCause().getMessage();
+        	       		 }else{
+        	       			 error = response;
+        	       		 }
+        	       		 
+               		 	if (error != null && error.contains("expire")){
+                            //now token is expired, we need to relogin
+                            if (handler != null)
+                            {
+                           	 	handler.sendResponseMessage(rssUrl, false, ReaderApp.getAppContext().getResources().getString(R.string.feedly_sessionexpire));
+                            }
 
-        			Log.i("RssReader", error);
-                }
-                else
-                {
-                    if (handler != null)
-                    {
-                    	handler.sendResponseMessage(rssUrl, false, ReaderApp.getAppContext().getResources().getString(R.string.feedly_failedaddsubscription));
-                    }
-                }
+                			Log.i("RssReader", error);
+                        }
+                        else
+                        {
+                            if (handler != null)
+                            {
+                            	handler.sendResponseMessage(rssUrl, false, ReaderApp.getAppContext().getResources().getString(R.string.feedly_failedaddsubscription));
+                            }
+                        }
+        			}
+        		}.start();       		 	
             }                
     		
     		@Override
     		public void onSuccess(String data){
-    			if(handler != null)
-    				handler.sendResponseMessage(rssUrl, true, ReaderApp.getAppContext().getResources().getString(R.string.feedly_successaddsubscription));    			
+    			new Thread(){
+        			public void run(){
+		    			if(handler != null)
+		    				handler.sendResponseMessage(rssUrl, true, ReaderApp.getAppContext().getResources().getString(R.string.feedly_successaddsubscription)); 
+        			}
+        		}.start();
     		}
         });
 	}
@@ -1617,24 +1719,32 @@ public class FeedlyParser extends RssParser {
     	String url = "http://cloud.feedly.com/v3/subscriptions?ct=feedly.desktop&ck=" + System.currentTimeMillis();
     	client.post(null, url, se, "application/json", new AsyncHttpResponseHandler(){
     		@Override
-    		public void onFailure(Throwable t, String result){
-    			String error = "";
-    			if(result == null)
-    				error = t.getCause().getMessage();
-    			else
-    				error = result;
-    			
-    			//Log.i("RssReader", error);
-    			
-    			if (error != null && error.contains("expire"))//now token is expired, we need to relogin
-                    handler.sendResponseMessage(false, false, ReaderApp.getAppContext().getResources().getString(R.string.feedly_sessionexpire));
-                else
-                	handler.sendResponseMessage(false, false, String.format(ReaderApp.getAppContext().getResources().getString(R.string.feedly_failedmovefolder), folder.Title));
+    		public void onFailure(final Throwable t, final String result){
+    			new Thread(){
+        			public void run(){
+        				String error = "";
+            			if(result == null)
+            				error = t.getCause().getMessage();
+            			else
+            				error = result;
+            			
+            			//Log.i("RssReader", error);
+            			
+            			if (error != null && error.contains("expire"))//now token is expired, we need to relogin
+                            handler.sendResponseMessage(false, false, ReaderApp.getAppContext().getResources().getString(R.string.feedly_sessionexpire));
+                        else
+                        	handler.sendResponseMessage(false, false, String.format(ReaderApp.getAppContext().getResources().getString(R.string.feedly_failedmovefolder), folder.Title));
+        			}
+        		}.start();    			
     		}
     		
     		@Override
     		public void onSuccess(String reponse){
-    			handler.sendResponseMessage(true, true, String.format(ReaderApp.getAppContext().getResources().getString(R.string.feedly_successmovefolder), folder.Title));
+    			new Thread(){
+        			public void run(){
+    					handler.sendResponseMessage(true, true, String.format(ReaderApp.getAppContext().getResources().getString(R.string.feedly_successmovefolder), folder.Title));
+        			}
+        		}.start(); 
     		}
     	});
 	}
@@ -1658,41 +1768,49 @@ public class FeedlyParser extends RssParser {
 
         client.get(url, new JsonHttpResponseHandler(){
         	@Override
-        	public void onFailure(Throwable t, String result){
-        		String error = "";
-    			if(result == null)
-    				error = t.getCause().getMessage();
-    			else
-    				error = result;
-    			
-    			//Log.i("RssReader", error);
-    			if(error.contains("session"))
-        			handler.sendResponseMessage(null, false, ReaderApp.getAppContext().getResources().getString(R.string.feedly_sessionexpire), false);
-                else
-                	handler.sendResponseMessage(null, false, ReaderApp.getAppContext().getResources().getString(R.string.feedly_failedsearch), false);
+        	public void onFailure(final Throwable t, final String result){
+        		new Thread(){
+        			public void run(){
+		        		String error = "";
+		    			if(result == null)
+		    				error = t.getCause().getMessage();
+		    			else
+		    				error = result;
+		    			
+		    			//Log.i("RssReader", error);
+		    			if(error.contains("session"))
+		        			handler.sendResponseMessage(null, false, ReaderApp.getAppContext().getResources().getString(R.string.feedly_sessionexpire), false);
+		                else
+		                	handler.sendResponseMessage(null, false, ReaderApp.getAppContext().getResources().getString(R.string.feedly_failedsearch), false);
+        			}
+        		}.start(); 
         	}
         	
         	@Override
-        	public void onSuccess(JSONObject obj){
-                List<Result> results = new ArrayList<Result>();
-
-                try{
-	                JSONObject r = null;
-	                for(int i=0, len = obj.getJSONArray("results").length(); i<len;i++){
-	                	r = obj.getJSONArray("results").getJSONObject(i);
-	                	Result result = new Result();
-	
-	                    result.IsSubscribed = false;
-	                    result.Title = r.getString("title");
-	                    result.StreamId = r.getString("feedId");
-	                    result.SubscriptCount = r.getString("subscribers");
-	                    results.add(result);
-	                }
-	                
-	                handler.sendResponseMessage(results, true, ReaderApp.getAppContext().getResources().getString(R.string.feedly_successsearch), false);
-                }catch(JSONException je){
-                	je.printStackTrace();
-                }
+        	public void onSuccess(final JSONObject obj){
+        		new Thread(){
+        			public void run(){
+		                List<Result> results = new ArrayList<Result>();
+		
+		                try{
+			                JSONObject r = null;
+			                for(int i=0, len = obj.getJSONArray("results").length(); i<len;i++){
+			                	r = obj.getJSONArray("results").getJSONObject(i);
+			                	Result result = new Result();
+			
+			                    result.IsSubscribed = false;
+			                    result.Title = r.getString("title");
+			                    result.StreamId = r.getString("feedId");
+			                    result.SubscriptCount = r.getString("subscribers");
+			                    results.add(result);
+			                }
+			                
+			                handler.sendResponseMessage(results, true, ReaderApp.getAppContext().getResources().getString(R.string.feedly_successsearch), false);
+		                }catch(JSONException je){
+		                	je.printStackTrace();
+		                }
+        			}
+        		}.start();
         	}
         });
 	}

@@ -42,7 +42,7 @@
             android:configChanges="locale"
             android:name="com.lgq.rssreader.MainActivity"
             android:label="@string/app_name" 
-            android:windowNoTitle = "true"            
+            android:windowNoTitle = "true"
             android:theme="@style/Theme.PageIndicatorDefaults">            
         </activity>
         <activity
@@ -65,8 +65,10 @@
         </activity>
         <activity
             android:configChanges="locale"
+            android:theme="@android:style/Theme.Light.NoTitleBar"
             android:name="com.lgq.rssreader.BlogListActivity"
-            android:label="@string/title_list_detail"            
+            android:label="@string/empty"
+            android:windowNoTitle = "true"
             android:parentActivityName=".MainActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"

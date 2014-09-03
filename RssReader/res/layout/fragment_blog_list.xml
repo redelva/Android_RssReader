@@ -8,6 +8,7 @@
     android:layout_height="match_parent" >
 	
     <TextView 
+        	android:text="@string/empty"
 	        android:textSize="26.0sp" android:textColor="#ff7d899d"        
 			android:gravity="center_vertical" android:id="@+id/bloglist_channel_title"
 			android:layout_width="match_parent" android:layout_height="wrap_content"

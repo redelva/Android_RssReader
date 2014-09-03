@@ -142,7 +142,7 @@ public class BlogAdapter extends BaseAdapter {
 			viewHolder.btn_starstatus.setOnClickListener(viewHolder.blog_starlistener);
 		}
 
-		viewHolder.blog_date.setText(DateHelper.getDaysBeforeNow(entity.PubDate).toString());
+		viewHolder.blog_date.setText(DateHelper.getDaysBeforeNow(new Date(entity.TimeStamp)).toString());
 		
 		if(entity.IsRead){
 			viewHolder.blog_read.setVisibility(View.VISIBLE);

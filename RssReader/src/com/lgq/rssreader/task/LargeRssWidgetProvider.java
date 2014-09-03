@@ -122,7 +122,7 @@ public class LargeRssWidgetProvider extends AppWidgetProvider{
         	
         	parser.getRssBlog(c, tmp, ReaderApp.getSettings().NumPerRequest, new HttpResponseHandler(){
             	@Override
-            	public <Blog> void onCallback(List<Blog> blogs, boolean result, String msg, boolean hasMore){
+            	public <Blog> void onCallback(List<Blog> blogs, boolean result, String msg, boolean hasMore, int page){
             		if(result){
             			BlogDalHelper helper = new BlogDalHelper();
             			helper.SynchronyData2DB((List<com.lgq.rssreader.entity.Blog>) blogs);

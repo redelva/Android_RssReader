@@ -225,9 +225,9 @@
 	<string name="login_authing">authorizing</string>
 	
 	<string name="cache_clean">Clean cahched Image</string>
-	<string name="cache_msg">Current cache image size is %s, click to clean</string>
+	<string name="cache_msg">Current cache image size is %sMB, click to clean</string>
 	<string name="cache_size">Cache size</string>
-	<string name="cache_size_default">200</string>
+	<string name="cache_size_default">400</string>
 	
 	<string name="main_loadingdata">Loading data</string>
 	<string name="main_exit">Repress back to exit app</string>

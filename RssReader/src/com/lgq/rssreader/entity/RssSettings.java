@@ -75,7 +75,7 @@ public class RssSettings
     public boolean DownloadOnlyWifi = true;    
     public int DownloadPeriod = 3;
     public String DownloadTime = "18:00";
-    public int CacheSize = 200;
+    public int CacheSize = 400;
     
     
 //    public boolean EnableSinaWeibo = true;

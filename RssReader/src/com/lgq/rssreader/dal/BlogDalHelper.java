@@ -54,6 +54,19 @@ public class BlogDalHelper {
 		return GetBlogListByWhere(null, where, args );
 	}
 	
+	public List<Blog> GetBlogList(double percentage) {
+		
+		String sql = "select count(1) from imagerecords";
+		Cursor cursor = db.rawQuery(sql, null);
+		int count = 0;
+		while (cursor != null && cursor.moveToNext()) {
+			count = cursor.getInt(0);
+		}
+		
+		String limit = "limit " + (int)(count * percentage);		 		
+		return GetBlogListByWhere(limit, null, null);
+	}
+	
 	/**
 	 * 根据Channel获取对应Blogs
 	 * 

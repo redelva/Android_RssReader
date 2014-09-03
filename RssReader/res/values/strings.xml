@@ -120,7 +120,7 @@
 	<string name="cache_wifi">只在WIFI下更新</string>
 	<string name="cache_3g">2G/3G网络</string>
 	<string name="cache_size">缓存图片大小</string>
-	<string name="cache_size_default">200</string>
+	<string name="cache_size_default">400</string>
 	
 	<string name="download">离线下载</string>
 	<string name="download_desc">设置下载策略</string>
@@ -224,7 +224,7 @@
 	<string name="login_authing">正在授权中</string>
 	
 	<string name="cache_clean">清除缓存图片</string>
-	<string name="cache_msg">当前缓存图片大小为%s,点击清除缓存</string>
+	<string name="cache_msg">当前缓存图片大小为%sMB,点击清除缓存</string>
 	
 	<string name="main_loadingdata">正在努力的加载数据</string>
 	<string name="main_exit">再按一次退出程序</string>

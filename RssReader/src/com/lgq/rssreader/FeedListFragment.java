@@ -162,9 +162,20 @@ public class FeedListFragment extends SherlockFragment {
     private String title;
     
     private int page;
+        
+    public static final int HOME = 0;
+    public static final int ALL = 1;
+    public static final int RECOMMEND = 2;
+    public static final int UNREAD = 3;
+    public static final int STAR = 4;
+    public static final int GALLERY = 5;
+    public static final int SEARCH = 6;
+    public static final int SUBSCRIBE = 7;
+    public static final int CLEAR = 8;
     
-    public static final int LOCAL = 1;
-    public static final int SYNC = 2;
+    public static final int LOCAL = 101;
+    public static final int SYNC = 102;
+    
     
     final String[] recommends = new String[]{
 			ReaderApp.getAppContext().getResources().getString(R.string.recommend_title1),
@@ -215,8 +226,8 @@ public class FeedListFragment extends SherlockFragment {
     public Handler myHandler = new Handler(){
         @Override  
         public void handleMessage(Message msg) {            
-            switch(RssTab.values()[msg.what]){
-            	case Home:
+            switch(msg.what){
+            	case HOME:
             		if(getView() != null){
             			
             			if(msg.obj instanceof List){
@@ -288,10 +299,10 @@ public class FeedListFragment extends SherlockFragment {
             			}
             		}
                 	break;
-            	case All:
-        		case Recommend:
-        		case Unread:
-        		case Search:
+            	case ALL:
+        		case RECOMMEND:
+        		case UNREAD:
+        		case SEARCH:
         			if(getView() != null){
         				blogs = (List<Blog>)msg.obj;
         				if(listView.getAdapter() == null){
@@ -312,7 +323,7 @@ public class FeedListFragment extends SherlockFragment {
         				}
         			}
         			break;
-        		case Star:
+        		case STAR:
         			if(getView() != null){
         				blogs = (List<Blog>)msg.obj;
         				if(listView.getAdapter() == null){
@@ -341,7 +352,7 @@ public class FeedListFragment extends SherlockFragment {
         				}
         			}
                 	break;
-        		case Subscribe: 
+        		case SUBSCRIBE: 
         			if(getView() != null){
         				results = (List<Result>)msg.obj;
         				if(listView.getAdapter() == null){
@@ -356,10 +367,17 @@ public class FeedListFragment extends SherlockFragment {
         				}
         			}
                 	break;
-        		case Gallery:
+        		case GALLERY:
+        			break;
+        		case CLEAR:
+        			if(getActivity() != null){
+        				ImageButton btnRight =((ImageButton)getActivity().findViewById(R.id.ivTitleBtnRight));
+            			if(btnRight != null)
+            				btnRight.clearAnimation();
+        			}        			
         			break;
             }
-                        
+            
             super.handleMessage(msg);
         }
     };
@@ -513,7 +531,7 @@ public class FeedListFragment extends SherlockFragment {
     			
     			parser.searchRss(title, page, new HttpResponseHandler(){
     				@Override
-    				public <T> void onCallback(List<T> data, boolean result, String msg, boolean more){
+    				public <T> void onCallback(List<T> data, boolean result, String msg, boolean more, int page){
     					Message m = myHandler.obtainMessage();
     		            m.what = tab.ordinal();
     		            m.obj = data;
@@ -523,7 +541,7 @@ public class FeedListFragment extends SherlockFragment {
     			
     			break;
     		case Gallery:
-    			break;
+    			break;    		
     	}
     	
     	helper.Close();
@@ -553,7 +571,7 @@ public class FeedListFragment extends SherlockFragment {
     public void loadOnlineData(){
     	HttpResponseHandler handler = new HttpResponseHandler(){
         	@Override
-        	public <Blog> void onCallback(List<Blog> blogs, boolean result, String msg, boolean hasMore){
+        	public <Blog> void onCallback(List<Blog> blogs, boolean result, String msg, boolean hasMore, int page){
         		if(result){
         			
         			BlogDalHelper helper = new BlogDalHelper();
@@ -664,17 +682,15 @@ public class FeedListFragment extends SherlockFragment {
                     				myHandler.sendMessage(m);
                     				
                     				Helper.vibrate();
+                    				
+                    				Message c = myHandler.obtainMessage();                    				
+                    				c.what = CLEAR;            	            
+                    				myHandler.sendMessage(c);
                     			}
                     		}else{
                     			Toast.makeText(getActivity(), msg, Toast.LENGTH_SHORT).show();
                     		}
-                    		
-                    		getActivity().runOnUiThread(new Runnable(){
-                    			public void run(){
-                    				ImageButton btnRight =((ImageButton)getActivity().findViewById(R.id.ivTitleBtnRight));
-                    				btnRight.clearAnimation();
-                    			}
-                    		});
+
                     	}
                     	
                     	@Override
@@ -687,7 +703,7 @@ public class FeedListFragment extends SherlockFragment {
                     			
                     			helper.Close();
                     			
-                    			Log.i("RssReader", "Finish sync from feedly count: " + blogs.size());
+                    			Log.i("RssReader", "Finish sync from feedly count: " + data.size());
                     		}
                     	}
                     	
