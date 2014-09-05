@@ -531,7 +531,7 @@ public class FeedListFragment extends SherlockFragment {
     			
     			parser.searchRss(title, page, new HttpResponseHandler(){
     				@Override
-    				public <T> void onCallback(List<T> data, boolean result, String msg, boolean more, int page){
+    				public <T> void onCallback(List<T> data, boolean result, String msg, boolean more){
     					Message m = myHandler.obtainMessage();
     		            m.what = tab.ordinal();
     		            m.obj = data;
@@ -571,7 +571,7 @@ public class FeedListFragment extends SherlockFragment {
     public void loadOnlineData(){
     	HttpResponseHandler handler = new HttpResponseHandler(){
         	@Override
-        	public <Blog> void onCallback(List<Blog> blogs, boolean result, String msg, boolean hasMore, int page){
+        	public <Blog> void onCallback(List<Blog> blogs, boolean result, String msg, boolean hasMore){
         		if(result){
         			
         			BlogDalHelper helper = new BlogDalHelper();

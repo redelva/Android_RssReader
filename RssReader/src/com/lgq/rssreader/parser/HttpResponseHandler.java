@@ -53,7 +53,7 @@ public class HttpResponseHandler{
 
     public <T> void onCallback(List<T> data, boolean result, String msg){}
     
-    //public <T> void onCallback(List<T> data, boolean result, String msg, boolean hasmore){}
+    public <T> void onCallback(List<T> data, boolean result, String msg, boolean hasmore){}
     
     public <T> void onCallback(T data, boolean result, String msg){}
     
@@ -61,7 +61,7 @@ public class HttpResponseHandler{
     
     public <T, K> void onCallback(List<T> tdata, List<K> kdata, boolean result, String msg, boolean hasmore){}       
     
-    public <T> void onCallback(List<T> tdata, boolean result, String msg, boolean hasmore, int page){}
+    //public <T> void onCallback(List<T> tdata, boolean result, String msg, boolean hasmore, int page){}
 		   
     //
     // Pre-processing of messages (executes in background threadpool thread)
@@ -108,10 +108,10 @@ public class HttpResponseHandler{
                 else
                 	onCallback((T)response[0], Boolean.parseBoolean(response[1].toString()), (String)response[2]);
                 break;
-//            case SUCCESS_MESSAGE_MORE:
-//                response = (Object[])msg.obj;
-//                onCallback((List<T>)response[0], Boolean.parseBoolean(response[1].toString()), (String)response[2], Boolean.parseBoolean(response[3].toString()));                
-//                break;
+            case SUCCESS_MESSAGE_MORE:
+                response = (Object[])msg.obj;
+                onCallback((List<T>)response[0], Boolean.parseBoolean(response[1].toString()), (String)response[2], Boolean.parseBoolean(response[3].toString()));                
+                break;
             case SUCCESS_FOUR_MESSAGE:
                 response = (Object[])msg.obj;                
                 onCallback((List<T>)response[0],(List<K>)response[1], Boolean.parseBoolean(response[2].toString()), (String)response[3]);                
@@ -120,10 +120,10 @@ public class HttpResponseHandler{
                 response = (Object[])msg.obj;                
                 onCallback((List<T>)response[0],(List<K>)response[1], Boolean.parseBoolean(response[2].toString()), (String)response[3], Boolean.parseBoolean(response[4].toString()));                
                 break;
-            case SUCCESS_FIVE_MESSAGE_MORE:
-                response = (Object[])msg.obj;                
-                onCallback((List<T>)response[0], Boolean.parseBoolean(response[1].toString()), (String)response[2], Boolean.parseBoolean(response[3].toString()), Integer.parseInt(response[4].toString()));                
-                break;
+//            case SUCCESS_FIVE_MESSAGE_MORE:
+//                response = (Object[])msg.obj;                
+//                onCallback((List<T>)response[0], Boolean.parseBoolean(response[1].toString()), (String)response[2], Boolean.parseBoolean(response[3].toString()), Integer.parseInt(response[4].toString()));                
+//                break;
         }
     }
 
@@ -160,9 +160,9 @@ public class HttpResponseHandler{
     	sendSuccessMessage(tdata, kdata, result, msg, hasMore);
     }
     
-    <T,K> void sendResponseMessage(List<T> tdata,  boolean result, String msg, boolean hasMore, int page) {
-    	sendSuccessMessage(tdata, result, msg, hasMore, page);
-    }
+//    <T,K> void sendResponseMessage(List<T> tdata,  boolean result, String msg, boolean hasMore, int page) {
+//    	sendSuccessMessage(tdata, result, msg, hasMore, page);
+//    }
     
     <T> void sendResponseMessage(List<T> data, boolean result, String msg, boolean hasMore) {
     	sendSuccessMessage(data, result, msg, hasMore);

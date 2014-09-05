@@ -1358,11 +1358,6 @@ public class FeedlyParser extends RssParser {
 
 	@Override
 	public void getRssBlog(final Channel channel, final Blog blog, final int count, final HttpResponseHandler handler) {
-		getRssBlog(channel, blog, count, handler, -1);
-	}
-	
-	@Override
-	public void getRssBlog(final Channel channel, final Blog blog, final int count, final HttpResponseHandler handler, final int page) {		
 		String url = "";		
 		try {		
 	        if(channel.Id.length() > 0)
@@ -1432,7 +1427,7 @@ public class FeedlyParser extends RssParser {
                 					}else{
                 						if (handler != null)
                 	        			{
-                	        				handler.sendResponseMessage(new ArrayList<Blog>(), false, ReaderApp.getAppContext().getResources().getString(R.string.feedly_failedtogetblogs), false, -1);
+                	        				handler.sendResponseMessage(new ArrayList<Blog>(), false, ReaderApp.getAppContext().getResources().getString(R.string.feedly_failedtogetblogs), false);
                 	        			}
                 					}
                 				}
@@ -1444,7 +1439,7 @@ public class FeedlyParser extends RssParser {
                 		{
                 			if (handler != null)
                 			{
-                				handler.sendResponseMessage(new ArrayList<Blog>(), false, ReaderApp.getAppContext().getResources().getString(R.string.feedly_failedtogetblogs), false, -1);
+                				handler.sendResponseMessage(new ArrayList<Blog>(), false, ReaderApp.getAppContext().getResources().getString(R.string.feedly_failedtogetblogs), false);
                 			}
                 		}
         			}
@@ -1578,18 +1573,10 @@ public class FeedlyParser extends RssParser {
         	                {	                    
         	                    if (handler != null)
         	                    {
-        	                    	if(page == -1)
-        	                    		handler.sendResponseMessage(blogs, true, ReaderApp.getAppContext().getResources().getString(R.string.feedly_waitformoreblogs), true, page);
-        	                    	else{
-        	                    		
-        	                    		handler.sendResponseMessage(blogs, true, ReaderApp.getAppContext().getResources().getString(R.string.feedly_waitformoreblogs), true, page);
-        	                    	}
+        	                    	handler.sendResponseMessage(blogs, true, ReaderApp.getAppContext().getResources().getString(R.string.feedly_waitformoreblogs), true);        	                    	
         	                    }
-        	                    	     
-        	                    int temp = page;
-                        		temp++;
-        	                    
-        	                    getRssBlog(channel, blog, count, handler, temp);
+
+        	                    getRssBlog(channel, blog, count, handler);
         	                }
         	                else
         	                {
@@ -1598,7 +1585,7 @@ public class FeedlyParser extends RssParser {
 
         	                    if (handler != null)
         	                    {	                    	
-        	                    	handler.sendResponseMessage(blogs, true, ReaderApp.getAppContext().getResources().getString(R.string.feedly_successtogetblogs), false, page);
+        	                    	handler.sendResponseMessage(blogs, true, ReaderApp.getAppContext().getResources().getString(R.string.feedly_successtogetblogs), false);
         	                    }
         	                }
                 		}
@@ -1612,6 +1599,258 @@ public class FeedlyParser extends RssParser {
         	}
         });
 	}
+	
+//	@Override
+//	public void getRssBlog(final Channel channel, final Blog blog, final int count, final HttpResponseHandler handler, final int page) {		
+//		String url = "";		
+//		try {		
+//	        if(channel.Id.length() > 0)
+//				url = "https://cloud.feedly.com/v3/streams/contents?streamId=" + URLEncoder.encode(channel.Id, "UTF-8");			
+//			else
+//	            url = "https://cloud.feedly.com/v3/streams/contents?streamId=" + URLEncoder.encode("user/" + ReaderApp.getProfile().Id + "/category/global.all", "UTF-8");		
+//		} catch (UnsupportedEncodingException e1) {
+//			e1.printStackTrace();
+//		}
+//        
+//        if (blog.TimeStamp > 0)
+//        {
+//            if (Preferences.contains("UP" + channel.Id) && Preferences.getString("UP" + channel.Id,"").length() > 0)
+//            {
+//                url = url + "&count=" + count + "&continuation=" + Preferences.getString("UP" + channel.Id, "") + "&newerThan=" + blog.TimeStamp;
+//            }
+//            else
+//            {
+//                url = url + "&count=" + count;
+//            }
+//        }
+//        else if (blog.TimeStamp < 0)
+//        {
+//            if (Preferences.contains("DOWN" + blog.ChannelId) && Preferences.getString("DOWN" + blog.ChannelId,"").length() > 0)
+//            {
+//                url = url + "&count=" + count + "&continuation=" + Preferences.getString("DOWN" + blog.ChannelId,"");
+//            }
+//            else
+//            {
+//                url = url + "&count=" + count;
+//            }        	
+//        }
+//        else if (blog.TimeStamp == 0)
+//        {
+//            url = url + "&count=" + count;
+//        }
+//
+//        url = url + "&ct=feedly.desktop&unreadOnly=false&ranked=newest&ck=" + System.currentTimeMillis();
+//        
+//        AsyncHttpClient client = new AsyncHttpClient();
+//        
+//    	client.addHeader("Host", "cloud.feedly.com");
+//        client.addHeader("Accept-Charset", "utf8");
+//        client.addHeader("Referer", "http://cloud.feedly.com/");
+//        client.addHeader("X-Feedly-Access-Token", ReaderApp.getToken(Token.AccessToken));        
+//        
+//        Log.i("RssReader", "Start get rss blog request at: " + new Date());
+//        
+//        client.get(url, new AsyncHttpResponseHandler(){
+//        	@Override
+//        	public void onFailure(final Throwable e, final String errorResponse){
+//        		new Thread(){
+//        			public void run(){
+//        				String error = "";
+//                		
+//                		if(errorResponse == null)
+//                			error = e.getCause() != null ? e.getCause().getMessage() : e.getMessage();
+//                		else
+//                			error = errorResponse;
+//                		
+//                		if (error != null && error.contains("expire")){
+//                			//now token is expired, we need to relogin        			
+//                			refreshToken(new HttpResponseHandler(){
+//                				public void onCallback(String token, boolean result, String msg){
+//                					if(result){
+//                						getRssBlog(channel, blog, count, handler);
+//                					}else{
+//                						if (handler != null)
+//                	        			{
+//                	        				handler.sendResponseMessage(new ArrayList<Blog>(), false, ReaderApp.getAppContext().getResources().getString(R.string.feedly_failedtogetblogs), false, -1);
+//                	        			}
+//                					}
+//                				}
+//                			});
+//                			
+//                			Log.i("RssReader", error);
+//               		 	}
+//                		else
+//                		{
+//                			if (handler != null)
+//                			{
+//                				handler.sendResponseMessage(new ArrayList<Blog>(), false, ReaderApp.getAppContext().getResources().getString(R.string.feedly_failedtogetblogs), false, -1);
+//                			}
+//                		}
+//        			}
+//        		}.start();        		
+//        	}
+//        	
+//        	@Override
+//        	public void onSuccess(final String data){
+//        		//get blogs and clean duplicate blogs        		
+//        		new Thread(){
+//        			public void run(){
+//        				Log.i("RssReader", "Finish get rss blog request at " + new Date());        		
+//                		
+//                		try{
+//                			JSONObject result = new JSONObject(data);
+//                			
+//                			String continuation = !result.has("continuation")
+//                                   ? ""
+//                                   : result.getString("continuation");
+//        				    if (blog.TimeStamp > 0)
+//        				    {
+//        				        //get lastest
+//        				        editor.putString("UP" + channel.Id, continuation).commit();
+//        				    }
+//        				    else if (blog.TimeStamp <= 0)
+//        				    {
+//        				        //get older
+//        				    	editor.putString("DOWN" + channel.Id, continuation).commit();
+//        				    }
+//        				
+//        				    List<Blog> blogs = new ArrayList<Blog>();
+//        				    JSONArray array = result.getJSONArray("items");
+//        				    JSONObject item = null;
+//        				    for(int i = 0; i < array.length(); i++)
+//        					{
+//        				     	item = array.getJSONObject(i);
+//        							
+//        						Blog b = new Blog();
+//        					
+//        						b.TagId = "";
+//        						b.Content = "";
+//        						if (item.has("categories"))
+//        						{
+//        							JSONObject obj = null;
+//        							JSONArray categories = item.getJSONArray("categories");
+//        							for(int j = 0; j < categories.length(); j++)
+//        							{    						
+//        								obj = categories.getJSONObject(j);
+//        								
+//        								if(obj.getString("id").contains("category"))
+//        								{
+//        									b.TagId = obj.getString("id");
+//        									break;
+//        								}
+//        							}
+//        							//b.TagId = item.get("categories").Children().First(c => c["id"].Value<String>().Contains("category"))["id"].Value<String>();
+//        						}
+//        						b.BlogId = item.getString("id");
+//        						b.ChannelId = item.getJSONObject("origin").getString("streamId");
+//        						
+//        						if(item.has("title"))
+//        							b.Title = HtmlHelper.unescape(item.getString("title"));
+//        						else
+//        							b.Title = HtmlHelper.unescape(item.getJSONObject("origin").getString("title"));
+//        						
+//        						b.Description = ReaderApp.getAppContext().getResources().getString(R.string.empty);
+//        						
+//        						if (item.has("summary"))
+//        							b.Description = HtmlHelper.unescape(item.getJSONObject("summary").getString("content"));
+//        						if (item.has("content"))
+//        							b.Description = HtmlHelper.unescape(item.getJSONObject("content").getString("content"));
+//        						if (item.has("alternate")){
+//        							int alt = item.getJSONArray("alternate").length();
+//        							for(int j=0; j<alt; j++){
+//        								if(item.getJSONArray("alternate").getJSONObject(j).has("href"))
+//        									b.Link = item.getJSONArray("alternate").getJSONObject(j).getString("href");
+//        								if(item.getJSONArray("alternate").getJSONObject(j).has("originId"))
+//        									b.Link = item.getString("originId");
+//        								
+//        								if(b.Link.length() > 0)
+//        									break;
+//        							}
+//        						}
+//        							
+//        						//remove cnbeta ad
+//        						if (b.Link.contains("cnbeta.com"))
+//        						{
+//        							int index = b.Description.indexOf("<img");
+//        							if (index != -1)
+//        								b.Description = b.Description.substring(0, index);
+//        						}
+//        			
+//        						b.PubDate = new Date(item.getLong("crawled"));
+//        						b.SubsTitle = item.getJSONObject("origin").has("title") ? item.getJSONObject("origin").getString("title") : "";
+//        						b.TimeStamp = item.getLong("published");
+//        						b.IsRead = item.has("unread") ? !item.getBoolean("unread") : false;
+//        						b.Avatar = "";
+//        			
+//        						if (item.has("tags"))
+//        						{
+//        							JSONObject obj = null;
+//        							JSONArray tags = item.getJSONArray("tags");
+//        							for(int j = 0; j< tags.length();j++)
+//        							{
+//        								if (tags.getString(j).contains("saved"))
+//        									b.IsStarred = true;
+//        							}
+//        						}
+//        						
+//        						b.OriginId = item.getString("id");
+//        						b.IsRecommend = false;						
+//        			
+//        						blogs.add(b);
+//        					}
+//        				    
+//        				    //deal with long time no updates
+//        	                boolean hasMore = true;
+//        	                for(Blog b : blogs){
+//        	                	long between=(b.PubDate.getTime()- blog.PubDate.getTime())/1000;
+//        	                	
+//        						if(between > 0L)
+//        							hasMore = hasMore && true;
+//        						else
+//        							hasMore = hasMore && false;
+//        					}
+//        	                
+//        	                if(blog.TimeStamp <= 0L)
+//        	                	hasMore = false;
+//        	                
+//        	                if(hasMore)
+//        	                {	                    
+//        	                    if (handler != null)
+//        	                    {
+//        	                    	if(page == -1)
+//        	                    		handler.sendResponseMessage(blogs, true, ReaderApp.getAppContext().getResources().getString(R.string.feedly_waitformoreblogs), true, page);
+//        	                    	else{
+//        	                    		
+//        	                    		handler.sendResponseMessage(blogs, true, ReaderApp.getAppContext().getResources().getString(R.string.feedly_waitformoreblogs), true, page);
+//        	                    	}
+//        	                    }
+//        	                    	     
+//        	                    int temp = page;
+//                        		temp++;
+//        	                    
+//        	                    getRssBlog(channel, blog, count, handler, temp);
+//        	                }
+//        	                else
+//        	                {
+//        	                    if(blog.TimeStamp > 0)
+//        	                        editor.putString("UP" + channel.Id, "").commit();	                    
+//
+//        	                    if (handler != null)
+//        	                    {	                    	
+//        	                    	handler.sendResponseMessage(blogs, true, ReaderApp.getAppContext().getResources().getString(R.string.feedly_successtogetblogs), false, page);
+//        	                    }
+//        	                }
+//                		}
+//                		catch(Exception json){
+//                			json.printStackTrace();
+//                			if (handler != null)
+//                				handler.sendResponseMessage(null, false, ReaderApp.getAppContext().getResources().getString(R.string.feedly_failedtogetblogs));                    
+//                		}                	
+//        			}
+//        		}.start();
+//        	}
+//        });
+//	}
 
 	@Override
 	public void getFavor(String tag, Blog b, int count, HttpResponseHandler handler) {

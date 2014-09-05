@@ -171,21 +171,16 @@ public class BlogListFragment extends Fragment implements IXListViewListener {
 	            	}else{
 	            		List<Blog> blogs = ((List<Blog>) msg.obj);
 	            		
-	            		if(msg.arg1 == 0){
-	            			for(Blog b : blogs){
-		            			if(!data.contains(b)){
-		            				data.add(b);
-		            			}
-		            		}
-		            		Collections.sort(data, new Comparator<Blog>(){
-		         	           public int compare(Blog arg0, Blog arg1) {   
-		         	               return (int)(arg1.TimeStamp - arg0.TimeStamp);
-		         	            }
-		         	        });
+	            		for(Blog b : blogs){
+	            			if(!data.contains(b)){
+	            				data.add(b);
+	            			}
 	            		}
-	            		else{
-	            			data = blogs;
-	            		}
+	            		Collections.sort(data, new Comparator<Blog>(){
+	         	           public int compare(Blog arg0, Blog arg1) {   
+	         	               return (int)(arg1.TimeStamp - arg0.TimeStamp);
+	         	            }
+	         	        });
 	            	}
 	            	adapter.notifyDataSetChanged();
 	            	
@@ -407,7 +402,7 @@ public class BlogListFragment extends Fragment implements IXListViewListener {
 		
         feedly.getRssBlog(channel, tmp, 30, new HttpResponseHandler(){
         	@Override
-        	public <Blog> void onCallback(List<Blog> blogs, boolean result, String msg, boolean hasMore, int page){
+        	public <Blog> void onCallback(List<Blog> blogs, boolean result, String msg, boolean hasMore){
         		if(result){
         			BlogDalHelper helper = new BlogDalHelper();
         			
@@ -419,7 +414,6 @@ public class BlogListFragment extends Fragment implements IXListViewListener {
         				Message m = myHandler.obtainMessage();
         	            m.what = LOADDATA;
         	            m.obj = blogs;
-        	            m.arg1 = 0;
         				myHandler.sendMessage(m);
         			}
         			
@@ -444,7 +438,7 @@ public class BlogListFragment extends Fragment implements IXListViewListener {
 		
 		parser.getRssBlog(channel, b, ReaderApp.getSettings().NumPerRequest, new HttpResponseHandler(){
         	@Override
-        	public <Blog> void onCallback(final List<Blog> blogs, boolean result, String msg, boolean hasMore, int page){
+        	public <Blog> void onCallback(final List<Blog> blogs, boolean result, String msg, boolean hasMore){
         		if(result){
         			new Thread(){
         				public void run(){
@@ -455,11 +449,10 @@ public class BlogListFragment extends Fragment implements IXListViewListener {
         			}.start();
         			
         			//only first page show in UI thread
-        			if(blogs.size() > 0 && page == 0){
+        			if(blogs.size() > 0){
         				Message m = myHandler.obtainMessage();
         	            m.what = LOADDATA;
-        	            m.obj = blogs;
-        	            m.arg1 = hasMore ? 1 : 0;        	            
+        	            m.obj = blogs;      	            
         				myHandler.sendMessage(m);
         			}
         			
@@ -478,7 +471,7 @@ public class BlogListFragment extends Fragment implements IXListViewListener {
         			Toast.makeText(ReaderApp.getAppContext(), msg, Toast.LENGTH_SHORT).show();        			
         		}
         	}
-		}, 0);
+		});
 	}
 
 	@Override
@@ -511,7 +504,7 @@ public class BlogListFragment extends Fragment implements IXListViewListener {
 				
 				parser.getRssBlog(channel, b, ReaderApp.getSettings().NumPerRequest, new HttpResponseHandler(){
 		        	@Override
-		        	public <Blog> void onCallback(final List<Blog> blogs, boolean result, String msg, boolean hasMore, int page){
+		        	public <Blog> void onCallback(final List<Blog> blogs, boolean result, String msg, boolean hasMore){
 		        		if(result){
 		        			
 		        			new Thread(){
@@ -525,7 +518,6 @@ public class BlogListFragment extends Fragment implements IXListViewListener {
 		        				Message m = myHandler.obtainMessage();                    				
 		        	            m.what = LOADDATA;
 		        	            m.obj = blogs;
-		        	            m.arg1 = 0;
 		        				myHandler.sendMessage(m);
 		        			}
 		        			
