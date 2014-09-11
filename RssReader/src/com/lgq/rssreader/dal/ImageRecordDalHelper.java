@@ -1,5 +1,6 @@
 package com.lgq.rssreader.dal;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -116,6 +117,16 @@ public class ImageRecordDalHelper {
 	}
 	
 	/**
+	 * 分页获取
+	 */
+	public List<ImageRecord> GetImageRecordList(Date until) {
+		String where = "datetime(TimeStamp) <?";
+		SimpleDateFormat dateFm = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.000");
+		String[] args = { dateFm.format(until) };//datetime(LogTime)=datetime('2011-08-18 16:38:32.000') 			
+		return GetImageRecordListByWhere(null, where, args );
+	}
+	
+	/**
 	 * 根据recordId获取单条记录
 	 */
 	public ImageRecord GetImageRecordEntity(int recordId) {
@@ -149,18 +160,22 @@ public class ImageRecordDalHelper {
 	 * 根据ImageUrl获取单条记录
 	 */
 	public List<ImageRecord> GetImageRecordByBlog(List<Blog> blogs) {		
-		String where = "BlogId in (?)";
-		StringBuilder ids = new StringBuilder();
+		String where = "BlogId in (";
+		String[] args = new String[blogs.size()];
+		StringBuilder qes = new StringBuilder();
+		int i=0;
 		for(Blog b : blogs){
-			ids.append(b.BlogId + ",");
+			args[i] = b.BlogId;
+			qes.append("?,");
+			i++;
 		}
-		if(ids.length() > 0 ){
-			ids.deleteCharAt(ids.length() - 1);
+		if(blogs.size() > 0 ){			
+			qes.deleteCharAt(qes.length() - 1);
 		}
 		
-		String[] args = {ids.toString()};
-		return GetImageRecordListByWhere(null, where, args);
-		
+		where = where + qes + ")";
+				
+		return GetImageRecordListByWhere(null, where, args);		
 	}
 	
 	/**

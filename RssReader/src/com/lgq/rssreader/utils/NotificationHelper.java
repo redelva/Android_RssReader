@@ -364,16 +364,21 @@ public class NotificationHelper {
 						public void run() {
 							//delete blog a month ago
 							Calendar calendar = Calendar.getInstance();					
-							calendar.add(Calendar.DATE, -7);    //得到前一个星期
+							calendar.add(Calendar.DATE, -3);    //得到前一个星期
 							BlogDalHelper blogHelper = new BlogDalHelper();
 							ImageRecordDalHelper imgHelper = new ImageRecordDalHelper();
-							List<Blog> toDeleteBlogs = blogHelper.GetBlogList(calendar.getTime());
+							//List<Blog> toDeleteBlogs = blogHelper.GetBlogList(calendar.getTime());
 							
 							//find related imgs by blogid
-							List<ImageRecord> records = imgHelper.GetImageRecordByBlog(toDeleteBlogs);
+							//List<ImageRecord> records = imgHelper.GetImageRecordByBlog(toDeleteBlogs);
 							
 							//List<Blog> toDeleteBlogs = blogHelper.GetBlogList(0.2);
-							//List<ImageRecord> records = imgHelper.GetImageRecordByBlog(toDeleteBlogs);
+							List<ImageRecord> records = imgHelper.GetImageRecordList(calendar.getTime());
+							
+							List<String> blogIDs = new ArrayList<String>();
+							for(ImageRecord record : records){
+								blogIDs.add(record.BlogId);
+							}
 							
 							String sDStateString = android.os.Environment.getExternalStorageState();
 
@@ -388,7 +393,7 @@ public class NotificationHelper {
 										}
 									}
 									
-									blogHelper.DeleteBlog(toDeleteBlogs);
+									blogHelper.DeleteBlog(blogIDs);
 									imgHelper.DeleteRecords(records);
 								}
 								catch(Exception e){

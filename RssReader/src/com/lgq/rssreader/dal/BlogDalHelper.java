@@ -607,7 +607,7 @@ public class BlogDalHelper {
 	 * 
 	 * @param blogs
 	 */
-	public void DeleteBlog(List<Blog> blogs) {
+	public void DeleteBlog(ArrayList<Blog> blogs) {
 //		String sql = "delete from Blogs where BlogId in (";
 //		String[] args = new String[1];
 //		StringBuilder sb = new StringBuilder();
@@ -625,6 +625,29 @@ public class BlogDalHelper {
 			try {				
 				for (int i = blogs.size() - 1, len = 0; i >= len; i--) {
 					String blogId = blogs.get(i).BlogId;					
+					db.delete(Config.DB_BLOG_TABLE, "BlogId=?", new String[]{blogId});
+				}
+				db.setTransactionSuccessful();
+			} 
+			catch(Exception e){
+				e.printStackTrace();
+			}finally {
+				db.endTransaction();
+			}
+		}
+	}
+	
+	/**
+	 * 删除Blogs
+	 * 
+	 * @param blogs
+	 */
+	public void DeleteBlog(List<String> blogIDs) {		
+		synchronized (_writeLock) {
+			db.beginTransaction();
+			try {				
+				for (int i = blogIDs.size() - 1, len = 0; i >= len; i--) {
+					String blogId = blogIDs.get(i);					
 					db.delete(Config.DB_BLOG_TABLE, "BlogId=?", new String[]{blogId});
 				}
 				db.setTransactionSuccessful();

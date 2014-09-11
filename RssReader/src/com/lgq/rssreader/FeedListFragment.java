@@ -688,7 +688,7 @@ public class FeedListFragment extends SherlockFragment {
                     				myHandler.sendMessage(c);
                     			}
                     		}else{
-                    			Toast.makeText(getActivity(), msg, Toast.LENGTH_SHORT).show();
+                    			Toast.makeText(ReaderApp.getAppContext(), msg, Toast.LENGTH_SHORT).show();
                     		}
 
                     	}
@@ -759,7 +759,7 @@ public class FeedListFragment extends SherlockFragment {
     						}
     					}
     				}else{
-    					Toast.makeText(getActivity(), msg, Toast.LENGTH_SHORT).show();
+    					Toast.makeText(ReaderApp.getAppContext(), msg, Toast.LENGTH_SHORT).show();
     				}
     			}
     		});
@@ -784,7 +784,7 @@ public class FeedListFragment extends SherlockFragment {
     						helper.Close();
     					}
     				}else{
-    					Toast.makeText(getActivity(), msg, Toast.LENGTH_SHORT).show();
+    					Toast.makeText(ReaderApp.getAppContext(), msg, Toast.LENGTH_SHORT).show();
     				}
     			}
     		});
@@ -797,7 +797,7 @@ public class FeedListFragment extends SherlockFragment {
     				if(result){
     					loadChannel();
     				}else{
-    					Toast.makeText(getActivity(), msg, Toast.LENGTH_SHORT).show();
+    					Toast.makeText(ReaderApp.getAppContext(), msg, Toast.LENGTH_SHORT).show();
     				}
     			}
     		});
@@ -810,7 +810,7 @@ public class FeedListFragment extends SherlockFragment {
     				if(result){
     					loadChannel();
     				}else{
-    					Toast.makeText(getActivity(), msg, Toast.LENGTH_SHORT).show();
+    					Toast.makeText(ReaderApp.getAppContext(), msg, Toast.LENGTH_SHORT).show();
     				}
     			}
     		});
