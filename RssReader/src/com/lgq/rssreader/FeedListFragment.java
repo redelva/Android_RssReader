@@ -3,6 +3,7 @@ package com.lgq.rssreader;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 import java.util.prefs.Preferences;
 
@@ -172,6 +173,8 @@ public class FeedListFragment extends SherlockFragment {
     public static final int SEARCH = 6;
     public static final int SUBSCRIBE = 7;
     public static final int CLEAR = 8;
+    public static final int MARKTAG = 9;
+    public static final int UNSUBSCRIBE = 10;
     
     public static final int LOCAL = 101;
     public static final int SYNC = 102;
@@ -234,14 +237,38 @@ public class FeedListFragment extends SherlockFragment {
             				channels = (List<Channel>)msg.obj;
             				if(channels.size() > 0){
 	            				if(listView.getAdapter() == null){
+	            					List<Channel> list = new ArrayList<Channel>();
+	            					if(!ReaderApp.getSettings().ShowAllFeeds){	            						
+	            						for (Iterator it = channels.iterator();it.hasNext();){
+	            							Channel c = (Channel)it.next(); 
+	            							if(c.UnreadCount > 0 )
+	            								list.add(c);
+	            						}
+	            					}else{
+	            						list = channels;
+	            					}
+	            					
 	            					adapter = new ChannelAdapter(
 	    	                                getActivity(),
-	    	                                channels,
+	    	                                list,
 	    	                                listView);
 		                			listView.setAdapter(adapter);
+	            					
 	            				}else{
 	            					HeaderViewListAdapter wrap = (HeaderViewListAdapter)listView.getAdapter();
-	            					((ChannelAdapter)wrap.getWrappedAdapter()).ResetData(channels);
+	            					
+	            					List<Channel> list = new ArrayList<Channel>();
+	            					if(!ReaderApp.getSettings().ShowAllFeeds){	            						
+	            						for (Iterator it = channels.iterator();it.hasNext();){
+	            							Channel c = (Channel)it.next(); 
+	            							if(c.UnreadCount > 0 )
+	            								list.add(c);
+	            						}
+	            					}else{
+	            						list = channels;
+	            					}
+	            					
+	            					((ChannelAdapter)wrap.getWrappedAdapter()).ResetData(list);
 	            				}
             				}else{
             					// need to recommend some feeds
@@ -375,6 +402,21 @@ public class FeedListFragment extends SherlockFragment {
             			if(btnRight != null)
             				btnRight.clearAnimation();
         			}        			
+        			break;
+        		case MARKTAG:
+        			if(adapter != null){
+        				int index = msg.arg1;
+        				Channel c = (Channel)msg.obj;
+        				((ChannelAdapter) adapter).GetData().set(index, c);
+						adapter.notifyDataSetChanged();
+        			}
+        			break;
+        		case UNSUBSCRIBE:
+        			if(adapter != null){
+        				Channel c = (Channel)msg.obj;
+        				((ChannelAdapter) adapter).GetData().remove(c);						
+						adapter.notifyDataSetChanged();
+        			}
         			break;
             }
             
@@ -748,8 +790,11 @@ public class FeedListFragment extends SherlockFragment {
     							
     							c.UnreadCount = 0;
     							
-    							adapter.GetData().set(index, c);
-    							adapter.notifyDataSetChanged();
+    							Message m = myHandler.obtainMessage();                    				
+    							m.what = MARKTAG;
+    							m.obj = c;
+    							m.arg1 = index;
+                				myHandler.sendMessage(m);
     							
     							BlogDalHelper helper = new BlogDalHelper();
     							helper.MarkAsRead(c, true);
@@ -776,8 +821,10 @@ public class FeedListFragment extends SherlockFragment {
     					
     					if(adapter != null){
     						
-    						adapter.GetData().remove(c);
-    						adapter.notifyDataSetChanged();
+    						Message m = myHandler.obtainMessage();                    				
+							m.what = UNSUBSCRIBE;
+							m.obj = c;							
+            				myHandler.sendMessage(m);
     						
     						BlogDalHelper helper = new BlogDalHelper();
     						helper.DeleteBlogByChannel(c);

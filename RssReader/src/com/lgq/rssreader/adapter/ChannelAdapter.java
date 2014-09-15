@@ -38,17 +38,8 @@ public class ChannelAdapter extends BaseAdapter {
 	private ListView listView;
 	private AsyncImageLoader asyncImageLoader;
 
-	public ChannelAdapter(Context context, List<Channel> list, ListView listView) {
-		if(!ReaderApp.getSettings().ShowAllFeeds){
-			this.list = new ArrayList<Channel>();
-			for (Iterator it = list.iterator();it.hasNext();){
-				Channel c = (Channel)it.next(); 
-				if(c.UnreadCount > 0 )
-					this.list.add(c);
-			}
-		}else{
-			this.list = list;
-		}		
+	public ChannelAdapter(Context context, List<Channel> list, ListView listView) {		
+		this.list = list;		
 		this.listView = listView;
 		asyncImageLoader = new AsyncImageLoader();
 		this.mInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);

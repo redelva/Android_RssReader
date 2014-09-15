@@ -162,7 +162,7 @@
 	<string name="view">View</string>
 	<string name="view_desc">Settings around channels, tabs and image mode</string>		
 	<string name="view_showallchannel">Show all channels</string>
-	<string name="view_showunreadchannel">Only show unread channels</string>
+	<string name="view_showunreadchannel">Only show channels include unread blogs</string>
 	<string name="view_showallitem">Show all blogs</string>
 	<string name="view_showunreaditem">Only show unread blogs</string>
 	<string name="view_noimage">None image mode</string>

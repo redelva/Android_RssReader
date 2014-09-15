@@ -161,7 +161,7 @@
 	<string name="view">查看</string>
 	<string name="view_desc">显示频道,条目和图片</string>		
 	<string name="view_showallchannel">显示全部频道</string>
-	<string name="view_showunreadchannel">仅显示已读频道</string>
+	<string name="view_showunreadchannel">仅显示含有未读条目频道</string>
 	<string name="view_showallitem">显示全部条目</string>
 	<string name="view_showunreaditem">只显示未读条目</string>
 	<string name="view_noimage">无图模式</string>
