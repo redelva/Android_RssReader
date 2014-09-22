@@ -269,7 +269,7 @@ public class ReaderApp extends Application{
     		settings.ShowAllItems = pref.getBoolean("view_showallitem", true);
     		settings.NoImageMode = pref.getBoolean("view_noimage", false);
     		if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH)
-    			settings.FullScreen = pref.getBoolean("view_fullscreen", ViewConfiguration.get(ReaderApp.context).hasPermanentMenuKey());
+    			settings.FullScreen = pref.getBoolean("view_fullscreen", !ViewConfiguration.get(ReaderApp.context).hasPermanentMenuKey());
     		else
     			settings.FullScreen = pref.getBoolean("view_fullscreen", false);
     		settings.BackgroundColor = pref.getString("view_backgroundcolor", "#ffffffff");
@@ -277,6 +277,7 @@ public class ReaderApp extends Application{
     		settings.Brightness = pref.getInt("view_brightness", 100);
     		
     		settings.Theme = Theme.values()[pref.getInt("view_theme", 0)];
+    		settings.MenuShake = pref.getBoolean("MenuShake", false);
     		
     		settings.AutoSync = pref.getBoolean("sync_on_start", true);
     		settings.EnableShakeToUpdate = pref.getBoolean("sync_shake", false);
@@ -286,7 +287,7 @@ public class ReaderApp extends Application{
     		settings.DownloadPolice = DownloadMode.values()[Integer.parseInt(pref.getString("download_police", "2"))];
     		settings.DownloadOnlyWifi = pref.getBoolean("download_wifi", true);    		
     		settings.DownloadPeriod = Integer.parseInt(pref.getString("download_period", "3"));
-    		settings.DownloadTime = pref.getString("download_time", "18:00");
+    		settings.DownloadTime = pref.getString("download_time", "18:00");    		
     	}    	
     	
     	return settings;
