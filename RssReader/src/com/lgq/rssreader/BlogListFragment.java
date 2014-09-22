@@ -440,13 +440,9 @@ public class BlogListFragment extends Fragment implements IXListViewListener {
         	@Override
         	public <Blog> void onCallback(final List<Blog> blogs, boolean result, String msg, boolean hasMore){
         		if(result){
-        			new Thread(){
-        				public void run(){
-        					BlogDalHelper helper = new BlogDalHelper();
-                			helper.SynchronyData2DB((List<com.lgq.rssreader.entity.Blog>) blogs);
-                			helper.Close();   
-        				}
-        			}.start();
+        			BlogDalHelper helper = new BlogDalHelper();
+        			helper.SynchronyData2DB((List<com.lgq.rssreader.entity.Blog>) blogs);
+        			helper.Close();
         			
         			//only first page show in UI thread
         			if(blogs.size() > 0){
@@ -491,7 +487,6 @@ public class BlogListFragment extends Fragment implements IXListViewListener {
 	            m.obj = blogs;
 	            m.arg1 = 0;
 				myHandler.sendMessage(m);
-				//getActivity().runOnUiThread(new Runnable(){public void run(){onLoad();}});
 				
 				helper.Close();
 				
