@@ -2075,6 +2075,9 @@ public class FeedlyParser extends RssParser {
 		} catch (UnsupportedEncodingException e1) {
 			e1.printStackTrace();
 		}
+		
+		if(url.length() == 0)
+			return blogs;
         
         url = url + "&count=" + count + "&ct=feedly.desktop&unreadOnly=false&ranked=newest&ck=" + System.currentTimeMillis();
         

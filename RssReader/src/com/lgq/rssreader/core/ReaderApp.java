@@ -277,7 +277,7 @@ public class ReaderApp extends Application{
     		settings.Brightness = pref.getInt("view_brightness", 100);
     		
     		settings.Theme = Theme.values()[pref.getInt("view_theme", 0)];
-    		settings.MenuShake = pref.getBoolean("MenuShake", false); 
+    		settings.MenuShake = pref.getBoolean("MenuShake", false);
     		
     		settings.AutoSync = pref.getBoolean("sync_on_start", true);
     		settings.EnableShakeToUpdate = pref.getBoolean("sync_shake", false);

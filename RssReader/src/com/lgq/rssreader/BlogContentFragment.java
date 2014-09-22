@@ -266,6 +266,7 @@ public class BlogContentFragment extends Fragment{
  	private static final int DESC = 2;
  	private static final int FLASH = 3;
  	private static final int SHARE = 4;
+ 	private static final int SHAKE = 5;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -328,6 +329,12 @@ public class BlogContentFragment extends Fragment{
 	    				OnekeyShare oks = (OnekeyShare)msg.obj;
 	    				
 	    				oks.show(getActivity());
+	    				
+	    				break;
+	    			case SHAKE:
+	    				
+	    				Animation shake = AnimationUtils.loadAnimation(getActivity(), R.anim.shake);  
+	        			menu.startAnimation(shake);
 	    				
 	    				break;
 	    		}
@@ -868,12 +875,39 @@ public class BlogContentFragment extends Fragment{
     public void loadComplete(String args){
     	Log.i("RssReader", "Page Load " + args);
     	
-    	if(args.equals("init"))
+    	if(args.equals("init")){
     		loadEvent.set();
-    	else if(args.equals("content"))
+    	}
+    	else if(args.equals("content")){
     		hideProgressbar();
-    	else if(args.equals("description"))
+    		
+    		if(!ReaderApp.getSettings().MenuShake){    			
+    			
+    			Editor e = PreferenceManager.getDefaultSharedPreferences(ReaderApp.getAppContext()).edit();
+    			
+    			e.putBoolean("MenuShake", true).commit();
+    			
+    			ReaderApp.saveSettings();
+    			
+    			Message m = myHandler.obtainMessage();
+	            m.what = SHAKE;	            
+				myHandler.sendMessage(m);
+    		}
+    	}
+    	else if(args.equals("description")){
     		hideProcess();
+    		if(!ReaderApp.getSettings().MenuShake){
+    			Editor e = PreferenceManager.getDefaultSharedPreferences(ReaderApp.getAppContext()).edit();
+    			
+    			e.putBoolean("MenuShake", true).commit();
+    			
+    			ReaderApp.saveSettings();
+    			
+    			Message m = myHandler.obtainMessage();
+	            m.what = SHAKE;	            
+				myHandler.sendMessage(m);
+    		}
+    	}
     }
     
     private void initReadSetting(View rootView){
@@ -1496,7 +1530,7 @@ public class BlogContentFragment extends Fragment{
         	uiOptions = getActivity().getWindow().getDecorView().getSystemUiVisibility();
         	Helper.hideSystemUI(getActivity());
         	immersiveMode = true;
-        }        	
+        }
 
         browser = (WebView)rootView.findViewById(R.id.browser);
         browser.getSettings().setJavaScriptEnabled(true);

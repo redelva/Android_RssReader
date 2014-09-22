@@ -168,7 +168,7 @@ public class MediumRssWidgetProvider extends AppWidgetProvider{
             			BlogDalHelper helper = new BlogDalHelper();
             			helper.SynchronyData2DB((List<com.lgq.rssreader.entity.Blog>) blogs);
             			helper.Close();
-            			Helper.sound(); 
+            			Helper.sound();
             			
             			com.lgq.rssreader.entity.Blog previous = ((List<com.lgq.rssreader.entity.Blog>) blogs).get(0);
                     	

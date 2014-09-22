@@ -104,7 +104,7 @@ public class LargeRssWidgetProvider extends AppWidgetProvider{
         
         int mAppWidgetId = intent.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, 0);
         
-        if(intent.getAction().equals(REFRESH)){ 
+        if(intent.getAction().equals(REFRESH)){
         	
         	Toast.makeText(context, context.getResources().getString(R.string.content_loading), Toast.LENGTH_SHORT).show();
         	

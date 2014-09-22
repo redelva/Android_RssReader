@@ -180,7 +180,7 @@ public class BlogListFragment extends Fragment implements IXListViewListener {
 	         	           public int compare(Blog arg0, Blog arg1) {   
 	         	               return (int)(arg1.TimeStamp - arg0.TimeStamp);
 	         	            }
-	         	        });
+	         	        }); 
 	            	}
 	            	adapter.notifyDataSetChanged();
 	            	

@@ -59,7 +59,7 @@ public class HttpResponseHandler{
     
     public <T, K> void onCallback(List<T> tdata, List<K> kdata, boolean result, String msg){}      
     
-    public <T, K> void onCallback(List<T> tdata, List<K> kdata, boolean result, String msg, boolean hasmore){}           
+    public <T, K> void onCallback(List<T> tdata, List<K> kdata, boolean result, String msg, boolean hasmore){}
 		   
     //
     // Pre-processing of messages (executes in background threadpool thread)
@@ -80,11 +80,7 @@ public class HttpResponseHandler{
     protected <T, K> void sendSuccessMessage(List<T> tData, List<K> kData, boolean result, String msg, boolean hasmore) {
         sendMessage(obtainMessage(SUCCESS_FOUR_MESSAGE_MORE, new Object[]{tData, kData, result, msg, hasmore}));
     }
-    
-    protected <T> void sendSuccessMessage(List<T> tData, boolean result, String msg, boolean hasmore, int page) {
-        sendMessage(obtainMessage(SUCCESS_FIVE_MESSAGE_MORE, new Object[]{tData, result, msg, hasmore, page}));
-    }
-    
+        
     protected <T> void sendSuccessMessage(T data, boolean result, String msg) {
         sendMessage(obtainMessage(SUCCESS_MESSAGE, new Object[]{data, result, msg}));
     }
