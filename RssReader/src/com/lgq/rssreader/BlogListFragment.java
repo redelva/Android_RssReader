@@ -484,8 +484,7 @@ public class BlogListFragment extends Fragment implements IXListViewListener {
 			if(blogs.size()>0){
 				Message m = myHandler.obtainMessage();                    				
 	            m.what = LOADDATA;
-	            m.obj = blogs;
-	            m.arg1 = 0;
+	            m.obj = blogs;	            
 				myHandler.sendMessage(m);
 				
 				helper.Close();
@@ -522,7 +521,7 @@ public class BlogListFragment extends Fragment implements IXListViewListener {
 		        			else{
 		        				Helper.sound();
 		        			}
-		        		}else{
+		        		}else{ 
 		        			Toast.makeText(getActivity(), msg, Toast.LENGTH_SHORT).show();        			
 		        		}
 		        		

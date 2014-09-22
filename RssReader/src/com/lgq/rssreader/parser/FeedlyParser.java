@@ -2066,10 +2066,11 @@ public class FeedlyParser extends RssParser {
 	@Override
 	public List<Blog> syncDownload(Channel c, int count) {
 		String url = "";
+		List<Blog> blogs = new ArrayList<Blog>();
 		try {
 	        if(c.Id.length() > 0)
 				url = "https://cloud.feedly.com/v3/streams/contents?streamId=" + URLEncoder.encode(c.Id, "UTF-8");			
-			else
+	        if(ReaderApp.getProfile() != null && ReaderApp.getProfile().Id.length() > 0)
 	            url = "https://cloud.feedly.com/v3/streams/contents?streamId=" + URLEncoder.encode("user/" + ReaderApp.getProfile().Id + "/category/global.all", "UTF-8");		
 		} catch (UnsupportedEncodingException e1) {
 			e1.printStackTrace();
@@ -2086,9 +2087,7 @@ public class FeedlyParser extends RssParser {
         //取得HttpClient对象  
         HttpClient httpclient = new DefaultHttpClient();
         
-        HttpResponse response;
-        
-        List<Blog> blogs = new ArrayList<Blog>();
+        HttpResponse response;        
 		
         try {
 			response = httpclient.execute(httpRequest);

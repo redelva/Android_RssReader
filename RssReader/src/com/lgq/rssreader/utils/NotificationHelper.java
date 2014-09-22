@@ -379,6 +379,7 @@ public class NotificationHelper {
 							for(ImageRecord record : records){
 								blogIDs.add(record.BlogId);
 							}
+					
 							
 							String sDStateString = android.os.Environment.getExternalStorageState();
 

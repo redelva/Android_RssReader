@@ -159,7 +159,7 @@ public class ImageRecordDalHelper {
 	/**
 	 * 根据ImageUrl获取单条记录
 	 */
-	public List<ImageRecord> GetImageRecordByBlog(List<Blog> blogs) {		
+	public List<ImageRecord> GetImageRecordByBlog(List<Blog> blogs) { 		
 		String where = "BlogId in (";
 		String[] args = new String[blogs.size()];
 		StringBuilder qes = new StringBuilder();

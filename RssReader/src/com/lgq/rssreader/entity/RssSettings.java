@@ -57,7 +57,7 @@ public class RssSettings
     public int ShakeSpeed = 50;    
     public boolean ConfirmExit = false;
     public boolean AskBeforeMarkAllAsRead = true;
-    public boolean MenuShake = false;
+    public boolean MenuShake = false; 
     public boolean FitImageToWidth = true;    
     public boolean EnableVibrate = true;
     public boolean EnableSound = true;

@@ -173,7 +173,7 @@ public class FeedListFragment extends SherlockFragment {
     public static final int SEARCH = 6;
     public static final int SUBSCRIBE = 7;
     public static final int CLEAR = 8;
-    public static final int MARKTAG = 9;
+    public static final int MARKTAG = 9; 
     public static final int UNSUBSCRIBE = 10;
     
     public static final int LOCAL = 101;
