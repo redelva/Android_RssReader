@@ -14,6 +14,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.ImageButton;
@@ -44,6 +46,7 @@ public class BlogAdapter extends BaseAdapter {
 	private ListView listView;
 	private AsyncImageLoader asyncImageLoader;
 	private Context mContext;
+	private int lastPosition;
 
 	public BlogAdapter(Context context, List<Blog> blogs, ListView listView) {
 		if(context != null){
@@ -51,7 +54,7 @@ public class BlogAdapter extends BaseAdapter {
 			mContext = context;
 			this.listView = listView;
 			asyncImageLoader = new AsyncImageLoader();
-			
+			lastPosition = -1;
 			this.mInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		}		
 	}
@@ -180,6 +183,11 @@ public class BlogAdapter extends BaseAdapter {
 		viewHolder.blog_subtitle.setText(String.valueOf(entity.SubsTitle));
 
 		convertView.setTag(viewHolder);
+		
+		Animation animation = AnimationUtils.loadAnimation(mContext, (position > lastPosition) ? R.anim.up_from_bottom : R.anim.down_from_top);
+		convertView.startAnimation(animation);
+	    lastPosition = position;
+		
 		return convertView;
 	}
 	

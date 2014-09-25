@@ -10,18 +10,20 @@ package com.lgq.rssreader;
 public final class R {
     public static final class anim {
         public static final int cycle_7=0x7f040000;
-        public static final int leftalpha=0x7f040001;
-        public static final int rightalpha=0x7f040002;
-        public static final int rotate=0x7f040003;
-        public static final int sat_item_anim_click=0x7f040004;
-        public static final int sat_item_anticipate_interpolator=0x7f040005;
-        public static final int sat_item_click_interpolator=0x7f040006;
-        public static final int sat_item_in_rotate_interpolator=0x7f040007;
-        public static final int sat_item_out_rotate_interpolator=0x7f040008;
-        public static final int sat_item_overshoot_interpolator=0x7f040009;
-        public static final int sat_main_rotate_left=0x7f04000a;
-        public static final int sat_main_rotate_right=0x7f04000b;
-        public static final int shake=0x7f04000c;
+        public static final int down_from_top=0x7f040001;
+        public static final int leftalpha=0x7f040002;
+        public static final int rightalpha=0x7f040003;
+        public static final int rotate=0x7f040004;
+        public static final int sat_item_anim_click=0x7f040005;
+        public static final int sat_item_anticipate_interpolator=0x7f040006;
+        public static final int sat_item_click_interpolator=0x7f040007;
+        public static final int sat_item_in_rotate_interpolator=0x7f040008;
+        public static final int sat_item_out_rotate_interpolator=0x7f040009;
+        public static final int sat_item_overshoot_interpolator=0x7f04000a;
+        public static final int sat_main_rotate_left=0x7f04000b;
+        public static final int sat_main_rotate_right=0x7f04000c;
+        public static final int shake=0x7f04000d;
+        public static final int up_from_bottom=0x7f04000e;
     }
     public static final class array {
         public static final int cache_number_list=0x7f0e0000;
