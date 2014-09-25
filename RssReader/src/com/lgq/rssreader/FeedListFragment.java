@@ -9,6 +9,9 @@ import java.util.prefs.Preferences;
 
 import org.json.JSONArray;
 
+import android.animation.AnimatorSet;
+import android.animation.ObjectAnimator;
+import android.animation.ValueAnimator;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -37,6 +40,7 @@ import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
+import android.view.animation.Animation.AnimationListener;
 import android.view.animation.AnimationUtils;
 import android.widget.Adapter;
 import android.widget.AdapterView;
@@ -810,26 +814,26 @@ public class FeedListFragment extends SherlockFragment {
     		});
     	}
     	
-    	if(action == RssAction.UnSubscribe){
+    	if(action == RssAction.UnSubscribe){    		
     		parser.markTag(c, action, new HttpResponseHandler(){
     			@Override
     			public <RssAction> void onCallback(RssAction data, boolean result, String msg){
     				if(result){
-						HeaderViewListAdapter headerViewAdapter = (HeaderViewListAdapter)listView.getAdapter();
-    					
-    					ChannelAdapter adapter = (ChannelAdapter) headerViewAdapter.getWrappedAdapter();
-    					
-    					if(adapter != null){
-    						
-    						Message m = myHandler.obtainMessage();                    				
-							m.what = UNSUBSCRIBE;
-							m.obj = c;							
-            				myHandler.sendMessage(m);
+//						HeaderViewListAdapter headerViewAdapter = (HeaderViewListAdapter)listView.getAdapter();
+//    					
+//    					ChannelAdapter adapter = (ChannelAdapter) headerViewAdapter.getWrappedAdapter();
+//    					
+//    					if(adapter != null){
+//    						
+//    						Message m = myHandler.obtainMessage();                    				
+//							m.what = UNSUBSCRIBE;
+//							m.obj = c;							
+//            				myHandler.sendMessage(m);
     						
     						BlogDalHelper helper = new BlogDalHelper();
     						helper.DeleteBlogByChannel(c);
     						helper.Close();
-    					}
+    					//}
     				}else{
     					Toast.makeText(ReaderApp.getAppContext(), msg, Toast.LENGTH_SHORT).show();
     				}
@@ -871,7 +875,7 @@ public class FeedListFragment extends SherlockFragment {
             bMenu=false;
             
             if(tab == RssTab.Home){
-    	        AdapterContextMenuInfo info = (AdapterContextMenuInfo)item.getMenuInfo();
+    	        final AdapterContextMenuInfo info = (AdapterContextMenuInfo)item.getMenuInfo();
     	        
     	        Log.i("RssReader", info.id +" " + info.position);
     	        
@@ -909,8 +913,41 @@ public class FeedListFragment extends SherlockFragment {
 					NotificationHelper.getDownloadDialog(mContext,c, false).show();
 					
 					return true;
-				} else if (itemId == R.id.unsubscribe) {
-					markTag(c, RssAction.UnSubscribe);
+				} else if (itemId == R.id.unsubscribe) {	
+					
+					final Animation animation = AnimationUtils.loadAnimation(getActivity(), R.anim.slide_out);
+				    animation.setAnimationListener(new AnimationListener() {
+				        @Override
+				        public void onAnimationStart(Animation animation) {
+				        }
+
+				        @Override
+				        public void onAnimationRepeat(Animation animation) {
+				        }
+
+				        @Override
+				        public void onAnimationEnd(Animation animation) {
+				            markTag(c, RssAction.UnSubscribe);
+				        	HeaderViewListAdapter headerViewAdapter = (HeaderViewListAdapter)listView.getAdapter();
+				        	ChannelAdapter adapter = (ChannelAdapter) headerViewAdapter.getWrappedAdapter();
+				        	adapter.GetData().remove(c);
+				        	adapter.notifyDataSetChanged();
+				        }
+				    }); 
+					
+					int firstPosition = listView.getFirstVisiblePosition();// - listView.getHeaderViewsCount(); // This is the same as child #0
+					int wantedChild = info.position - firstPosition;
+					// Say, first visible position is 8, you want position 10, wantedChild will now be 2
+					// So that means your view is child #2 in the ViewGroup:
+					if (wantedChild < 0 || wantedChild >= listView.getChildCount()) {
+					  Log.w("RssReader", "Unable to get view for desired position, because it's not being displayed on screen.");
+					  return true;
+					}
+					// Could also check if wantedPosition is between listView.getFirstVisiblePosition() and listView.getLastVisiblePosition() instead.
+					View wantedView = listView.getChildAt(wantedChild);
+		    	    
+					wantedView.startAnimation(animation);
+					
 					return true;
 				} else if (itemId == R.id.moveitem) {
 					// remember we need to remove the first header in listview

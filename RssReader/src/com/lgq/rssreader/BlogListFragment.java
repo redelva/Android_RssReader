@@ -182,6 +182,9 @@ public class BlogListFragment extends Fragment implements IXListViewListener {
 	         	            }
 	         	        }); 
 	            	}
+	            	
+	            	adapter.clearPosition();
+	            	
 	            	adapter.notifyDataSetChanged();
 	            	
 	            	onLoad();
@@ -433,6 +436,8 @@ public class BlogListFragment extends Fragment implements IXListViewListener {
 	@Override
 	public void onRefresh() {
 		Blog b = (Blog)adapter.getItem(0);
+		
+		listView.setSelection(0);
 		
 		FeedlyParser parser = new FeedlyParser();
 		

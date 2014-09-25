@@ -23,7 +23,8 @@ public final class R {
         public static final int sat_main_rotate_left=0x7f04000b;
         public static final int sat_main_rotate_right=0x7f04000c;
         public static final int shake=0x7f04000d;
-        public static final int up_from_bottom=0x7f04000e;
+        public static final int slide_out=0x7f04000e;
+        public static final int up_from_bottom=0x7f04000f;
     }
     public static final class array {
         public static final int cache_number_list=0x7f0e0000;

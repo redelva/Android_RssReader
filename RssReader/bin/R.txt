@@ -12,7 +12,8 @@ int anim sat_item_overshoot_interpolator 0x7f04000a
 int anim sat_main_rotate_left 0x7f04000b
 int anim sat_main_rotate_right 0x7f04000c
 int anim shake 0x7f04000d
-int anim up_from_bottom 0x7f04000e
+int anim slide_out 0x7f04000e
+int anim up_from_bottom 0x7f04000f
 int array cache_number_list 0x7f0e0000
 int array cache_number_list_values 0x7f0e0001
 int array cache_size_list 0x7f0e0006
