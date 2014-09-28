@@ -52,6 +52,7 @@
         </activity>
         <activity
             android:configChanges="locale"
+            android:windowNoTitle = "true"
             android:name="com.lgq.rssreader.BlogContentActivity"            
             android:label="@string/empty"
             android:hardwareAccelerated="true"

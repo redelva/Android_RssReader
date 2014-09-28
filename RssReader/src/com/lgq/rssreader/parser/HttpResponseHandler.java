@@ -15,9 +15,8 @@ import com.lgq.rssreader.enums.RssAction;
 public class HttpResponseHandler{		
 	protected static final int SUCCESS_MESSAGE = 0;
     protected static final int SUCCESS_MESSAGE_MORE = 1;
-    protected static final int SUCCESS_FOUR_MESSAGE = 2;
+    protected static final int SUCCESS_FOUR_MESSAGE = 2;    
     protected static final int SUCCESS_FOUR_MESSAGE_MORE = 3;
-    protected static final int SUCCESS_FIVE_MESSAGE_MORE = 4;
     protected static final int FAILURE_MESSAGE = 5;
 
     private Handler handler;
@@ -107,9 +106,9 @@ public class HttpResponseHandler{
                 onCallback((List<T>)response[0], Boolean.parseBoolean(response[1].toString()), (String)response[2], Boolean.parseBoolean(response[3].toString()));                
                 break;
             case SUCCESS_FOUR_MESSAGE:
-                response = (Object[])msg.obj;                
+                response = (Object[])msg.obj;
                 onCallback((List<T>)response[0],(List<K>)response[1], Boolean.parseBoolean(response[2].toString()), (String)response[3]);                
-                break;
+                break;            
             case SUCCESS_FOUR_MESSAGE_MORE:
                 response = (Object[])msg.obj;                
                 onCallback((List<T>)response[0],(List<K>)response[1], Boolean.parseBoolean(response[2].toString()), (String)response[3], Boolean.parseBoolean(response[4].toString()));                
