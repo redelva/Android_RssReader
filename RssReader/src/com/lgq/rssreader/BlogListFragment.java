@@ -485,14 +485,13 @@ public class BlogListFragment extends Fragment implements IXListViewListener {
 			pageIndex = pageIndex + 1;
 			
 			List<Blog> blogs = helper.GetBlogList(channel, pageIndex, ReaderApp.getSettings().NumPerRequest, ReaderApp.getSettings().ShowAllItems);
+			helper.Close();
 			
 			if(blogs.size()>0){
 				Message m = myHandler.obtainMessage();                    				
 	            m.what = LOADDATA;
 	            m.obj = blogs;	            
 				myHandler.sendMessage(m);
-				
-				helper.Close();
 				
 			}else{
 				Blog b = (Blog)adapter.getItem(adapter.getCount() - 1);
@@ -508,8 +507,9 @@ public class BlogListFragment extends Fragment implements IXListViewListener {
 		        			
 		        			new Thread(){
 		        				public void run(){
-		        					helper.SynchronyData2DB((List<com.lgq.rssreader.entity.Blog>) blogs);
-				        			helper.Close();
+		        					final BlogDalHelper save = new BlogDalHelper();
+		        					save.SynchronyData2DB((List<com.lgq.rssreader.entity.Blog>) blogs);
+		        					save.Close();
 		        				}
 		        			}.start();	        			
 		        			
