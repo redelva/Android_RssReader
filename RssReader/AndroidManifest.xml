@@ -51,8 +51,7 @@
             android:label="@string/title_login_detail" >            
         </activity>
         <activity
-            android:configChanges="locale"
-            android:windowNoTitle = "true"
+            android:configChanges="locale"            
             android:name="com.lgq.rssreader.BlogContentActivity"            
             android:label="@string/empty"
             android:hardwareAccelerated="true"

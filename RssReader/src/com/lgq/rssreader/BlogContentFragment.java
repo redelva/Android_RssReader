@@ -1586,7 +1586,7 @@ public class BlogContentFragment extends Fragment{
     			if(readSetting != null && readSetting.getVisibility() == View.GONE){
 	    			jsEvent.reset();
 	    			    			
-	    			mProgressDialog = new ProgressDialog(mActivity);
+	    			mProgressDialog = new ProgressDialog(mActivity, R.style.Dialog);
 	    			
 	    			mProgressDialog.getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE, WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE);
 	    			

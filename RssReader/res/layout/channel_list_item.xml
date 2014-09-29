@@ -16,8 +16,7 @@
 	        android:id="@+id/channel_icon"
 			android:layout_width="50dip" 
 			android:layout_height="50dip"
-			android:gravity="center"
-			android:src="@drawable/favicons"			
+			android:gravity="center"					
 			android:padding="2dip"
 			android:contentDescription="@string/empty" />
 		<RelativeLayout 
