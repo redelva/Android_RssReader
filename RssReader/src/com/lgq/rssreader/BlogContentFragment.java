@@ -117,6 +117,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.lgq.rssreader.BlogListFragment.Callbacks;
+import com.lgq.rssreader.R.drawable;
 import com.lgq.rssreader.core.Config;
 import com.lgq.rssreader.core.ManualResetEvent;
 import com.lgq.rssreader.core.ReaderApp;
@@ -1594,6 +1595,8 @@ public class BlogContentFragment extends Fragment{
 	    	        mProgressDialog.setCanceledOnTouchOutside(false);
 	    	        mProgressDialog.setIcon(R.id.process);		        
 	    	        mProgressDialog.setMessage(mActivity.getResources().getString(R.string.content_loading) + "...");
+	    	        mProgressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+	    	        mProgressDialog.setIndeterminateDrawable(mActivity.getResources().getDrawable(drawable.spinner));
 	    	        mProgressDialog.show();
 	    	        
 	    	        mProgressDialog.getWindow().getDecorView().setSystemUiVisibility(mActivity.getWindow().getDecorView().getSystemUiVisibility());
