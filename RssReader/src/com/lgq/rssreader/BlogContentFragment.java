@@ -1361,7 +1361,8 @@ public class BlogContentFragment extends Fragment{
 								oks.disableSSOWhenAuthorize();
 
 								oks.setNotification(R.drawable.ic_launcher, getActivity().getString(R.string.app_name));
-								oks.setAddress(ReaderApp.getProfile().Email);
+								if(ReaderApp.getProfile() != null)
+									oks.setAddress(ReaderApp.getProfile().Email);
 								oks.setTitle(current.Title);
 								oks.setTitleUrl(current.Link);
 								oks.setText(HtmlHelper.HtmlToText(HtmlHelper.filterHtml(current.Content != null && current.Content.length() > 0 ? current.Content : current.Description)));								
