@@ -13,10 +13,13 @@
 
         <ProgressBar
             android:id="@+id/xlistview_footer_progressbar"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="30dp"            
+            android:layout_height="30dp"
+            android:layout_marginRight="10dp"
             android:layout_centerInParent="true"
-            android:visibility="gone"/>"
+            android:indeterminateDrawable="@drawable/progress"
+            android:background="@drawable/spinner_inner2"
+            />
 
         <TextView
             android:id="@+id/xlistview_footer_hint_textview"
@@ -24,7 +27,9 @@
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
             android:layout_gravity="center"
-            android:text="@string/xlistview_footer_hint_normal" />
+            android:text="@string/xlistview_footer_hint_normal"
+            />
+
     </LinearLayout>
 
 </LinearLayout>

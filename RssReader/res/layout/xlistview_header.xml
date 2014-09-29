@@ -47,17 +47,20 @@
             android:layout_height="wrap_content"
             android:layout_alignLeft="@id/xlistview_header_text"
             android:layout_centerVertical="true"
-            android:layout_marginLeft="-35dp"
+            android:layout_marginLeft="-35dp"            
             android:src="@drawable/xlistview_arrow" />
 
         <ProgressBar
             android:id="@+id/xlistview_header_progressbar"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
+            android:layout_width="50dp"
+            android:visibility="invisible"
+            android:indeterminateDrawable="@drawable/progress"
+            android:background="@drawable/spinner_inner2"            
+            android:layout_height="50dp"
             android:layout_alignLeft="@id/xlistview_header_text"
             android:layout_centerVertical="true"
-            android:layout_marginLeft="-40dp"
-            android:visibility="invisible" />
+            android:layout_marginLeft="-60dp"
+            />
     </RelativeLayout>
 
 </LinearLayout>
