@@ -1,3 +1,2 @@
-/RssReader/gen
-gen
-/bin
+bin/
+gen/
