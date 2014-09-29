@@ -1186,7 +1186,6 @@ int style AppBaseTheme 0x7f0d0059
 int style AppTheme 0x7f0d005a
 int style CustomTabPageIndicator 0x7f0d0060
 int style CustomTabPageIndicator_Text 0x7f0d0061
-int style Dialog 0x7f0d006c
 int style Line 0x7f0d006b
 int style ListBackContent 0x7f0d0062
 int style ListButtonAction 0x7f0d0067

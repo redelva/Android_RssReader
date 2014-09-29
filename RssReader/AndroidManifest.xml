@@ -59,7 +59,7 @@
             android:parentActivityName=".MainActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".BlogDetailActivity" />
+                android:value=".BlogContentActivity" />
             <meta-data android:name="android.support.UI_OPTIONS"
                    android:value="splitActionBarWhenNarrow" />
         </activity>

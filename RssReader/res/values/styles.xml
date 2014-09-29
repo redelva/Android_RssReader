@@ -116,9 +116,6 @@
         <item name="android:background">@drawable/background_new_tag</item>
         <item name="android:padding">@dimen/padding_new_tag</item>
     </style> -->
-    
-    <style name="Dialog" parent="android:style/Theme.Translucent">
-        <item name="android:windowNoTitle">false</item>        
-	</style>    
+     
     
 </resources>

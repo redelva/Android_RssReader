@@ -2490,16 +2490,6 @@ containing a value of this type.
         public static final int AppTheme=0x7f0d005a;
         public static final int CustomTabPageIndicator=0x7f0d0060;
         public static final int CustomTabPageIndicator_Text=0x7f0d0061;
-        /**  
-    <style name="New">
-        <item name="android:textColor">@color/text_new_tag</item>
-        <item name="android:textSize">@dimen/font_size_new_tag</item>
-        <item name="android:text">@string/newTag</item>
-        <item name="android:background">@drawable/background_new_tag</item>
-        <item name="android:padding">@dimen/padding_new_tag</item>
-    </style> 
-         */
-        public static final int Dialog=0x7f0d006c;
         public static final int Line=0x7f0d006b;
         /**  List 
          */
