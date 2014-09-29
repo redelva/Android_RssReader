@@ -1,9 +1,0 @@
-# cache for current jar dependency. DO NOT EDIT.
-# format is <lastModified> <length> <SHA-1> <path>
-# Encoding is UTF-8
-1408329955786 828088 a45a0f562b2867176a2f5f0e6c0010c9a2416e1c D:\Android\RssReader\RssReader\libs\evernote-api-1.25.jar
-1402297922480 828088 a45a0f562b2867176a2f5f0e6c0010c9a2416e1c D:\Android\RssReader\Evernote\libs\evernote-api-1.25.jar
-1402297918313 621451 5896b0a4e377ac4242eb2bc785220c1c4fc052f4 D:\Android\RssReader\actionbarsherlock\libs\android-support-v4.jar
-1402297919714 621451 5896b0a4e377ac4242eb2bc785220c1c4fc052f4 D:\Android\RssReader\viewpagerindicator\libs\android-support-v4.jar
-1402297921532 621451 5896b0a4e377ac4242eb2bc785220c1c4fc052f4 D:\Android\RssReader\RssReader\libs\android-support-v4.jar
-1402297922741 621451 5896b0a4e377ac4242eb2bc785220c1c4fc052f4 D:\Android\RssReader\satellite-menu\libs\android-support-v4.jar
