@@ -501,4 +501,11 @@ public class MainActivity extends SlidingFragmentActivity
 		ft.replace(R.id.container, fragment).commit();
 		getSlidingMenu().showContent();
     }
+
+	@Override
+	public void onSyncComplete(Object c, RssTab tab) {
+		ImageButton btnRight =((ImageButton)findViewById(R.id.ivTitleBtnRight));
+		if(btnRight != null)
+			btnRight.clearAnimation();
+	}
 }

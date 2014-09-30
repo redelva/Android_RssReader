@@ -218,6 +218,11 @@ public class FeedListFragment extends SherlockFragment {
          * Callback for when an item has been selected.
          */
         public void onItemSelected(Object c, RssTab tab);
+        
+        /**
+         * Callback for channels load complete.
+         */
+        public void onSyncComplete(Object c, RssTab tab);
     }
 
     /**
@@ -227,6 +232,9 @@ public class FeedListFragment extends SherlockFragment {
     private static Callbacks channelCallback = new Callbacks() {
         @Override
         public void onItemSelected(Object c, RssTab tab) {
+        }
+        @Override
+        public void onSyncComplete(Object c, RssTab tab) {
         }
     };
         
@@ -401,11 +409,16 @@ public class FeedListFragment extends SherlockFragment {
         		case GALLERY:
         			break;
         		case CLEAR:
-        			if(getActivity() != null){
-        				ImageButton btnRight =((ImageButton)getActivity().findViewById(R.id.ivTitleBtnRight));
-            			if(btnRight != null)
-            				btnRight.clearAnimation();
-        			}        			
+//        			if(getActivity() != null){
+//        				ImageButton btnRight =((ImageButton)getActivity().findViewById(R.id.ivTitleBtnRight));
+//            			if(btnRight != null)
+//            				btnRight.clearAnimation();
+//        			}
+//        			else{
+//        				
+//        			}
+        			if(mCallbacks != null)
+    					mCallbacks.onSyncComplete(null, tab);
         			break;
         		case MARKTAG:
         			if(adapter != null){

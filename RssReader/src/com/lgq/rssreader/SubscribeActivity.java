@@ -112,5 +112,11 @@ public class SubscribeActivity extends SherlockFragmentActivity
         		SubscribeActivity.this.onBackPressed();
         	}        	
         });
+	}
+
+	@Override
+	public void onSyncComplete(java.lang.Object c, RssTab tab) {
+		// TODO Auto-generated method stub
+		
 	}	
 }

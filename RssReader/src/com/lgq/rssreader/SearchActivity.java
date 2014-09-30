@@ -91,5 +91,11 @@ public class SearchActivity extends SherlockFragmentActivity
         arguments.putSerializable(BlogContentFragment.KEYWORD,  getIntent().getExtras().getString(FeedListFragment.SEARCHTITLE));        
         detailIntent.putExtras(arguments);
         startActivity(detailIntent);
+	}
+
+	@Override
+	public void onSyncComplete(Object c, RssTab tab) {
+		// TODO Auto-generated method stub
+		
 	}	
 }

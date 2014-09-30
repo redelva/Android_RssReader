@@ -1472,9 +1472,15 @@ public class BlogContentFragment extends Fragment{
 						
 						if(!ReaderApp.getSettings().FullScreen){
 							Helper.hideSystemUI(getActivity());
+							
+							menu.getMenuItems().get(id).setImgDrawable(ReaderApp.getAppContext().getResources().getDrawable(R.drawable.small));
+							
 							Toast.makeText(getActivity(), ReaderApp.getAppContext().getString(R.string.content_immersiveon), Toast.LENGTH_SHORT).show();
 						}
 		    			else{
+		    				
+		    				menu.getMenuItems().get(id).setImgDrawable(ReaderApp.getAppContext().getResources().getDrawable(R.drawable.full));
+		    				
 		    				Helper.showSystemUI(getActivity(), uiOptions);
 		    				Toast.makeText(getActivity(), ReaderApp.getAppContext().getString(R.string.content_immersiveoff), Toast.LENGTH_SHORT).show();
 		    			}
@@ -1490,8 +1496,6 @@ public class BlogContentFragment extends Fragment{
 				    			ReaderApp.saveSettings();
 							}
 						}.start();						
-		    					    			
-		    			//Helper.toggleImmersiveMode(getActivity());						
 		    				
 						break;
 					case 5: 
