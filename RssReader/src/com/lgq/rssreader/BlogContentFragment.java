@@ -162,6 +162,11 @@ public class BlogContentFragment extends Fragment{
     public static final String CHANNEL = "channel";
     public static final String KEYWORD = "keyword";
     
+    /**
+     * This is usede to present iframe.
+     */
+    private boolean isPageLoaded;
+    
     private ContentFormatter content;
     private DescriptionFormatter desc;
     
@@ -209,6 +214,7 @@ public class BlogContentFragment extends Fragment{
     
     private ImageView processImage;
     private TextView processMsg;
+    private View processContainer;
     private ProgressDialog mProgressDialog;
     
     /**
@@ -789,6 +795,7 @@ public class BlogContentFragment extends Fragment{
 			    	processMsg.setText("");
 			    	processImage.setVisibility(View.GONE);
 			    	processMsg.setVisibility(View.GONE);
+			    	processContainer.setVisibility(View.GONE);
 				}
 			});
 		}
@@ -812,6 +819,7 @@ public class BlogContentFragment extends Fragment{
 			    	processMsg.setText(msg);
 			    	processMsg.setVisibility(View.GONE);
 			    	processImage.setVisibility(View.VISIBLE);
+			    	processContainer.setVisibility(View.VISIBLE);
 			    	processImage.setAnimation(AnimationUtils.loadAnimation(getActivity(), R.anim.rotate));
 				}
 			});
@@ -1263,9 +1271,9 @@ public class BlogContentFragment extends Fragment{
     	else
     		items.add(new SatelliteMenuItem(0, R.drawable.addfav));
     	if(current.IsRead)
-    		items.add(new SatelliteMenuItem(1, R.drawable.read));
-    	else
     		items.add(new SatelliteMenuItem(1, R.drawable.unread));
+    	else
+    		items.add(new SatelliteMenuItem(1, R.drawable.read));
     	        
         items.add(new SatelliteMenuItem(2, R.drawable.share));
         items.add(new SatelliteMenuItem(3, R.drawable.reload));
@@ -1672,6 +1680,7 @@ public class BlogContentFragment extends Fragment{
         //rootView.setBackgroundColor(Color.BLACK);
         processImage = (ImageView) rootView.findViewById(R.id.process);    	
         processMsg = (TextView) rootView.findViewById(R.id.blog_content_msg);
+        processContainer = rootView.findViewById(R.id.processContainer);
         showProcess(getActivity().getResources().getString(R.string.content_loading));
         
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
@@ -1680,20 +1689,22 @@ public class BlogContentFragment extends Fragment{
             //}
         }
         
+        isPageLoaded = false;
+        
         browser.setWebViewClient(new WebViewClient() {
 			// Load opened URL in the application instead of standard browser
 			// application
 			public boolean shouldOverrideUrlLoading(WebView view, String url) {
 				Log.i("RssReader", url);
-				return true;
+				return false;
 			}
 			
 			public void onPageFinished(WebView view, String url) {		            
 	            super.onPageFinished(view, url);
 	            
 	            if(url.equals("file://" + android.os.Environment.getExternalStorageDirectory().getAbsolutePath() + 
-	            		Config.HTML_LOCATION + Config.HTML_NAME)){
-	            	
+	            		Config.HTML_LOCATION + Config.HTML_NAME) && !isPageLoaded){
+	            	isPageLoaded = true;
 	            	new Thread(){public void run(){desc.Render(current);}}.start();
 	            }
 	        }

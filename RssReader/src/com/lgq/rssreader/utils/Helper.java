@@ -713,6 +713,14 @@ public class Helper {
         }
     }    
     
+    public static void pulldown(){
+    	if(ReaderApp.getSettings().EnableSound){
+    		MediaPlayer mMediaPlayer = MediaPlayer.create(ReaderApp.getAppContext(), R.raw.pulldown);// 寰楀埌澹伴煶璧勬簮
+    		if(mMediaPlayer != null)
+    			mMediaPlayer.start();// 鎾斁澹伴煶
+        }
+    }
+    
 //    public static void showSystemUI(View view){
 //    	view.setSystemUiVisibility(
 //            View.SYSTEM_UI_FLAG_LAYOUT_STABLE

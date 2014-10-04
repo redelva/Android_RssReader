@@ -105,12 +105,14 @@
     </RelativeLayout>
 	    
     <LinearLayout
+        android:id="@+id/processContainer"
 	    android:orientation="vertical"
-	    android:layout_width="wrap_content"	    
-        android:layout_height="wrap_content"
+	    android:layout_width="90dp"	    
+        android:layout_height="90dp"
         android:layout_gravity="center_vertical"
         android:layout_centerVertical="true"
         android:layout_centerHorizontal="true"
+        android:background="@drawable/spinner_inner"
         android:scaleType="centerInside">
     
 	    <ImageView
@@ -118,7 +120,7 @@
 	        android:layout_width="wrap_content"
 	        android:layout_height="wrap_content"
 	        android:contentDescription="@string/empty"
-	        android:src="@drawable/process" />
+	        android:src="@drawable/spinner_outer" />
 		
 	    <TextView 
 	        android:textSize="16.0sp" 

@@ -485,7 +485,7 @@ public class FeedListFragment extends SherlockFragment {
         emptyLayout = new EmptyLayout(this.getActivity(), listView);
         emptyLayout.setLoadingMessage(getActivity().getResources().getString(R.string.content_loading));
         //emptyLayout.setLoadingAnimationViewId(emptyLayout.getLoadingAnimationViewId());
-        emptyLayout.setLoadingAnimation(AnimationUtils.loadAnimation(getActivity(), R.anim.rotate));
+        //emptyLayout.setLoadingAnimation(AnimationUtils.loadAnimation(getActivity(), R.anim.rotate));
         emptyLayout.showLoading();
         
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener(){

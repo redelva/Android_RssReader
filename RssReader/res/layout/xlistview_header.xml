@@ -55,7 +55,7 @@
             android:layout_width="50dp"
             android:visibility="invisible"
             android:indeterminateDrawable="@drawable/progress"
-            android:background="@drawable/spinner_inner2"            
+            android:background="@drawable/spinner_inner"            
             android:layout_height="50dp"
             android:layout_alignLeft="@id/xlistview_header_text"
             android:layout_centerVertical="true"

@@ -18,7 +18,7 @@
             android:layout_marginRight="10dp"
             android:layout_centerInParent="true"
             android:indeterminateDrawable="@drawable/progress"
-            android:background="@drawable/spinner_inner2"
+            android:background="@drawable/spinner_inner"
             />
 
         <TextView

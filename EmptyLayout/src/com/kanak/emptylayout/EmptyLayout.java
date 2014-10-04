@@ -4,6 +4,7 @@ import com.kanak.emptylayout.R;
 
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.drawable.Drawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,6 +13,7 @@ import android.view.animation.AnimationUtils;
 import android.view.animation.LinearInterpolator;
 import android.view.animation.RotateAnimation;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.RelativeLayout.LayoutParams;
 import android.widget.TextView;
@@ -22,7 +24,8 @@ public class EmptyLayout {
 	private ViewGroup mLoadingView;
 	private ViewGroup mEmptyView;
 	private ViewGroup mErrorView;
-	private Animation mLoadingAnimation;
+	//private Animation mLoadingAnimation;
+	private ProgressBar mProgressBar;
 	private ListView mListView;
 	private int mErrorMessageViewId;
 	private int mEmptyMessageViewId;
@@ -67,6 +70,8 @@ public class EmptyLayout {
 	private boolean mShowEmptyButton = true;
 	private boolean mShowLoadingButton = true;
 	private boolean mShowErrorButton = true;
+	private int mIndeterminateDrawable = R.drawable.progress;
+	private int mProgressBarBackground = R.drawable.ic_background;
 
 	// ---------------------------
 	// getters and setters
@@ -143,29 +148,47 @@ public class EmptyLayout {
 		this.mErrorView = (ViewGroup) mInflater.inflate(res, null);
 	}
 	
-	/**
-	 * Gets the loading animation
-	 * @return the loading animation
-	 */
-	public Animation getLoadingAnimation() {
-		return mLoadingAnimation;
+//	/**
+//	 * Gets the loading animation
+//	 * @return the loading animation
+//	 */
+//	public Animation getLoadingAnimation() {
+//		return mLoadingAnimation;
+//	}
+//	
+//	/**
+//	 * Sets the loading animation
+//	 * @param animation the animation to play when the list is being loaded
+//	 */
+//	public void setLoadingAnimation(Animation animation) {
+//		this.mLoadingAnimation = animation;
+//	}
+//	
+//	/**
+//	 * Sets the resource of loading animation
+//	 * @param animationResource the animation resource to play when the list is being loaded
+//	 */
+//	public void setLoadingAnimationRes(int animationResource) {
+//		mLoadingAnimation = AnimationUtils.loadAnimation(mContext, animationResource);
+//	}
+	
+	public int getProgressBarBackground(){
+		return mProgressBarBackground;
 	}
 	
-	/**
-	 * Sets the loading animation
-	 * @param animation the animation to play when the list is being loaded
-	 */
-	public void setLoadingAnimation(Animation animation) {
-		this.mLoadingAnimation = animation;
+	public void setLoadingRes(int resId){
+		mProgressBarBackground = resId;
+		mProgressBar.setBackgroundResource(resId);
 	}
 	
-	/**
-	 * Sets the resource of loading animation
-	 * @param animationResource the animation resource to play when the list is being loaded
-	 */
-	public void setLoadingAnimationRes(int animationResource) {
-		mLoadingAnimation = AnimationUtils.loadAnimation(mContext, animationResource);
+	public int getIndeterminateDrawable(){
+		return mIndeterminateDrawable;
 	}
+	
+	public void setIndeterminateDrawable(int drawableId){
+		mIndeterminateDrawable = drawableId;
+		mProgressBar.setIndeterminateDrawable(mContext.getResources().getDrawable(drawableId));
+	}	
 	
 	/**
 	 * Gets the list view for which this library is being used
@@ -477,6 +500,9 @@ public class EmptyLayout {
 				loadingAnimationView = ((Activity) mContext).findViewById(mLoadingAnimationViewId);
 			else
 				loadingAnimationView = mLoadingView.findViewById(R.id.imageViewLoading);
+			
+			
+			
 			switch (mEmptyType) {
 			case TYPE_EMPTY:
 				if (mEmptyView!=null) mEmptyView.setVisibility(View.VISIBLE);
@@ -499,12 +525,13 @@ public class EmptyLayout {
 				if (mErrorView!=null) mErrorView.setVisibility(View.GONE);
 				if (mLoadingView!=null) {
 					mLoadingView.setVisibility(View.VISIBLE);
-					if (mLoadingAnimation != null && loadingAnimationView!=null) {
-						loadingAnimationView.startAnimation(mLoadingAnimation);
-					}
-					else if (loadingAnimationView!=null) {
-						loadingAnimationView.startAnimation(getRotateAnimation());
-					}
+//					if (mLoadingAnimation != null && loadingAnimationView!=null) {
+//						loadingAnimationView.startAnimation(mLoadingAnimation);
+//					}
+					//else 
+//					if (loadingAnimationView!=null) {
+//						loadingAnimationView.startAnimation(getRotateAnimation());
+//					}
 				}				
 				break;
 			case TYPE_NORMAL:
@@ -543,6 +570,7 @@ public class EmptyLayout {
 		}
 		if (mLoadingView==null) {
 			mLoadingView = (ViewGroup) mInflater.inflate(R.layout.view_loading, null);
+			mProgressBar = (ProgressBar)mLoadingView.findViewById(R.id.imageViewLoading);
 			mLoadingAnimationViewId = R.id.imageViewLoading;
 			if (!(mLoadingMessageViewId>0)) mLoadingMessageViewId = R.id.textViewMessage;
 			if (mShowLoadingButton && mLoadingViewButtonId>0 && mLoadingButtonClickListener!=null) {

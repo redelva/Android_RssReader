@@ -201,7 +201,7 @@ import com.loopj.android.http.JsonHttpResponseHandler;
                 msg.html("RemoveFlash");
                 msg.attributes().put("id", "msg" + i);
                 //msg.Attributes.Add("style", "color:red;");
-                msg.attributes().put("style", "color:red;display:none");
+                msg.attributes().put("style", "color:red;display:none;");
                 //click.Attributes.Add("id", "click" + i);
 
                 for (int j = 0; j < 20; j++)
@@ -218,9 +218,9 @@ import com.loopj.android.http.JsonHttpResponseHandler;
                 if (!embeds.get(i).html().contains("youtube"))
                 {
                     if (embeds.get(i).hasAttr("style"))
-                    	embeds.get(i).attr("style", "display:none");
+                    	embeds.get(i).attr("style", "display:none;");
                     else
-                    	embeds.get(i).attributes().put("style", "display:none");
+                    	embeds.get(i).attributes().put("style", "display:none;");
                 }
 
                 if (embeds.get(i).hasAttr("id"))
@@ -232,7 +232,7 @@ import com.loopj.android.http.JsonHttpResponseHandler;
                     embeds.get(i).before(tip);                
                 
                 String src = embeds.get(i).attr("src");
-                parseFlash(i, blog, embeds.get(i).clone(), tip.clone(), src);
+                parseFlash(i, blog, embeds.get(i).clone(), tip.clone(), src);                
             }
         	
         	return doc;
@@ -362,7 +362,7 @@ import com.loopj.android.http.JsonHttpResponseHandler;
                 msg.html("RemoveFlash");
                 msg.attributes().put("id", "msg" + (i+embeds.size()));
                 //msg.Attributes.Add("style", "color:red;");
-                msg.attributes().put("style", "color:red;display:none");
+                msg.attributes().put("style", "color:red;display:none;");
                 //click.Attributes.Add("id", "click" + i);
 
                 for (int j = 0; j < 20; j++)
@@ -379,9 +379,9 @@ import com.loopj.android.http.JsonHttpResponseHandler;
                 if (!loadings.get(i).html().contains("youtube"))
                 {
                     if (loadings.get(i).hasAttr("style"))
-                        loadings.get(i).attr("style", "display:none");
+                        loadings.get(i).attr("style", "display:none;");
                     else
-                        loadings.get(i).attributes().put("style", "display:none");
+                        loadings.get(i).attributes().put("style", "display:none;");
                 }
 
                 if (loadings.get(i).hasAttr("id"))

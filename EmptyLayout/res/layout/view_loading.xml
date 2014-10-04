@@ -5,12 +5,21 @@
     android:orientation="vertical"
     android:padding="16dp" >
 
-    <ImageView
+    <!-- <ImageView
         android:id="@+id/imageViewLoading"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        android:src="@drawable/ic_loading" />
+        android:src="@drawable/ic_loading" 
+        android:visibility="gone"/> -->
+    
+    <ProgressBar
+	    android:id="@+id/imageViewLoading"
+	    android:layout_width="90dp"	    
+	    android:indeterminateDrawable="@drawable/progress"
+	    android:background="@drawable/ic_background"            
+	    android:layout_height="90dp"
+	    />
 
     <TextView
         android:id="@+id/textViewMessage"

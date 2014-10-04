@@ -184,16 +184,17 @@ public class BlogAdapter extends BaseAdapter {
 
 		convertView.setTag(viewHolder);
 		
-		Animation animation = AnimationUtils.loadAnimation(mContext, (position > lastPosition) ? R.anim.up_from_bottom : R.anim.down_from_top);
-		convertView.startAnimation(animation);		
-			
-	    lastPosition = position;
+		if(lastPosition != -2){
+			Animation animation = AnimationUtils.loadAnimation(mContext, (position > lastPosition) ? R.anim.up_from_bottom : R.anim.down_from_top);
+			convertView.startAnimation(animation);
+			lastPosition = position;
+		}
 		
 		return convertView;
 	}
 	
-	public void clearPosition(){
-		lastPosition = -1;
+	public void clearPosition(int val){
+		lastPosition = val;
 	}
 	
 	private void markTag(final Blog b, RssAction action){
