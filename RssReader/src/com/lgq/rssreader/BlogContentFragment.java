@@ -1696,7 +1696,7 @@ public class BlogContentFragment extends Fragment{
 			// application
 			public boolean shouldOverrideUrlLoading(WebView view, String url) {
 				Log.i("RssReader", url);
-				return false;
+				return true;
 			}
 			
 			public void onPageFinished(WebView view, String url) {		            

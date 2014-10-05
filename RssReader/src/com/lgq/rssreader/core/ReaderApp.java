@@ -254,7 +254,7 @@ public class ReaderApp extends Application{
     		settings.ConfirmExit = pref.getBoolean("operation_confirmallread", true);
     		settings.EnableSeperateClip = pref.getBoolean("operation_seperatevideo", true);
     		    		
-    		settings.FontSize = Integer.parseInt(pref.getString("format_fontsize", "14"));
+    		settings.FontSize = Integer.parseInt(pref.getString("format_fontsize", "14")) > 150 ? 150 :Integer.parseInt(pref.getString("format_fontsize", "14"));
     		settings.Font = pref.getInt("format_font", 0);
     		settings.LineHeight = Integer.parseInt(pref.getString("format_line", "150"));
     		settings.Formatter = Formatter.values()[Integer.parseInt(pref.getString("format_type", "1"))];

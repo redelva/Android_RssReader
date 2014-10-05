@@ -630,56 +630,12 @@ import com.loopj.android.http.JsonHttpResponseHandler;
                 	FlashComplete.onFlash(ReaderApp.getAppContext().getResources().getString(R.string.blog_videooptimize), new CacheEventArgs(blog, embed, tip, cnt, -1));
                 }
             });
-
-//            AsyncHttpClient client = new AsyncHttpClient();                
-//            String id = url.substring(index, index + 13);
-//            client.get("http://v.youku.com/player/getPlayList/VideoIDS/" + id, new JsonHttpResponseHandler(){
-//            	@Override
-//            	public void onSuccess(JSONObject youku){
-//            		try {
-//						if (youku.getJSONArray("data").getJSONObject(0).getJSONObject("segs").getJSONArray("mp4") != null)
-//						{
-//						    double seed = youku.getJSONArray("data").getJSONObject(0).getDouble("seed");
-//						    String fileid = youku.getJSONArray("data").getJSONObject(0).getJSONObject("streamfileids").getString("mp4");
-//						    String fileId = getFileID(fileid, seed);
-//						    
-//						    
-//						    tip.html("");                            
-//						    for(int i=0, len=youku.getJSONArray("data").getJSONObject(0).getJSONObject("segs").getJSONArray("mp4").length();i<len;i++)
-//						    {
-//						    	JSONObject child = youku.getJSONArray("data").getJSONObject(0).getJSONObject("segs").getJSONArray("mp4").getJSONObject(i);
-//						        String k = child.getString("k");
-//						        String k2 = child.getString("k2");
-//						        //String indexFileId = fileId.Insert(9, i.ToString()).Remove(10);
-//						        
-//						        fileId = fileId.substring(0,9) + String.valueOf(i) + fileId.substring(10);
-//						        
-//						        String directUrl = "http://f.youku.com/player/getFlvPath/sid/00_00/st/mp4/fileid/" + fileId + "?K=" + k + ",k2:"+ k2;
-//
-//						        if (FlashComplete != null)//blogId, total, youku["data"].First["title"].Value<String>(), directUrl
-//						        {
-//						            //tip.InnerHtml = "<a onclick=\"linkHandle();\" href=\""+ directUrl +"\">" + Resources.StringResources.OpenToView + " " + youku["data"].First["title"].Value<String>() + "</a>";
-//						            tip.html(tip.html() + directUrl + "|");
-//						        }                                
-//						    }
-//						    tip.html(tip.html().substring(0,tip.html().length() - 1) + "____" + youku.getJSONArray("data").getJSONObject(0).getString("logo"));
-//						    FlashComplete.onFlash(youku.getJSONArray("data").getJSONObject(0).getString("title"), new CacheEventArgs(blog, embed, tip, cnt, 0));
-//						}
-//					} catch (JSONException e) {
-//						// TODO Auto-generated catch block
-//						e.printStackTrace();
-//					}                        
-//            	}
-//            	
-//            	public void onFailure(){
-//                	tip.html("");
-//                	FlashComplete.onFlash(ReaderApp.getAppContext().getResources().getString(R.string.blog_videooptimize), new CacheEventArgs(blog, embed, tip, cnt, -1));
-//                }
-//            });
         }
 
         private void youtube(final int cnt, final Blog blog, final Element embed, final Element tip, final String url){
         	Pattern p = Pattern.compile("(?:youtube\\.com/(?:user/.+/|(?:v|e(?:mbed)?)/|.*[?&]v=)|youtu\\.be/)([^\"&?/ ]{11})");
+        	if(p.matcher(url) == null || p.matcher(url).toMatchResult() == null)
+        		return;
             final String group = p.matcher(url).toMatchResult().group();
             final String id = group.substring(group.length() - 11);
 
