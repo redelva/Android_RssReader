@@ -1083,7 +1083,14 @@ public class FeedListFragment extends SherlockFragment {
         mCallbacks = channelCallback;
         
         Log.i("RssReader","Detached need to save tab and channel");
-    }    
+    }
+    
+    @Override
+    public void onResume(){    	
+    	super.onResume();
+    	if(getActivity() != null)
+    		mCallbacks = (Callbacks)getActivity();
+    }
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
@@ -1091,10 +1098,10 @@ public class FeedListFragment extends SherlockFragment {
         if (mActivatedPosition != ListView.INVALID_POSITION) {
             // Serialize and persist the activated item position.
             outState.putInt(STATE_ACTIVATED_POSITION, mActivatedPosition);
-            outState.putInt(STATE_TAB, tab.ordinal());
+            outState.putInt(STATE_TAB, tab.ordinal());            
         }
     }
-
+        
     /**
      * Turns on activate-on-click mode. When this mode is on, list items will be
      * given the 'activated' state when touched.
