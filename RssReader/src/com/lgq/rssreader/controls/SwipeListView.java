@@ -475,6 +475,24 @@ public class SwipeListView extends XListView {
             swipeListViewListener.onLastListItem();
         }
     }
+    
+    /**
+     * Called when auto close is true in right side
+     */
+    protected void onLeftAutoClose(int position, View view) {
+        if (swipeListViewListener != null) {
+            swipeListViewListener.onLeftAutoClose(position, view);
+        }
+    }
+    
+    /**
+     * Called when auto close is true in left side
+     */
+    protected void onRightAutoClose(int position, View view) {
+        if (swipeListViewListener != null) {
+            swipeListViewListener.onRightAutoClose(position, view);
+        }
+    }
 
     /**
      * Notifies onListChanged

@@ -12,6 +12,7 @@ import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
@@ -94,7 +95,8 @@ public class BlogAdapter extends BaseAdapter {
 						img.setVisibility(View.VISIBLE);
 						img.setImageResource(R.drawable.keepread);
 						title.setTextColor(Color.GRAY);
-						btn.setText(R.string.blog_setunread);
+						//btn.setText(R.string.blog_setunread);
+						btn.setText(R.string.empty);
 						Drawable drawable = mContext.getResources().getDrawable(R.drawable.setunread);
 						drawable.setBounds(btn.getCompoundDrawables()[0].getBounds());
 						btn.setCompoundDrawables(drawable, null, null, null);
@@ -102,7 +104,8 @@ public class BlogAdapter extends BaseAdapter {
 					else{
 						title.setTextColor(Color.BLACK);
 						img.setVisibility(View.GONE);
-						btn.setText(R.string.blog_setread);
+						//btn.setText(R.string.blog_setread);
+						btn.setText(R.string.empty);
 						Drawable drawable = mContext.getResources().getDrawable(R.drawable.setread);
 						drawable.setBounds(btn.getCompoundDrawables()[0].getBounds());
 						btn.setCompoundDrawables(drawable, null, null, null);
@@ -122,14 +125,16 @@ public class BlogAdapter extends BaseAdapter {
 					if(entity.IsStarred){
 						img.setVisibility(View.VISIBLE);
 						img.setImageResource(R.drawable.star);
-						btn.setText(R.string.blog_setunstar);
+						//btn.setText(R.string.blog_setunstar);
+						btn.setText(R.string.empty);
 						Drawable drawable = mContext.getResources().getDrawable(R.drawable.setstar);
 						drawable.setBounds(btn.getCompoundDrawables()[0].getBounds());
 						btn.setCompoundDrawables(drawable, null, null, null);
 					}
 					else{
 						img.setVisibility(View.GONE);
-						btn.setText(R.string.blog_setstar);
+						//btn.setText(R.string.blog_setstar);
+						btn.setText(R.string.empty);
 						btn.setCompoundDrawables(mContext.getResources().getDrawable(R.drawable.setunstar), null, null, null);
 						Drawable drawable = mContext.getResources().getDrawable(R.drawable.setunstar);
 						drawable.setBounds(btn.getCompoundDrawables()[0].getBounds());
@@ -151,7 +156,8 @@ public class BlogAdapter extends BaseAdapter {
 			viewHolder.blog_read.setVisibility(View.VISIBLE);
 			viewHolder.blog_read.setImageResource(R.drawable.keepread);
 			viewHolder.blog_title.setTextColor(Color.GRAY);
-			viewHolder.btn_readstatus.setText(R.string.blog_setunread);
+			//viewHolder.btn_readstatus.setText(R.string.blog_setunread);
+			viewHolder.btn_readstatus.setText(R.string.empty);
 			Drawable drawable = mContext.getResources().getDrawable(R.drawable.setunread);
 			drawable.setBounds(viewHolder.btn_readstatus.getCompoundDrawables()[0].getBounds());
 			viewHolder.btn_readstatus.setCompoundDrawables(drawable, null, null, null);			
@@ -159,7 +165,8 @@ public class BlogAdapter extends BaseAdapter {
 		else{
 			viewHolder.blog_title.setTextColor(Color.BLACK);
 			viewHolder.blog_read.setVisibility(View.GONE);
-			viewHolder.btn_readstatus.setText(R.string.blog_setread);
+			//viewHolder.btn_readstatus.setText(R.string.blog_setread);
+			viewHolder.btn_readstatus.setText(R.string.empty);
 			Drawable drawable = mContext.getResources().getDrawable(R.drawable.setread);
 			drawable.setBounds(viewHolder.btn_readstatus.getCompoundDrawables()[0].getBounds());
 			viewHolder.btn_readstatus.setCompoundDrawables(drawable, null, null, null);		
@@ -167,14 +174,16 @@ public class BlogAdapter extends BaseAdapter {
 		if(entity.IsStarred){
 			viewHolder.blog_star.setVisibility(View.VISIBLE);
 			viewHolder.blog_star.setImageResource(R.drawable.star);
-			viewHolder.btn_starstatus.setText(R.string.blog_setunstar);
+			//viewHolder.btn_starstatus.setText(R.string.blog_setunstar);
+			viewHolder.btn_starstatus.setText(R.string.empty);
 			Drawable drawable = mContext.getResources().getDrawable(R.drawable.setunstar);
 			drawable.setBounds(viewHolder.btn_starstatus.getCompoundDrawables()[0].getBounds());
 			viewHolder.btn_starstatus.setCompoundDrawables(drawable, null, null, null);
 		}
 		else{
 			viewHolder.blog_star.setVisibility(View.GONE);
-			viewHolder.btn_starstatus.setText(R.string.blog_setstar);
+			//viewHolder.btn_starstatus.setText(R.string.blog_setstar);
+			viewHolder.btn_starstatus.setText(R.string.empty);
 			Drawable drawable = mContext.getResources().getDrawable(R.drawable.setstar);
 			drawable.setBounds(viewHolder.btn_starstatus.getCompoundDrawables()[0].getBounds());
 			viewHolder.btn_starstatus.setCompoundDrawables(drawable, null, null, null);

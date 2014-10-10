@@ -575,19 +575,25 @@ public class SwipeListViewTouchListener implements View.OnTouchListener {
 //                                    moveBack = swapRight ? -(int) (viewWidth - rightOffset) : -(int) (-viewWidth + leftOffset);
 //                                }
 //                            }
+                        	
+                        	if(swipingRight)
+	                    		swipeListView.onRightAutoClose(position, backView);
+	                    	else
+	                    		swipeListView.onLeftAutoClose(position, backView);
                         		
                         	animate(view)        		
                             .translationX(moveBack)                
                             .setDuration(animationTime)
                             .setListener(new AnimatorListenerAdapter() {
 			                    @Override
-			                    public void onAnimationEnd(Animator animation) {
-			                    	resetCell();
+			                    public void onAnimationEnd(Animator animation) {			                    	
+			                    	resetCell();			                    	
 			                    }
                             });
                         }
-                        
-                        resetCell();
+                        else{
+                        	resetCell();
+                        }
                     }
                 });
         
@@ -643,19 +649,25 @@ public class SwipeListViewTouchListener implements View.OnTouchListener {
 //                                    moveBack = swapRight ? -(int) (viewWidth - rightOffset) : -(int) (-viewWidth + leftOffset);
 //                                }
 //                            }
-                        		
+                        	
+                        	if(swipingRight)
+	                    		swipeListView.onRightAutoClose(position, backView);
+	                    	else
+	                    		swipeListView.onLeftAutoClose(position, backView);
+                        	
                         	animate(view)        		
                             .translationX(moveBack)                
                             .setDuration(animationTime)
                             .setListener(new AnimatorListenerAdapter() {
 			                    @Override
-			                    public void onAnimationEnd(Animator animation) {
-			                    	resetCell();
+			                    public void onAnimationEnd(Animator animation) {			                    	
+			                    	resetCell();			                    	
 			                    }
                             });
                         }
-                        
-                        resetCell();
+                        else{
+                        	resetCell();
+                        }                        
                     }
                 });
     }

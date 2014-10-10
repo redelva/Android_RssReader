@@ -1,5 +1,7 @@
 package com.lgq.rssreader.controls;
 
+import android.view.View;
+
 public class BaseSwipeListViewListener implements SwipeListViewListener {
     @Override
     public void onOpened(int position, boolean toRight) {
@@ -23,6 +25,14 @@ public class BaseSwipeListViewListener implements SwipeListViewListener {
 
     @Override
     public void onStartClose(int position, boolean right) {
+    }
+    
+    @Override
+    public void onLeftAutoClose(int position, View v) {
+    }
+    
+    @Override
+    public void onRightAutoClose(int position, View v) {
     }
 
     @Override

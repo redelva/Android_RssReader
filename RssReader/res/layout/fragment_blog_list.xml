@@ -34,7 +34,7 @@
             android:layout_width="match_parent"
 	    	android:layout_height="match_parent"
             swipe:swipeFrontView="@+id/front"
-            swipe:swipeAutoClose = "false"
+            swipe:swipeAutoClose = "true"
             swipe:swipeBackView="@+id/back"
             swipe:swipeActionLeft="reveal"  
             swipe:swipeActionRight="reveal"
@@ -43,8 +43,8 @@
             swipe:swipeCloseAllItemsWhenMoveList="true"
             swipe:swipeMode="both"
             swipe:swipeOpenOnLongPress="false"
-            swipe:swipeOffsetLeft = "240dp"
-            swipe:swipeOffsetRight = "240dp"
+            swipe:swipeOffsetLeft = "280dp"
+            swipe:swipeOffsetRight = "280dp"
             />
      </LinearLayout>     
 </LinearLayout>

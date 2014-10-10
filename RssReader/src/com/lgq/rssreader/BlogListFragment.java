@@ -1,11 +1,14 @@
 package com.lgq.rssreader;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 
 import android.app.Activity;
+import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -41,8 +44,11 @@ import com.lgq.rssreader.controls.XListView;
 import com.lgq.rssreader.controls.XListView.IXListViewListener;
 import com.lgq.rssreader.core.ReaderApp;
 import com.lgq.rssreader.dal.BlogDalHelper;
+import com.lgq.rssreader.dal.SyncStateDalHelper;
 import com.lgq.rssreader.entity.Blog;
 import com.lgq.rssreader.entity.Channel;
+import com.lgq.rssreader.entity.SyncState;
+import com.lgq.rssreader.enums.RssAction;
 import com.lgq.rssreader.enums.RssTab;
 import com.lgq.rssreader.parser.FeedlyParser;
 import com.lgq.rssreader.parser.HttpResponseHandler;
@@ -329,7 +335,74 @@ public class BlogListFragment extends Fragment implements IXListViewListener {
 						position-1 >=0 ? (Blog)adapter.getItem(position-1) : null,
 						(Blog)adapter.getItem(position),
 						position+1 < adapter.getCount() ? (Blog)adapter.getItem(position+1) : null);
-			}    		
+			}
+    		
+    		@Override 
+    		public void onRightAutoClose(int position, View view){
+    			Log.i("RssReader","设置已读未读");
+    			
+    			Blog entity = (Blog)adapter.getItem(position);
+    			
+    			RssAction action = entity.IsRead ? RssAction.AsUnread : RssAction.AsRead;
+				entity.IsRead = !entity.IsRead; 
+				markTag(entity, action);
+				
+				TextView btn = (TextView)view.findViewById(R.id.btnread);
+				ImageView img = (ImageView)btn.getTag(R.id.tag_first);
+				TextView title = (TextView)btn.getTag(R.id.tag_second);
+				
+				if(entity.IsRead){
+					img.setVisibility(View.VISIBLE);
+					img.setImageResource(R.drawable.keepread);
+					title.setTextColor(Color.GRAY);
+					//btn.setText(R.string.blog_setunread);
+					btn.setText(R.string.empty);
+					Drawable drawable = ReaderApp.getAppContext().getResources().getDrawable(R.drawable.setunread);
+					drawable.setBounds(btn.getCompoundDrawables()[0].getBounds());
+					btn.setCompoundDrawables(drawable, null, null, null);
+				}
+				else{
+					title.setTextColor(Color.BLACK);
+					img.setVisibility(View.GONE);
+					//btn.setText(R.string.blog_setread);
+					btn.setText(R.string.empty);
+					Drawable drawable = ReaderApp.getAppContext().getResources().getDrawable(R.drawable.setread);
+					drawable.setBounds(btn.getCompoundDrawables()[0].getBounds());
+					btn.setCompoundDrawables(drawable, null, null, null);
+				}
+    		}
+    		
+    		@Override 
+    		public void onLeftAutoClose(int position, View view){
+    			Log.i("RssReader","设置收藏相关");
+    			
+    			Blog entity = (Blog)adapter.getItem(position);
+    			
+    			RssAction action = entity.IsStarred ? RssAction.AsUnstar : RssAction.AsUnstar;
+				entity.IsStarred = !entity.IsStarred;
+				markTag(entity, action);
+				
+				TextView btn = (TextView)view.findViewById(R.id.btnstar);
+				ImageView img = (ImageView)btn.getTag();
+				
+				if(entity.IsStarred){
+					img.setVisibility(View.VISIBLE);
+					img.setImageResource(R.drawable.star);
+					//btn.setText(R.string.blog_setunstar);
+					btn.setText(R.string.empty);
+					Drawable drawable = ReaderApp.getAppContext().getResources().getDrawable(R.drawable.setstar);
+					drawable.setBounds(btn.getCompoundDrawables()[0].getBounds());
+					btn.setCompoundDrawables(drawable, null, null, null);
+				}
+				else{
+					img.setVisibility(View.GONE);					
+					//btn.setText(R.string.blog_setstar);
+					btn.setText(R.string.empty);					
+					Drawable drawable = ReaderApp.getAppContext().getResources().getDrawable(R.drawable.setunstar);
+					drawable.setBounds(btn.getCompoundDrawables()[0].getBounds());
+					btn.setCompoundDrawables(drawable, null, null, null);
+				}
+    		}
 		});
 
         // Restore the previously serialized activated item position.
@@ -399,6 +472,37 @@ public class BlogListFragment extends Fragment implements IXListViewListener {
     	Helper.updateChannels(channel.Id, channel.LastRefreshTime);
     	listView.setRefreshTime(DateHelper.getDaysBeforeNow(channel.LastRefreshTime) + ReaderApp.getAppContext().getResources().getString(R.string.list_refreshtime));
 	}
+    
+    private void markTag(final Blog b, RssAction action){
+    	final FeedlyParser feedly = new FeedlyParser();
+		
+		feedly.markTag(b, action, new HttpResponseHandler(){
+        	@Override
+        	public <T> void onCallback(T action, boolean result, String msg){
+        		if(!result){
+        			Log.i("RssReader", msg);
+        			
+        			SyncStateDalHelper helper = new SyncStateDalHelper();
+        			
+        			List<SyncState> states = new ArrayList<SyncState>();
+        			        			
+        			SyncState s = new SyncState();
+        			
+        			s.BlogOriginId = b.BlogId;
+        			s.Status = (com.lgq.rssreader.enums.RssAction) action;
+        			s.TimeStamp = new Date();
+        			
+        			states.add(s);
+        			
+        			helper.SynchronyData2DB(states);
+        			
+        			helper.Close();
+        		}else{
+        			Toast.makeText(ReaderApp.getAppContext(), msg, Toast.LENGTH_SHORT).show();
+        		}
+        	}
+        });
+    } 
     
     private void onEmpty(){
     	final FeedlyParser feedly = new FeedlyParser();             

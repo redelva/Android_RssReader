@@ -18,6 +18,8 @@
 
 package com.lgq.rssreader.controls;
 
+import android.view.View;
+
 /**
  * Listener to get callback notifications for the SwipeListView
  */
@@ -116,5 +118,15 @@ public interface SwipeListViewListener {
      * User is in last item of list
      */
     void onLastListItem();
+
+    /**
+     * Called when auto close is true in right side
+     */
+	void onRightAutoClose(int position, View view);
+	
+	/**
+     * Called when auto close is true in left side
+     */
+	void onLeftAutoClose(int position, View view);
 
 }

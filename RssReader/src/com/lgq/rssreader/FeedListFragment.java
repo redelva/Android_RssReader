@@ -126,7 +126,7 @@ public class FeedListFragment extends SherlockFragment {
      * The fragment's current callback object, which is notified of list item
      * clicks.
      */
-    private Callbacks mCallbacks = channelCallback;
+    private Callbacks mCallbacks ;//= channelCallback;
     
     /**
      * The fragment's data source of Home Tab
@@ -225,18 +225,18 @@ public class FeedListFragment extends SherlockFragment {
         public void onSyncComplete(Object c, RssTab tab);
     }
 
-    /**
-     * A dummy implementation of the {@link Callbacks} interface that does
-     * nothing. Used only when this fragment is not attached to an activity.
-     */
-    private static Callbacks channelCallback = new Callbacks() {
-        @Override
-        public void onItemSelected(Object c, RssTab tab) {
-        }
-        @Override
-        public void onSyncComplete(Object c, RssTab tab) {
-        }
-    };
+//    /**
+//     * A dummy implementation of the {@link Callbacks} interface that does
+//     * nothing. Used only when this fragment is not attached to an activity.
+//     */
+//    private static Callbacks channelCallback = new Callbacks() {
+//        @Override
+//        public void onItemSelected(Object c, RssTab tab) {
+//        }
+//        @Override
+//        public void onSyncComplete(Object c, RssTab tab) {
+//        }
+//    };
         
     public Handler myHandler = new Handler(){
         @Override  
@@ -1080,7 +1080,7 @@ public class FeedListFragment extends SherlockFragment {
         super.onDetach();
 
         // Reset the active callbacks interface to the dummy implementation.
-        mCallbacks = channelCallback;
+        mCallbacks = null;//channelCallback;
         
         Log.i("RssReader","Detached need to save tab and channel");
     }
