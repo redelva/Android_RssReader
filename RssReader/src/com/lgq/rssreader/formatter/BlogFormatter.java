@@ -634,29 +634,31 @@ import com.loopj.android.http.JsonHttpResponseHandler;
 
         private void youtube(final int cnt, final Blog blog, final Element embed, final Element tip, final String url){
         	Pattern p = Pattern.compile("(?:youtube\\.com/(?:user/.+/|(?:v|e(?:mbed)?)/|.*[?&]v=)|youtu\\.be/)([^\"&?/ ]{11})");
-        	if(p.matcher(url) == null || p.matcher(url).toMatchResult() == null)
-        		return;
-            final String group = p.matcher(url).toMatchResult().group();
-            final String id = group.substring(group.length() - 11);
+        	try{
+        		final String group = p.matcher(url).toMatchResult().group();
+                final String id = group.substring(group.length() - 11);
 
-            final AsyncHttpClient client = new AsyncHttpClient();
-            
-            client.get("https://www.youtube.com/get_video_info?video_id=" + id, new AsyncHttpResponseHandler(){
-            	@Override
-            	public void onSuccess(String response){
-            		client.get("https://www.youtube.com/get_video_info?video_id=" + id, new AsyncHttpResponseHandler(){
-                    	public void onSuccess(String response){
-                    		if (!response.contains("fail")){
-                                String results = HtmlHelper.unescape(response);
-                                List<String> result = processYoutube(results);
-                                tip.html(HtmlHelper.unescape(result.get(0)) + "____" + HtmlHelper.unescape(result.get(1)));
-                                if (FlashComplete != null)
-                                    FlashComplete.onFlash("Youtube Video", new CacheEventArgs(blog, embed, tip, cnt, 0));
-                            }
-                    	}
-                    });
-            	}
-            });
+                final AsyncHttpClient client = new AsyncHttpClient();
+                
+                client.get("https://www.youtube.com/get_video_info?video_id=" + id, new AsyncHttpResponseHandler(){
+                	@Override
+                	public void onSuccess(String response){
+                		client.get("https://www.youtube.com/get_video_info?video_id=" + id, new AsyncHttpResponseHandler(){
+                        	public void onSuccess(String response){
+                        		if (!response.contains("fail")){
+                                    String results = HtmlHelper.unescape(response);
+                                    List<String> result = processYoutube(results);
+                                    tip.html(HtmlHelper.unescape(result.get(0)) + "____" + HtmlHelper.unescape(result.get(1)));
+                                    if (FlashComplete != null)
+                                        FlashComplete.onFlash("Youtube Video", new CacheEventArgs(blog, embed, tip, cnt, 0));
+                                }
+                        	}
+                        });
+                	}
+                });
+        	}catch(Exception e){
+        		
+        	}            
         }
         
         private void sohuSwf(final int cnt, final Blog blog, final Element embed, final Element tip, final String url){

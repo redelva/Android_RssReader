@@ -12,8 +12,8 @@ public class Profile implements Serializable {
 	public boolean EvernoteConnected;
 	public String FamilyName;
 	public String Gender;
-	public String GivenName;
-	public String Google;
+	public String GivenName;	
+	public String Account;
 	public String Id;
 	public String Locale;
 	public String Picture;

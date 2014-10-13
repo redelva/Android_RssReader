@@ -57,8 +57,8 @@ import android.widget.SeekBar.OnSeekBarChangeListener;
 public class MenuFragment extends Fragment implements OnClickListener{
 		
 	MainActivity mainActivity;
-	View google, download, settings,search,add,logout;
-	TextView nickName;
+	View account, download, settings,search,add,logout;
+	TextView nickName,accountText;
  
 	@Override
     public void onCreate(Bundle savedInstanceState) {
@@ -69,8 +69,8 @@ public class MenuFragment extends Fragment implements OnClickListener{
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
     	 View view = inflater.inflate(R.layout.fragment_left_menu, container, false);
     	 
-    	 google = view.findViewById(R.id.google);
-    	 google.setOnClickListener(this);
+    	 account = view.findViewById(R.id.account);
+    	 account.setOnClickListener(this);
     	 
     	 download = view.findViewById(R.id.download);
     	 download.setOnClickListener(this);
@@ -88,6 +88,7 @@ public class MenuFragment extends Fragment implements OnClickListener{
     	 add.setOnClickListener(this);
     	 
     	 nickName = (TextView)view.findViewById(R.id.nickNameTextView);
+    	 accountText  = (TextView)view.findViewById(R.id.accountText);
     	 final ImageView head = (ImageView)view.findViewById(R.id.headImageView);
     	 final Profile p = ReaderApp.getProfile();
     	 if(p != null){
@@ -108,6 +109,8 @@ public class MenuFragment extends Fragment implements OnClickListener{
     			 
     		 }
     		 
+    		 accountText.setText(p.Account);
+    		 
     		 nickName.setText(p.FamilyName + p.GivenName);
     	 }
     	 
@@ -116,7 +119,7 @@ public class MenuFragment extends Fragment implements OnClickListener{
 	
 	//set the selected status
 	private void setSelected(int id){
-		google.setSelected(false);
+		account.setSelected(false);
 		download.setSelected(false);
 		settings.setSelected(false);
 		search.setSelected(false);
@@ -125,8 +128,8 @@ public class MenuFragment extends Fragment implements OnClickListener{
 		
 		mainActivity = (MainActivity)getActivity();
 		
-		if (id == R.id.google) {
-			google.setSelected(true);
+		if (id == R.id.account) {
+			account.setSelected(true);
 		} else if (id == R.id.download) {
 			
 			mainActivity.getSlidingMenu().toggle();

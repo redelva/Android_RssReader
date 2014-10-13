@@ -265,7 +265,7 @@ public class FeedListFragment extends SherlockFragment {
 	    	                                list,
 	    	                                listView);
 		                			listView.setAdapter(adapter);
-	            					
+	            					adapter.notifyDataSetChanged();
 	            				}else{
 	            					HeaderViewListAdapter wrap = (HeaderViewListAdapter)listView.getAdapter();
 	            					
@@ -321,6 +321,7 @@ public class FeedListFragment extends SherlockFragment {
             				MainActivity main = (MainActivity)getActivity();
             				
         	            	TextView nickName = (TextView)main.mSlidingMenu.findViewById(R.id.nickNameTextView);
+        	            	TextView accountText = (TextView)main.mSlidingMenu.findViewById(R.id.accountText);
         	            	final ImageView head = (ImageView)main.mSlidingMenu.findViewById(R.id.headImageView);
             				
             				if(p.LocalPicture != null && p.LocalPicture.length() != 0){
@@ -335,6 +336,7 @@ public class FeedListFragment extends SherlockFragment {
             				}
         	            	
         	       		 	nickName.setText(p.FamilyName + p.GivenName);
+        	       		 	accountText.setText(p.Account);
             			}
             		}
                 	break;

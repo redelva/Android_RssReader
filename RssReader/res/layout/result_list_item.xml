@@ -15,7 +15,7 @@
 		android:layout_marginLeft="4dip"
 		android:layout_marginRight="4dip"
 		android:orientation="vertical"
-        style="@style/ListBackContent"> 
+        > 
 		
 	</RelativeLayout>
 	
@@ -26,13 +26,14 @@
 		android:layout_marginBottom="4dip"				
 		android:layout_marginLeft="5dip" 
 		android:layout_marginRight="5dip"
+		android:textColor="@color/white"
 		android:gravity="left|center_vertical"
 		android:orientation="horizontal">					   
 	    <TextView
 	        android:layout_width="90dp"
 	        android:layout_height="fill_parent"
 	        android:id="@+id/searchresult_count"
-	        android:textColor="@color/darkgray"
+	        
 	        android:gravity="center"
 	        android:textSize="25sp"
 	        android:text="427887"/>

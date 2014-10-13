@@ -576,10 +576,13 @@ public class SwipeListViewTouchListener implements View.OnTouchListener {
 //                                }
 //                            }
                         	
-                        	if(swipingRight)
-	                    		swipeListView.onRightAutoClose(position, backView);
-	                    	else
-	                    		swipeListView.onLeftAutoClose(position, backView);
+//                        	int offset = swapRight ? (int) (viewWidth - rightOffset) : (int) (-viewWidth + leftOffset);
+//                        	if(offset > swipeActionLeft){
+                        		if(swipingRight)
+                        			swipeListView.onRightAutoClose(position, backView);
+                        		else
+                        			swipeListView.onLeftAutoClose(position, backView);
+                        	//}
                         		
                         	animate(view)        		
                             .translationX(moveBack)                
@@ -650,10 +653,13 @@ public class SwipeListViewTouchListener implements View.OnTouchListener {
 //                                }
 //                            }
                         	
-                        	if(swipingRight)
-	                    		swipeListView.onRightAutoClose(position, backView);
-	                    	else
-	                    		swipeListView.onLeftAutoClose(position, backView);
+                        	//int offset = swapRight ? (int) (viewWidth - rightOffset) : (int) (-viewWidth + leftOffset);
+                        	//if(offset > swipeActionLeft){
+                        		if(swipingRight)
+                        			swipeListView.onRightAutoClose(position, backView);
+                        		else
+                        			swipeListView.onLeftAutoClose(position, backView);
+                        	//}
                         	
                         	animate(view)        		
                             .translationX(moveBack)                
@@ -953,6 +959,12 @@ public class SwipeListViewTouchListener implements View.OnTouchListener {
                 if (swiping && downPosition != ListView.INVALID_POSITION) {
                     if (opened.get(downPosition)) {
                         deltaX += openedRight.get(downPosition) ? viewWidth - rightOffset : -viewWidth + leftOffset;
+                        
+//                        if(deltaX > 0)
+//                        	deltaX = deltaX > viewWidth ? viewWidth - 280 : deltaX;
+//                        	
+//                    	if(deltaX < 0)
+//                        	deltaX = Math.abs(deltaX) > viewWidth ? -viewWidth +280 : deltaX;
                     }
                     move(deltaX);
                     return true;

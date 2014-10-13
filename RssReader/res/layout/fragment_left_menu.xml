@@ -64,17 +64,18 @@
             android:background="@drawable/tool_box_fragment_bg_selector"
             android:layout_width="fill_parent" 
             android:layout_height="65.0dip"            
-            android:id="@+id/google" >
+            android:id="@+id/account" >
     		<TextView 
     		    android:textSize="16.0sp" 
     		    android:textStyle="bold" 
     		    android:textColor="#ffccccc6" 
-    		    android:gravity="center"     		    
+    		    android:gravity="center"
     		    android:layout_width="wrap_content" 
     		    android:layout_height="wrap_content" 
     		    android:layout_marginLeft="21.0dip"
     		    android:singleLine="true" 
-    		    android:text="@string/google" 
+    		    android:text="@string/google"
+    		    android:id="@+id/accountText"  
     		    android:drawablePadding="20.0dip" 
     		    android:layout_centerVertical="true" 
     		    android:layout_centerInParent="true"/>

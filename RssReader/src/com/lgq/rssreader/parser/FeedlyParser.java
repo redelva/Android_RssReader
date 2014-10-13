@@ -324,11 +324,47 @@ public class FeedlyParser extends RssParser {
         	            {
                 			Profile p = new Profile();
                 			
+//                			client: "feedly"
+//                				created: 1412954194833
+//                				dropboxConnected: false
+//                				email: "redelva2008@163.com"
+//                				evernoteConnected: false
+//                				facebookConnected: false
+//                				familyName: "陆"
+//                				fullName: "陆国庆"
+//                				givenName: "国庆"
+//                				id: "5cdfeb7c-78fa-4389-a3ef-9e8edd496de9"
+//                				locale: "en_US"
+//                				paymentProviderId: {}
+//                				paymentSubscriptionId: {}
+//                				picture: "https://apis.live.net/v5.0/e532156f3145db48/picture"
+//                				pocketConnected: false
+//                				source: "feedly.desktop 24.0.861"
+//                				twitterConnected: false
+//                				wave: "2014.41"
+//                				windowsLiveConnected: true
+//                				windowsLiveId: "e532156f3145db48"
+//                				wordPressConnected: false
+                			
                 			p.Email = result.getString("email");
                 			p.FamilyName = result.getString("familyName");
                 			p.Gender = result.has("gender") ? result.getString("gender") : "";
-                			p.GivenName = result.getString("givenName");
-                			p.Google = result.getString("google");
+                			p.GivenName = result.getString("givenName");                			
+                			//p.Google = result.getString("google");
+                			if(result.has("google"))
+                				p.Account = "Google";
+                			if(result.getBoolean("evernoteConnected"))
+                				p.Account = "Evernote";
+                			if(result.getBoolean("facebookConnected"))
+                				p.Account = "Facebook";
+                			if(result.getBoolean("twitterConnected"))
+                				p.Account = "Twitter";
+                			if(result.getBoolean("windowsLiveConnected"))
+                				p.Account = "WindowsLive";
+                			if(result.getBoolean("pocketConnected"))
+                				p.Account = "Pocket";
+                			if(result.getBoolean("wordPressConnected"))
+                				p.Account = "WordPress";
                 			p.Id = result.getString("id");
                 			p.Locale = result.getString("locale");
                 			p.Picture = result.getString("picture").replace("?sz=50", "?sz=420");

@@ -128,7 +128,8 @@ public class LoginFragment extends Fragment {
         	}
         });
         
-        view.loadUrl(Config.LOGIN_URL);        
+        view.loadUrl("http://feedly.com/v3/auth/auth?client_id=feedly&redirect_uri=http%3A%2F%2Ffeedly.com%2Ffeedly.html&scope=https%3A%2F%2Fcloud.feedly.com%2Fsubscriptions&response_type=code&migrate=false&ck=1412952055218&ct=feedly.desktop&windowsLiveOAuthActive=true&facebookOAuthActive=true&twitterOAuthActive=true&cv=24.0.861&mode=login");
+        //view.loadUrl(Config.LOGIN_URL);        
 		
 		return rootView;
 	}

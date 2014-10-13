@@ -22,6 +22,7 @@ import android.support.v4.app.Fragment;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.Message;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.NavUtils;
@@ -43,6 +44,9 @@ import android.widget.Toast;
 public class SubscribeActivity extends SherlockFragmentActivity 
 	implements FeedListFragment.Callbacks  {
 
+	ProgressDialog mProgressDialog;
+	private final int RELOAD = 1;
+	
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -83,12 +87,24 @@ public class SubscribeActivity extends SherlockFragmentActivity
             }
         }
     }
-
+    
+    public Handler myHandler = new Handler(){
+        @Override  
+        public void handleMessage(Message msg) {            
+            switch(msg.what){
+            	case RELOAD:
+	            	mProgressDialog.hide();
+	            	mProgressDialog.dismiss();
+	            	SubscribeActivity.this.onBackPressed();
+	            	break;
+            }
+        }
+    };
 	@Override
 	public void onItemSelected(Object c, RssTab tab) {
 		Result r = (Result)c;
 		
-		final ProgressDialog mProgressDialog = new ProgressDialog(this);
+		mProgressDialog = new ProgressDialog(this);
         mProgressDialog.setCanceledOnTouchOutside(false);
         mProgressDialog.setIcon(R.id.process);		        
         mProgressDialog.setMessage(getResources().getString(R.string.content_loading));
@@ -99,9 +115,9 @@ public class SubscribeActivity extends SherlockFragmentActivity
         parser.addRss(r.StreamId, r.Title, new HttpResponseHandler(){
         	
         	@Override
-        	public <Object> void onCallback(Object profile, boolean result, String msg){                                		
-        		mProgressDialog.hide();
-    			mProgressDialog.dismiss();
+        	public <Object> void onCallback(Object profile, boolean result, String msg){
+        		
+        		
         		if(result)        			
         			Toast.makeText(SubscribeActivity.this, getResources().getString(R.string.main_subscribe), Toast.LENGTH_SHORT).show();
         		else
@@ -109,7 +125,9 @@ public class SubscribeActivity extends SherlockFragmentActivity
         		
         		ReaderApp.getPreferences().edit().putBoolean("forceRefresh", true).commit();
         		
-        		SubscribeActivity.this.onBackPressed();
+        		Message m = myHandler.obtainMessage();
+	            m.what = RELOAD;	            
+				myHandler.sendMessage(m);
         	}        	
         });
 	}
