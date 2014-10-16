@@ -8,6 +8,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import com.google.gson.Gson;
+import com.lgq.rssreader.controls.SystemBarTintManager;
 import com.lgq.rssreader.dal.SyncStateDalHelper;
 import com.lgq.rssreader.entity.Blog;
 import com.lgq.rssreader.entity.Channel;
@@ -20,6 +21,9 @@ import com.lgq.rssreader.utils.Helper;
 import android.support.v4.app.Fragment;
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.Rect;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Message;
 import android.support.v4.app.FragmentActivity;
@@ -28,7 +32,12 @@ import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.ViewGroup.LayoutParams;
 import android.view.Window;
+import android.view.WindowManager;
+import android.widget.FrameLayout;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -50,7 +59,25 @@ public class BlogListActivity extends FragmentActivity implements BlogListFragme
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         this.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT){
+        	getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
+        	getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+        }
         setContentView(R.layout.activity_blog_list);
+        
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT){
+//	        TextView textView = new TextView(this);
+//	        LinearLayout.LayoutParams lParams = new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, Helper.getStatusBarHeight());
+//	        //textView.setBackgroundColor(Color.parseColor("#D2D2D2"));
+//	        textView.setLayoutParams(lParams);
+//	        textView.setBackgroundResource(R.drawable.translucent_status_bar);
+//	        // 获得根视图并把TextView加进去。
+//	        ViewGroup view = (ViewGroup) getWindow().getDecorView();
+//	        view.addView(textView);
+        	SystemBarTintManager manager = new SystemBarTintManager(this);
+        	manager.setStatusBarTintEnabled(true);
+        	manager.setStatusBarTintResource(R.drawable.translucent_status_bar);
+        }
 
         // Show the Up button in the action bar.
         //getActionBar().setDisplayHomeAsUpEnabled(true);

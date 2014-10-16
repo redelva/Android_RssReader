@@ -71,6 +71,8 @@ public class SwipeListViewTouchListener implements View.OnTouchListener {
 
     private int swipeDrawableChecked = 0;
     private int swipeDrawableUnchecked = 0;
+    
+    private float swipeAutoCloseThreshold = (float) 0.33;
 
     // Fixed properties
     private SwipeListView swipeListView;
@@ -206,6 +208,15 @@ public class SwipeListViewTouchListener implements View.OnTouchListener {
     public void setLeftOffset(float leftOffset) {
         this.leftOffset = leftOffset;
     }
+    
+    /**
+     * Set the auto close threshold
+     *
+     * @param threshold threshold
+     */
+    public void setSwipeAutoCloseThreshold(float threshold) {
+        this.swipeAutoCloseThreshold = threshold;
+    }        
 
     /**
      * Set if all item opened will be close when the user move ListView
@@ -269,6 +280,15 @@ public class SwipeListViewTouchListener implements View.OnTouchListener {
     public int getSwipeActionLeft() {
         return swipeActionLeft;
     }
+    
+    /**
+     * Return the auto close threshold
+     *
+     * @param threshold threshold
+     */
+    public float getSwipeAutoCloseThreshold() {
+        return swipeAutoCloseThreshold;
+    }
 
     /**
      * Set action on left
@@ -286,7 +306,7 @@ public class SwipeListViewTouchListener implements View.OnTouchListener {
      */
     public int getSwipeActionRight() {
         return swipeActionRight;
-    }
+    }    
 
     /**
      * Set action on right
@@ -575,15 +595,7 @@ public class SwipeListViewTouchListener implements View.OnTouchListener {
 //                                    moveBack = swapRight ? -(int) (viewWidth - rightOffset) : -(int) (-viewWidth + leftOffset);
 //                                }
 //                            }
-                        	
-//                        	int offset = swapRight ? (int) (viewWidth - rightOffset) : (int) (-viewWidth + leftOffset);
-//                        	if(offset > swipeActionLeft){
-                        		if(swipingRight)
-                        			swipeListView.onRightAutoClose(position, backView);
-                        		else
-                        			swipeListView.onLeftAutoClose(position, backView);
-                        	//}
-                        		
+                        	                        	
                         	animate(view)        		
                             .translationX(moveBack)                
                             .setDuration(animationTime)
@@ -652,15 +664,7 @@ public class SwipeListViewTouchListener implements View.OnTouchListener {
 //                                    moveBack = swapRight ? -(int) (viewWidth - rightOffset) : -(int) (-viewWidth + leftOffset);
 //                                }
 //                            }
-                        	
-                        	//int offset = swapRight ? (int) (viewWidth - rightOffset) : (int) (-viewWidth + leftOffset);
-                        	//if(offset > swipeActionLeft){
-                        		if(swipingRight)
-                        			swipeListView.onRightAutoClose(position, backView);
-                        		else
-                        			swipeListView.onLeftAutoClose(position, backView);
-                        	//}
-                        	
+                        	                        	
                         	animate(view)        		
                             .translationX(moveBack)                
                             .setDuration(animationTime)
@@ -885,6 +889,15 @@ public class SwipeListViewTouchListener implements View.OnTouchListener {
 //                    frontView.setClickable(opened.get(downPosition));
 //                    frontView.setLongClickable(opened.get(downPosition));
 //                }
+                
+                if(swipeAutoClose){
+                	float x = ViewHelper.getX(frontView);
+                	if(x > 0 && Math.abs(x) > viewWidth * getSwipeAutoCloseThreshold())
+            			swipeListView.onRightAutoClose(downPosition, backView);
+                	if(x < 0 && Math.abs(x) > viewWidth * getSwipeAutoCloseThreshold())
+            			swipeListView.onLeftAutoClose(downPosition, backView);
+                }
+                
                 swiping = false;
                 break;
             }
@@ -967,6 +980,7 @@ public class SwipeListViewTouchListener implements View.OnTouchListener {
 //                        	deltaX = Math.abs(deltaX) > viewWidth ? -viewWidth +280 : deltaX;
                     }
                     move(deltaX);
+                    
                     return true;
                 }
                 break;
@@ -1029,7 +1043,7 @@ public class SwipeListViewTouchListener implements View.OnTouchListener {
                     || (!swipingRight && deltaX > -DISPLACE_CHOICE)) {
                 setTranslationX(frontView, deltaX);
             }
-        } else {
+        } else {        	
             setTranslationX(frontView, deltaX);
         }
     }

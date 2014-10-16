@@ -11,6 +11,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.lang.ref.SoftReference;
+import java.lang.reflect.Field;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
@@ -80,7 +81,9 @@ import android.os.Vibrator;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.View;
+import android.view.WindowManager;
 
 public class Helper {
 	
@@ -651,7 +654,7 @@ public class Helper {
         //开启全屏模式
     	activity.getWindow().getDecorView().setSystemUiVisibility(
                 View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-                | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION                
                 | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
                 | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION // hide nav bar
                 | View.SYSTEM_UI_FLAG_FULLSCREEN // hide status bar
@@ -661,7 +664,7 @@ public class Helper {
     // This snippet shows the system bars. It does this by removing all the flags
     // except for the ones that make the content appear under the system bars.
     //取消全屏模式
-    public static void showSystemUI(Activity activity, int uiOptions) {
+    public static void showSystemUI(Activity activity, int uiOptions) {    	
     	activity.getWindow().getDecorView().setSystemUiVisibility(uiOptions);
     }
     
@@ -1147,4 +1150,33 @@ public class Helper {
             return false;    //褰揷ode涓嶅湪涓枃鑼冨洿鍐呰繑鍥瀎alse
         }
     }
+
+	// 获取手机状态栏高度
+    public static int getStatusBarHeight() {
+        Class<?> c = null;
+        Object obj = null;
+        Field field = null;
+        int x = 0, statusBarHeight = 0;
+        try {
+            c = Class.forName("com.android.internal.R$dimen");
+            obj = c.newInstance();
+            field = c.getField("status_bar_height");
+            x = Integer.parseInt(field.get(obj).toString());
+            statusBarHeight = ReaderApp.getAppContext().getResources().getDimensionPixelSize(x);
+        } catch (Exception e1) {
+            e1.printStackTrace();
+        }
+        return statusBarHeight;
+    }
+
+//    // 获取ActionBar的高度
+//    public static int getActionBarHeight() {
+//        TypedValue tv = new TypedValue();
+//        int actionBarHeight = 0;
+//        if (getTheme().resolveAttribute(android.R.attr.actionBarSize, tv, true))// 如果资源是存在的、有效的
+//        {
+//            actionBarHeight = TypedValue.complexToDimensionPixelSize(tv.data, getResources().getDisplayMetrics());
+//        }
+//        return actionBarHeight;
+//    }
 }

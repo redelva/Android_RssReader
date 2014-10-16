@@ -1,44 +1,37 @@
 package com.lgq.rssreader;
 
+import com.jeremyfeinstein.slidingmenu.lib.app.SlidingFragmentActivity;
+import com.lgq.rssreader.controls.SystemBarTintManager;
+
 import android.support.v4.app.Fragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
+import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.KeyEvent;
+import android.view.Window;
+import android.view.WindowManager;
 
 public class BaseActivity extends FragmentActivity {
-	/**
-	 * 恢复
-	 */
+
 	@Override
-	protected void onResume() {
-		super.onResume();
-//		if (!SettingActivity.getIsAutoHorizontal(this))
-//			setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-//		else
-//			setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_USER);
-	}
-	protected void onPause() {
-		super.onPause();
-	}
-	@Override
-	protected void onCreate(Bundle savedInstanceState) {
+	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-	}
-	/**
-	 * 处理按键
-	 */
-	public boolean onKeyDown(int keyCode, KeyEvent event) {
-		if(keyCode==KeyEvent.KEYCODE_SEARCH){//搜索
-			Intent intent = new Intent(BaseActivity.this,SearchActivity.class);
-			intent.putExtra("isShowQuitHints", false);
-			startActivity(intent);
-			return true;
-		}else {		
-			return super.onKeyDown(keyCode, event);
-		}
-	}
+		
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT){
+        	getWindow().setFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS, WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+        	getWindow().setFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION, WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
+        	
+        	SystemBarTintManager manager = new SystemBarTintManager(this);
+        	manager.setStatusBarTintEnabled(true);
+        	//manager.setStatusBarTintResource(R.drawable.translucent_status_bar);
+        	manager.setStatusBarTintColor(Color.parseColor("#2DBD60"));
+        	manager.setNavigationBarTintEnabled(true);
+        	manager.setNavigationBarTintColor(Color.parseColor("#2DBD60"));
+        }
+	}	
 }

@@ -1,5 +1,6 @@
 package com.lgq.rssreader;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -13,11 +14,10 @@ import android.view.WindowManager;
  * @date:2011-12
  *
  */
-public class SplashActivity extends BaseActivity{
-	protected void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);		
-		
+public class SplashActivity extends Activity{
+	public void onCreate(Bundle savedInstanceState) {				
 		this.requestWindowFeature(Window.FEATURE_NO_TITLE);
+		super.onCreate(savedInstanceState);
 		setContentView(R.layout.splash);
 		
 getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,WindowManager.LayoutParams.FLAG_FULLSCREEN);
@@ -56,7 +56,7 @@ getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,WindowManager.La
 	 */
 	private void RedirectMainActivity(){
 		Intent i = new Intent();
-		i.setClass(SplashActivity.this,MainActivity.class);
+		i.setClass(SplashActivity.this,MainActivity.class);		
 		startActivity(i);
 		SplashActivity.this.finish();
 	}

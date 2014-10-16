@@ -18,6 +18,7 @@ import com.lgq.rssreader.enums.RssTab;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.res.Resources;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -35,6 +36,7 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.view.ext.SatelliteMenu;
 import android.widget.TextView;
+
 import com.actionbarsherlock.view.MenuItem;
 
 /**
@@ -72,7 +74,7 @@ public class BlogContentActivity extends SherlockFragmentActivity  {
         	savedInstanceState.setClassLoader(SatelliteMenu.SavedState.class.getClassLoader());
     	this.requestWindowFeature(Window.FEATURE_NO_TITLE);
     	
-        super.onCreate(savedInstanceState);
+    	super.onCreate(savedInstanceState);
         		
         setContentView(R.layout.activity_blog_detail);
         

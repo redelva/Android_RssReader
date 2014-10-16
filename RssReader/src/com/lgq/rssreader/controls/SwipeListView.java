@@ -173,6 +173,7 @@ public class SwipeListView extends XListView {
         long swipeAnimationTime = 0;
         float swipeOffsetLeft = 0;
         float swipeOffsetRight = 0;
+        float swipeAutoCloseThreshold = (float) 0.33;
         int swipeDrawableChecked = 0;
         int swipeDrawableUnchecked = 0;
 
@@ -192,6 +193,7 @@ public class SwipeListView extends XListView {
             swipeCloseAllItemsWhenMoveList = styled.getBoolean(R.styleable.SwipeListView_swipeCloseAllItemsWhenMoveList, true);
             swipeDrawableChecked = styled.getResourceId(R.styleable.SwipeListView_swipeDrawableChecked, 0);
             swipeDrawableUnchecked = styled.getResourceId(R.styleable.SwipeListView_swipeDrawableUnchecked, 0);
+            swipeAutoCloseThreshold = styled.getFloat(R.styleable.SwipeListView_swipeAutoCloseThreshold, (float) 0.33);
             swipeFrontView = styled.getResourceId(R.styleable.SwipeListView_swipeFrontView, 0);
             swipeBackView = styled.getResourceId(R.styleable.SwipeListView_swipeBackView, 0);
         }
@@ -221,6 +223,7 @@ public class SwipeListView extends XListView {
         touchListener.setSwipeOpenOnLongPress(swipeOpenOnLongPress);
         touchListener.setSwipeDrawableChecked(swipeDrawableChecked);
         touchListener.setSwipeDrawableUnchecked(swipeDrawableUnchecked);
+        touchListener.setSwipeAutoCloseThreshold(swipeAutoCloseThreshold);
         setOnTouchListener(touchListener);
         setOnScrollListener(touchListener.makeScrollListener());
     }

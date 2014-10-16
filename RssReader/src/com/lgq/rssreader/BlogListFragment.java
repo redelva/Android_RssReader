@@ -8,6 +8,7 @@ import java.util.List;
 
 import android.app.Activity;
 import android.graphics.Color;
+import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
@@ -15,6 +16,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.ListFragment;
+import android.text.Layout;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -24,7 +26,9 @@ import android.view.animation.AnimationUtils;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -40,6 +44,7 @@ import com.lgq.rssreader.controls.PullToRefreshListView;
 import com.lgq.rssreader.controls.PullToRefreshListView.OnRefreshListener;
 import com.lgq.rssreader.controls.SwipeListView;
 import com.lgq.rssreader.controls.SwipeListViewListener;
+import com.lgq.rssreader.controls.SystemBarTintManager;
 import com.lgq.rssreader.controls.XListView;
 import com.lgq.rssreader.controls.XListView.IXListViewListener;
 import com.lgq.rssreader.core.ReaderApp;
@@ -296,7 +301,13 @@ public class BlogListFragment extends Fragment implements IXListViewListener {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_blog_list, container, false); 
+        View view = inflater.inflate(R.layout.fragment_blog_list, container, false);
+        
+        LinearLayout fragment_blog_list_layout = (LinearLayout)view.findViewById(R.id.fragment_blog_list_layout);
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT){
+        	fragment_blog_list_layout.setPadding(0, Helper.getStatusBarHeight(), 0, 0);
+        }
+        
         
         listView = (SwipeListView)view.findViewById(R.id.blog_list);
         listView.setPullLoadEnable(true);
@@ -317,7 +328,7 @@ public class BlogListFragment extends Fragment implements IXListViewListener {
         		listView.setSelection(0);
 			}
         });
-        
+                
         if(channel.LastRefreshTime != null)
         	listView.setRefreshTime(DateHelper.DateToChineseString(channel.LastRefreshTime));
         else

@@ -16,6 +16,7 @@ import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu;
 import com.jeremyfeinstein.slidingmenu.lib.app.SlidingFragmentActivity;
 import com.lgq.rssreader.adapter.BlogAdapter;
 import com.lgq.rssreader.adapter.ChannelAdapter;
+import com.lgq.rssreader.controls.SystemBarTintManager;
 import com.lgq.rssreader.core.Config;
 import com.lgq.rssreader.core.ReaderApp;
 import com.lgq.rssreader.dal.BlogDalHelper;
@@ -41,8 +42,11 @@ import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.Resources;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.graphics.Matrix;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -59,6 +63,8 @@ import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
@@ -69,6 +75,7 @@ import android.widget.EditText;
 import android.widget.HeaderViewListAdapter;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -106,9 +113,31 @@ public class MainActivity extends SlidingFragmentActivity
     private HashMap<Integer, Fragment> cache = new HashMap<Integer, Fragment>();   
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+    public void onCreate(Bundle savedInstanceState) {    	
+        super.onCreate(savedInstanceState);        
+        this.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT){
+        	getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
+        	getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);        	
+//        }
+//        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT){
+        	//container.setPadding(0, Helper.getStatusBarHeight(), 0, 0);
+        	
+        	SystemBarTintManager manager = new SystemBarTintManager(this);
+        	manager.setStatusBarTintEnabled(true);
+        	//manager.setStatusBarTintResource(R.drawable.translucent_status_bar);
+        	manager.setStatusBarTintColor(Color.parseColor("#2DBD60"));
+        	
+        	manager.setNavigationBarTintEnabled(true);
+        	//manager.setNavigationBarTintColor(Color.parseColor("#2DBD60"));
+        	manager.setNavigationBarAlpha((float) 0.3);
+        	manager.setNavigationBarTintColor(getResources().getColor(android.R.color.transparent));
+        	        	
+        }
+        	
         setContentView(R.layout.activity_main);
+        
+        //LinearLayout container = (LinearLayout)findViewById(R.id.container);        
         
         isLoaded = false;
 
@@ -206,9 +235,9 @@ public class MainActivity extends SlidingFragmentActivity
         }
         
         loadChannel();
-    }
-    
-    private void loadChannel(){
+    }    
+
+	private void loadChannel(){
     	ViewPager pager = (ViewPager)findViewById(R.id.pager);
 		PivotPagerAdapter pivot = (PivotPagerAdapter)pager.getAdapter();
 
