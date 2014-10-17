@@ -17,21 +17,43 @@ import android.view.Window;
 import android.view.WindowManager;
 
 public class BaseActivity extends FragmentActivity {
+	
+	private String m_color;
+	private int m_resId;
+	
+	public BaseActivity(){
+		m_color = "#00BCD5";
+		m_resId = 0;
+	}
+	
+	public BaseActivity(String Color){
+		if(Color != null && Color.length() == 7)
+			m_color = Color;
+		else
+			m_color = "#00BCD5";
+	}
+	
+	public BaseActivity(int resId){
+		m_resId = resId;
+	}
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-		
+		this.requestWindowFeature(Window.FEATURE_NO_TITLE);
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT){
         	getWindow().setFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS, WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
         	getWindow().setFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION, WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
         	
         	SystemBarTintManager manager = new SystemBarTintManager(this);
         	manager.setStatusBarTintEnabled(true);
-        	//manager.setStatusBarTintResource(R.drawable.translucent_status_bar);
-        	manager.setStatusBarTintColor(Color.parseColor("#2DBD60"));
+        	if(m_resId == 0)
+        		manager.setStatusBarTintColor(Color.parseColor(m_color));
+        	else
+        		manager.setStatusBarTintResource(m_resId);
         	manager.setNavigationBarTintEnabled(true);
-        	manager.setNavigationBarTintColor(Color.parseColor("#2DBD60"));
+        	manager.setNavigationBarTintResource(R.drawable.transparent_bg);
         }
+        
+        super.onCreate(savedInstanceState);
 	}	
 }

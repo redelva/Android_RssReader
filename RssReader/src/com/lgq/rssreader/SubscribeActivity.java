@@ -41,16 +41,20 @@ import android.widget.Toast;
  * This activity is mostly just a 'shell' activity containing nothing
  * more than a {@link BlogContentFragment}.
  */
-public class SubscribeActivity extends SherlockFragmentActivity 
+public class SubscribeActivity extends BaseActivity 
 	implements FeedListFragment.Callbacks  {
+	
+	public SubscribeActivity(){
+		super("#00BCD5");
+	}
 
 	ProgressDialog mProgressDialog;
 	private final int RELOAD = 1;
 	
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        this.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        //this.requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_subscribe);
 
         // Show the Up button in the action bar.

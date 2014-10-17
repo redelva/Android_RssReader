@@ -96,7 +96,7 @@ import com.lgq.rssreader.enums.RssTab;
  * Activities containing this fragment MUST implement the {@link Callbacks}
  * interface.
  */
-public class FeedListFragment extends SherlockFragment {
+public class FeedListFragment extends Fragment {
 
     /**
      * The serialization (saved instance state) Bundle key representing the
@@ -584,6 +584,8 @@ public class FeedListFragment extends SherlockFragment {
 	            m.what = tab.ordinal();
 	            m.obj = helper.GetBlogListByKeyword(title, 1, 30);;
 				myHandler.sendMessage(m);
+				listView.setPullLoadEnable(true);
+    			listView.setPullRefreshEnable(false);
     			break;
     		case Subscribe:
     			listView.setPullLoadEnable(false);
@@ -602,7 +604,7 @@ public class FeedListFragment extends SherlockFragment {
     			
     			break;
     		case Gallery:
-    			break;    		
+    			break;
     	}
     	
     	helper.Close();

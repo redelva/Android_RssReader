@@ -12,14 +12,16 @@
     xmlns:tools="http://schemas.android.com/tools"
     xmlns:swipe="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
+    android:fitsSystemWindows="true"
+    android:clipToPadding="false"
     android:layout_width="match_parent"
     android:layout_height="match_parent" >
 	
     <TextView 
-	        android:textSize="26.0sp" android:textColor="#ff7d899d"        
+	        android:textSize="26.0sp" android:textColor="@color/white"        
 			android:gravity="center_vertical" android:id="@+id/searchlist_title"
 			android:layout_width="match_parent" android:layout_height="wrap_content"
-			android:background="#D2D2D2" android:paddingTop="10.0dip" 
+			android:background="#00BCD5" android:paddingTop="10.0dip" 
 			android:paddingLeft="20.0dip" android:paddingBottom="10.0dip"/>
     
     <FrameLayout 

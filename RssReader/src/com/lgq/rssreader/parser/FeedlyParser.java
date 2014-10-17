@@ -2069,7 +2069,8 @@ public class FeedlyParser extends RssParser {
 		
 		                try{
 			                JSONObject r = null;
-			                for(int i=0, len = obj.getJSONArray("results").length(); i<len;i++){
+			                int len = obj.getJSONArray("results").length();
+			                for(int i=0; i<len;i++){
 			                	r = obj.getJSONArray("results").getJSONObject(i);
 			                	Result result = new Result();
 			
@@ -2080,7 +2081,10 @@ public class FeedlyParser extends RssParser {
 			                    results.add(result);
 			                }
 			                
-			                handler.sendResponseMessage(results, true, ReaderApp.getAppContext().getResources().getString(R.string.feedly_successsearch), false);
+			                if(len > 0)
+			                	handler.sendResponseMessage(results, true, ReaderApp.getAppContext().getResources().getString(R.string.feedly_successsearch), false);
+			                else
+			                	handler.sendResponseMessage(null, false, ReaderApp.getAppContext().getResources().getString(R.string.feedly_failedsearch), false);
 		                }catch(JSONException je){
 		                	je.printStackTrace();
 		                }

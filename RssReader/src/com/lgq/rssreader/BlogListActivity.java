@@ -50,34 +50,38 @@ import android.widget.TextView;
  * This activity is mostly just a 'shell' activity containing nothing
  * more than a {@link BlogContentFragment}.
  */
-public class BlogListActivity extends FragmentActivity implements BlogListFragment.Callbacks  {
+public class BlogListActivity extends BaseActivity implements BlogListFragment.Callbacks  {
 	
 	private boolean needUpdate;
 	private Channel c;
 
+	public BlogListActivity(){
+		super(R.drawable.translucent_status_bar);
+	} 
+	
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        this.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT){
-        	getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
-        	getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-        }
+        //this.requestWindowFeature(Window.FEATURE_NO_TITLE);
+//        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT){
+//        	getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
+//        	getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+//        }
         setContentView(R.layout.activity_blog_list);
         
-        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT){
-//	        TextView textView = new TextView(this);
-//	        LinearLayout.LayoutParams lParams = new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, Helper.getStatusBarHeight());
-//	        //textView.setBackgroundColor(Color.parseColor("#D2D2D2"));
-//	        textView.setLayoutParams(lParams);
-//	        textView.setBackgroundResource(R.drawable.translucent_status_bar);
-//	        // 获得根视图并把TextView加进去。
-//	        ViewGroup view = (ViewGroup) getWindow().getDecorView();
-//	        view.addView(textView);
-        	SystemBarTintManager manager = new SystemBarTintManager(this);
-        	manager.setStatusBarTintEnabled(true);
-        	manager.setStatusBarTintResource(R.drawable.translucent_status_bar);
-        }
+//        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT){
+////	        TextView textView = new TextView(this);
+////	        LinearLayout.LayoutParams lParams = new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, Helper.getStatusBarHeight());
+////	        //textView.setBackgroundColor(Color.parseColor("#D2D2D2"));
+////	        textView.setLayoutParams(lParams);
+////	        textView.setBackgroundResource(R.drawable.translucent_status_bar);
+////	        // 获得根视图并把TextView加进去。
+////	        ViewGroup view = (ViewGroup) getWindow().getDecorView();
+////	        view.addView(textView);
+//        	SystemBarTintManager manager = new SystemBarTintManager(this);
+//        	manager.setStatusBarTintEnabled(true);
+//        	manager.setStatusBarTintResource(R.drawable.translucent_status_bar);
+//        }
 
         // Show the Up button in the action bar.
         //getActionBar().setDisplayHomeAsUpEnabled(true);

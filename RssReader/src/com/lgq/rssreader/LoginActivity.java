@@ -8,6 +8,11 @@ import android.support.v4.app.FragmentTransaction;
 import android.view.KeyEvent;
 
 public class LoginActivity extends BaseActivity {
+	
+	public LoginActivity(){
+		super("#00BCD5");
+	}
+	
 	@Override
     public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);

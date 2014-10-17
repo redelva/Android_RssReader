@@ -36,6 +36,7 @@ import com.google.gson.Gson;
 import com.google.gson.internal.StringMap;
 import com.lgq.rssreader.R;
 import com.lgq.rssreader.cache.ImageCacher;
+import com.lgq.rssreader.controls.SystemBarTintManager;
 import com.lgq.rssreader.core.Config;
 import com.lgq.rssreader.core.ReaderApp;
 import com.lgq.rssreader.dal.ImageRecordDalHelper;
@@ -658,14 +659,16 @@ public class Helper {
                 | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
                 | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION // hide nav bar
                 | View.SYSTEM_UI_FLAG_FULLSCREEN // hide status bar
-                | View.SYSTEM_UI_FLAG_IMMERSIVE);
+                | View.SYSTEM_UI_FLAG_IMMERSIVE);    	
+    	
+    	//new SystemBarTintManager(activity).removeStatusBarTintEnabled(activity);
     }
 
     // This snippet shows the system bars. It does this by removing all the flags
     // except for the ones that make the content appear under the system bars.
     //取消全屏模式
-    public static void showSystemUI(Activity activity, int uiOptions) {    	
-    	activity.getWindow().getDecorView().setSystemUiVisibility(uiOptions);
+    public static void showSystemUI(Activity activity, int uiOptions) {
+    	activity.getWindow().getDecorView().setSystemUiVisibility(uiOptions);    	
     }
     
     public static List<File> detectFonts(){
@@ -1169,14 +1172,14 @@ public class Helper {
         return statusBarHeight;
     }
 
-//    // 获取ActionBar的高度
-//    public static int getActionBarHeight() {
-//        TypedValue tv = new TypedValue();
-//        int actionBarHeight = 0;
-//        if (getTheme().resolveAttribute(android.R.attr.actionBarSize, tv, true))// 如果资源是存在的、有效的
-//        {
-//            actionBarHeight = TypedValue.complexToDimensionPixelSize(tv.data, getResources().getDisplayMetrics());
-//        }
-//        return actionBarHeight;
-//    }
+    // 获取ActionBar的高度
+    public static int getActionBarHeight(Context context) {
+        TypedValue tv = new TypedValue();
+        int actionBarHeight = 0;
+        if (context.getTheme().resolveAttribute(android.R.attr.actionBarSize, tv, true))// 如果资源是存在的、有效的
+        {
+            actionBarHeight = TypedValue.complexToDimensionPixelSize(tv.data, context.getResources().getDisplayMetrics());
+        }
+        return actionBarHeight;
+    }
 }

@@ -23,7 +23,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 public class BaseMainActivity extends BaseActivity {
-	
+	public BaseMainActivity(){
+		super("#00BCD5");
+	}
 	
 	private void RedirectSettingActivity() {
 		Intent intent = new Intent();

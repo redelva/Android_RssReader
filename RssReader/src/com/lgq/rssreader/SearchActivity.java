@@ -36,13 +36,16 @@ import android.widget.TextView;
  * This activity is mostly just a 'shell' activity containing nothing
  * more than a {@link BlogContentFragment}.
  */
-public class SearchActivity extends SherlockFragmentActivity 
+public class SearchActivity extends BaseActivity 
 	implements FeedListFragment.Callbacks  {
+	
+	public SearchActivity(){
+		super("#00BCD5");
+	}
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        this.requestWindowFeature(Window.FEATURE_NO_TITLE);
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);        
         setContentView(R.layout.activity_search);
 
         // Show the Up button in the action bar.

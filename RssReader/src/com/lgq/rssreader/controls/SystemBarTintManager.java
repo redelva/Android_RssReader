@@ -140,10 +140,21 @@ public class SystemBarTintManager {
      */
     public void setStatusBarTintEnabled(boolean enabled) {
         mStatusBarTintEnabled = enabled;
-        if (mStatusBarAvailable) {
-            mStatusBarTintView.setVisibility(enabled ? View.VISIBLE : View.GONE);
+        if (mStatusBarAvailable) {        	
+            mStatusBarTintView.setVisibility(enabled ? View.VISIBLE : View.GONE);            
         }
     }
+    
+//    public void removeStatusBarTintEnabled(Activity activty){
+//    	mStatusBarTintEnabled = false;
+//        if (mStatusBarAvailable) {        	
+//            ViewGroup decGroup = (ViewGroup)activty.getWindow().getDecorView();
+//            
+//            decGroup.removeView(mStatusBarTintView);
+//            
+//            decGroup.requestLayout();
+//        }
+//    }
 
     /**
      * Enable tinting of the system navigation bar.

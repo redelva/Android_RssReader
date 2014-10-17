@@ -129,9 +129,9 @@ public class MainActivity extends SlidingFragmentActivity
         	manager.setStatusBarTintColor(Color.parseColor("#2DBD60"));
         	
         	manager.setNavigationBarTintEnabled(true);
-        	//manager.setNavigationBarTintColor(Color.parseColor("#2DBD60"));
+        	manager.setNavigationBarTintResource(R.drawable.transparent_bg);
         	manager.setNavigationBarAlpha((float) 0.3);
-        	manager.setNavigationBarTintColor(getResources().getColor(android.R.color.transparent));
+        	//manager.setNavigationBarTintColor(getResources().getColor(android.R.color.transparent));
         	        	
         }
         	

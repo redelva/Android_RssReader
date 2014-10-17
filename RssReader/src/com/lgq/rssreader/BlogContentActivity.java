@@ -69,7 +69,7 @@ public class BlogContentActivity extends SherlockFragmentActivity  {
 	public EvernoteSession mEvernoteSession;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState) {
     	if(savedInstanceState != null )
         	savedInstanceState.setClassLoader(SatelliteMenu.SavedState.class.getClassLoader());
     	this.requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -127,14 +127,6 @@ public class BlogContentActivity extends SherlockFragmentActivity  {
     	ShareSDK.stopSDK(this);
     	super.onDestroy();
     }
-	
-	@Override  
-	public boolean onCreateOptionsMenu(Menu menu) {
-		super.onCreateOptionsMenu(menu);
-	    // Inflate the menu; this adds items to the action bar if it is present.  
-		//getSupportMenuInflater().inflate(R.menu.contentmenu, menu);  
-	    return true;  
-	}   
         
     int oldEv = MotionEvent.ACTION_CANCEL;
     
@@ -233,23 +225,5 @@ public class BlogContentActivity extends SherlockFragmentActivity  {
           }
           break;
       }
-    }
-    
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                // This ID represents the Home or Up button. In the case of this
-                // activity, the Up button is shown. Use NavUtils to allow users
-                // to navigate up one level in the application structure. For
-                // more details, see the Navigation pattern on Android Design:
-                //
-                // http://developer.android.com/design/patterns/navigation.html#up-vs-back
-                //
-                //NavUtils.navigateUpTo(this, new Intent(this, MainActivity.class));
-            	super.onBackPressed();
-                return true;
-        }
-        return super.onOptionsItemSelected(item);
-    }
+    }        
 }

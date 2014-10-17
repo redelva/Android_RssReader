@@ -5,6 +5,7 @@ import java.util.Locale;
 import java.util.Map;
 
 import com.google.gson.Gson;
+import com.lgq.rssreader.controls.SystemBarTintManager;
 //import com.lgq.rssreader.controls.TimePickerDialog.TimePickerDialogListener;
 import com.lgq.rssreader.core.ReaderApp;
 import com.lgq.rssreader.entity.Blog;
@@ -12,6 +13,7 @@ import com.lgq.rssreader.enums.DownloadMode;
 import com.lgq.rssreader.task.DownloadReceiver;
 import com.lgq.rssreader.utils.Helper;
 
+import android.app.ActionBar;
 import android.app.Activity;
 import android.app.AlarmManager;
 import android.app.Dialog;
@@ -19,6 +21,9 @@ import android.app.PendingIntent;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
+import android.content.res.Resources;
+import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
 import android.preference.EditTextPreference;
 import android.preference.Preference;
@@ -30,6 +35,7 @@ import android.preference.PreferenceScreen;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.LinearLayout;
 import android.widget.TimePicker;
@@ -45,7 +51,28 @@ public class SettingActivity extends PreferenceActivity implements OnPreferenceC
     public void onCreate(Bundle savedInstanceState) {  
         super.onCreate(savedInstanceState);
         
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT){
+        	getWindow().setFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS, WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+        	getWindow().setFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION, WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
+        	
+        	SystemBarTintManager manager = new SystemBarTintManager(this);
+        	manager.setStatusBarTintEnabled(true);
+        	manager.setStatusBarTintResource(R.drawable.settings_status_bar);
+        	manager.setNavigationBarTintEnabled(true);
+        	manager.setNavigationBarTintResource(R.drawable.transparent_bg);
+        }
+        
         addPreferencesFromResource(R.xml.settings);
+        
+        Resources res = Resources.getSystem();
+        int id = res.getIdentifier("headers", "id", "android");
+        View container = findViewById(id);
+        
+        ((View) container.getParent().getParent()).setPadding(0, Helper.getStatusBarHeight() + Helper.getActionBarHeight(this), 0, 0);
+        
+        ActionBar actionBar = getActionBar();
+        
+        actionBar.setBackgroundDrawable(getResources().getDrawable(R.drawable.settings_status_bar));
         
         Map<String, ?> prefs = this.getPreferenceManager().getSharedPreferences().getAll();
         for (String preferenceName : prefs.keySet()) {
