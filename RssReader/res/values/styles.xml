@@ -116,6 +116,41 @@
         <item name="android:background">@drawable/background_new_tag</item>
         <item name="android:padding">@dimen/padding_new_tag</item>
     </style> -->
-     
+	
+	<style name="DialogDarkTheme" parent="@android:style/Theme.Dialog">
+	    <item name="android:alertDialogStyle">@style/DarkAlertDialogStyle</item>
+	    <item name="android:textColorPrimary">#000000</item>
+	</style>
+	
+	<style name="DarkAlertDialogStyle">
+	    <item name="android:bottomBright">@color/readdark</item>
+	    <item name="android:bottomDark">@color/readdark</item>
+	    <item name="android:bottomMedium">@color/readdark</item>
+	    <item name="android:centerBright">@color/readdark</item>
+	    <item name="android:centerDark">@color/readdark</item>
+	    <item name="android:centerMedium">@color/readdark</item>
+	    <item name="android:fullBright">@color/readdark</item>
+	    <item name="android:fullDark">@color/readdark</item>
+	    <item name="android:topBright">@color/readdark</item>
+	    <item name="android:topDark">@color/red</item>
+	</style>
+	
+	<style name="DialogLightTheme" parent="@android:style/Theme.Dialog">
+	    <item name="android:alertDialogStyle">@style/LightAlertDialogStyle</item>
+	    <item name="android:textColorPrimary">#000000</item>
+	</style>
+	
+	<style name="LightAlertDialogStyle">
+	    <item name="android:bottomBright">@color/readlight</item>
+	    <item name="android:bottomDark">@color/readlight</item>
+	    <item name="android:bottomMedium">@color/readlight</item>
+	    <item name="android:centerBright">@color/readlight</item>
+	    <item name="android:centerDark">@color/readlight</item>
+	    <item name="android:centerMedium">@color/readlight</item>
+	    <item name="android:fullBright">@color/readlight</item>
+	    <item name="android:fullDark">@color/readlight</item>
+	    <item name="android:topBright">@color/readlight</item>
+	    <item name="android:topDark">@color/red</item>
+	</style>
     
 </resources>

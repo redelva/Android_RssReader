@@ -1123,6 +1123,9 @@ public class BlogContentFragment extends Fragment{
 					container.setBackgroundColor(getResources().getColor(R.color.readdark));    		
 		    		blogTitle.setBackgroundColor(getResources().getColor(R.color.readdark));
 		    		blogTitle.setTextColor(getResources().getColor(R.color.readfontdark));
+		    		
+		    		mProgressDialog = new ProgressDialog(getActivity(), R.style.DarkAlertDialogStyle);
+		    		
 				}
 				
 				Editor e = PreferenceManager.getDefaultSharedPreferences(ReaderApp.getAppContext()).edit();
@@ -1140,6 +1143,8 @@ public class BlogContentFragment extends Fragment{
 				
 				browser.loadUrl("javascript: backgroundColor('" + backgroundcolor + "')");
 				browser.loadUrl("javascript: fontColor('" + foregroundcolor + "')");
+				
+				initProgressDialog(false);
 			}
 		};
     	
@@ -1522,6 +1527,29 @@ public class BlogContentFragment extends Fragment{
 		});
     }
     
+    private void initProgressDialog(boolean isShowDialog){
+    	if(ReaderApp.getSettings().Theme == Theme.Dark)
+			mProgressDialog = new ProgressDialog(mActivity, R.style.DialogDarkTheme);
+		if(ReaderApp.getSettings().Theme == Theme.Light)
+			mProgressDialog = new ProgressDialog(mActivity, R.style.DialogLightTheme);
+		if(ReaderApp.getSettings().Theme == Theme.Default)
+			mProgressDialog = new ProgressDialog(mActivity);
+		
+		mProgressDialog.getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE, WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE);
+		mProgressDialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+        mProgressDialog.setCanceledOnTouchOutside(false);
+        mProgressDialog.setIcon(R.id.process);		        
+        mProgressDialog.setMessage(mActivity.getResources().getString(R.string.content_loading) + "...");
+        mProgressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+        mProgressDialog.setIndeterminateDrawable(mActivity.getResources().getDrawable(drawable.spinner));
+        if(isShowDialog)
+        	mProgressDialog.show();
+        
+        mProgressDialog.getWindow().getDecorView().setSystemUiVisibility(mActivity.getWindow().getDecorView().getSystemUiVisibility());
+		//Clear the not focusable flag from the window
+        mProgressDialog.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE);
+    }
+    
     @Override
     public void onPause(){
     	super.onPause();
@@ -1599,21 +1627,8 @@ public class BlogContentFragment extends Fragment{
     		public void onDoubleTap() {
     			if(readSetting != null && readSetting.getVisibility() == View.GONE){
 	    			jsEvent.reset();
-	    			    			
-	    			mProgressDialog = new ProgressDialog(mActivity);
 	    			
-	    			mProgressDialog.getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE, WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE);
-	    			
-	    	        mProgressDialog.setCanceledOnTouchOutside(false);
-	    	        mProgressDialog.setIcon(R.id.process);		        
-	    	        mProgressDialog.setMessage(mActivity.getResources().getString(R.string.content_loading) + "...");
-	    	        mProgressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-	    	        mProgressDialog.setIndeterminateDrawable(mActivity.getResources().getDrawable(drawable.spinner));
-	    	        mProgressDialog.show();
-	    	        
-	    	        mProgressDialog.getWindow().getDecorView().setSystemUiVisibility(mActivity.getWindow().getDecorView().getSystemUiVisibility());
-	        		//Clear the not focusable flag from the window
-	    	        mProgressDialog.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE);
+	    			initProgressDialog(true);
 	    	        
 	    	        new Thread(){public void run(){content.Render(current);}}.start();
     			}
