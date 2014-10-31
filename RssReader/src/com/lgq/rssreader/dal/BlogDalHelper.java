@@ -82,6 +82,18 @@ public class BlogDalHelper {
 			where = "TagId=?";
 		}
 		
+		if(c.IsDirectory){
+			where = where + " and ChannelId in (";
+			for(Channel child : c.Children){
+				where = where + "'" +child.Id + "',";
+			}
+			
+			if(where.endsWith(","))
+				where = where.substring(0, where.length() - 1);
+				
+			where = where + ")";
+		}		
+		
 		if(!allItems)
 			where = where + " and IsRead = 0";
 		
