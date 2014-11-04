@@ -38,7 +38,7 @@
             swipe:swipeFrontView="@+id/front"
             swipe:swipeAutoClose = "true"
             swipe:swipeBackView="@+id/back"
-            swipe:swipeActionLeft="reveal"  
+            swipe:swipeActionLeft="reveal"
             swipe:swipeActionRight="reveal"
             swipe:swipeDrawableChecked="@drawable/choice_selected"
             swipe:swipeDrawableUnchecked="@drawable/choice_unselected"

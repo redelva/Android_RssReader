@@ -314,7 +314,7 @@ public class MainActivity extends SlidingFragmentActivity
 		CONTENT.put(getString(R.string.star), RssTab.Star); 
     	CONTENT.put(getString(R.string.gallery), RssTab.Gallery);
     	
-    	FragmentPagerAdapter adapter = new PivotPagerAdapter(getSupportFragmentManager());
+    	FragmentPagerAdapter adapter = new PivotPagerAdapter(getSupportFragmentManager(), initTabs());
 
         ViewPager pager = (ViewPager)findViewById(R.id.pager);    	
         pager.setAdapter(adapter);        
@@ -324,42 +324,86 @@ public class MainActivity extends SlidingFragmentActivity
         
     }
     
+    private List<Fragment> initTabs(){
+    	List<Fragment> views=new ArrayList<Fragment>();
+    	RssTab[] values = new RssTab[CONTENT.size()]; 
+		CONTENT.values().toArray(values);
+    	
+    	FeedListFragment home = new FeedListFragment();
+		Bundle h = new Bundle();
+		h.putInt(FeedListFragment.STATE_TAB, values[0].ordinal());
+		home.setArguments(h);
+		
+		FeedListFragment all = new FeedListFragment();
+		Bundle a = new Bundle();
+		a.putInt(FeedListFragment.STATE_TAB, values[1].ordinal());
+		all.setArguments(a);
+		
+		FeedListFragment unread = new FeedListFragment();
+		Bundle u = new Bundle();
+		u.putInt(FeedListFragment.STATE_TAB, values[2].ordinal());
+		unread.setArguments(u);
+		
+		FeedListFragment star = new FeedListFragment();
+		Bundle s = new Bundle();
+		s.putInt(FeedListFragment.STATE_TAB, values[3].ordinal());
+		star.setArguments(s);
+		
+		ImageListFragment gallery = new ImageListFragment();
+		Bundle g = new Bundle();
+		g.putInt(FeedListFragment.STATE_TAB, values[4].ordinal());
+		gallery.setArguments(g);
+		
+		views.add(home);
+		views.add(all);
+		views.add(unread);
+		views.add(star);
+		views.add(gallery);
+		
+		return views;
+    }
+    
     class PivotPagerAdapter extends FragmentPagerAdapter {
-        public PivotPagerAdapter(FragmentManager fm) {
+    	private List<Fragment> fragments;
+    	
+        public PivotPagerAdapter(FragmentManager fm, List<Fragment> fragments) {
             super(fm);
+            this.fragments = fragments;
         }
 
         @Override
         public Fragment getItem(int position) {
         	
-        	Fragment frag = null;
-        	        	
-        	if(cache.get(position) != null)
-        		return cache.get(position);        	
+//        	Fragment frag = null;
+//        	        	
+//        	if(cache.get(position) != null)
+//        		return cache.get(position);        	
+//        	
+//        	RssTab[] values = new RssTab[CONTENT.size()]; 
+//			CONTENT.values().toArray(values);
+//        	
+//        	switch(position){
+//	    		case 0:	    			
+//	    		case 1:
+//	    		case 2:
+//	    		case 3:
+//	    		//case 4:
+//	    			FeedListFragment home = new FeedListFragment();
+//	    			Bundle f = new Bundle();
+//	    			f.putInt(FeedListFragment.STATE_TAB, values[position].ordinal());
+//	    			home.setArguments(f);
+//	    			frag = home;
+//	    			break;
+//	    		case 4:
+//	    			frag = new ImageListFragment();
+//	    			break;
+//	    	}
+//        	
+//        	cache.put(position, frag);
+//        	
+//            return frag;
         	
-        	RssTab[] values = new RssTab[CONTENT.size()]; 
-			CONTENT.values().toArray(values);
-        	
-        	switch(position){
-	    		case 0:	    			
-	    		case 1:
-	    		case 2:
-	    		case 3:
-	    		//case 4:
-	    			FeedListFragment home = new FeedListFragment();
-	    			Bundle f = new Bundle();
-	    			f.putInt(FeedListFragment.STATE_TAB, values[position].ordinal());
-	    			home.setArguments(f);
-	    			frag = home;
-	    			break;
-	    		case 4:
-	    			frag = new ImageListFragment();
-	    			break;
-	    	}
-        	
-        	cache.put(position, frag);
-        	
-            return frag;
+        	return fragments.get(position);
         }
                 
         @Override

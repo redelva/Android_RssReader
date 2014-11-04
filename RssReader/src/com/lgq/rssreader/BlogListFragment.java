@@ -335,7 +335,7 @@ public class BlogListFragment extends Fragment implements IXListViewListener {
         	listView.setRefreshTime(DateHelper.DateToChineseString(channel.LastUpdateTime));
     	
     	if (Build.VERSION.SDK_INT >= 11) {
-    		listView.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
+    		listView.setChoiceMode(ListView.CHOICE_MODE_SINGLE);    		
         }
         
     	listView.setSwipeListViewListener(new BaseSwipeListViewListener() {
