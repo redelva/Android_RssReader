@@ -316,7 +316,8 @@ public class BlogContentFragment extends Fragment{
 		            	else
 		            		browser.loadUrl("javascript: LoadError('" + ReaderApp.getAppContext().getResources().getString(R.string.content_errortitle) + "','" + 
 		            				ReaderApp.getAppContext().getResources().getString(R.string.content_errorcontent) + "','" + 
-		            				ReaderApp.getAppContext().getResources().getString(R.string.content_errorload) + "')");
+		            				ReaderApp.getAppContext().getResources().getString(R.string.content_errorload) + "','" +
+		            				(msg.what == CONTENT ? "content" : "description") + "')");
 	    				    				
 	    				blogTitle.setText(current.Title);
 	    				
@@ -648,7 +649,7 @@ public class BlogContentFragment extends Fragment{
         content.NoImageMode = ReaderApp.getSettings().NoImageMode;
         content.setCacheCompleteHandler(new CacheCompleteHandler(){
 			public void onCache(Blog b, final CacheEventArgs args){
-				if(args.Cache != null){
+				if(args.Cache != null && args.Cache != null){
 					BlogDalHelper helper = new BlogDalHelper();
 					helper.SynchronyContent2DB(args.Blog.BlogId, args.Cache.outerHtml());
 					helper.Close();
@@ -719,9 +720,11 @@ public class BlogContentFragment extends Fragment{
         desc.NoImageMode = ReaderApp.getSettings().NoImageMode;
 		desc.setCacheCompleteHandler(new CacheCompleteHandler(){
 			public void onCache(Blog b, final CacheEventArgs args){
-				BlogDalHelper helper = new BlogDalHelper();
-				helper.SynchronyDescription2DB(args.Blog.BlogId, args.Cache.outerHtml());
-				helper.Close();
+				if(args.Blog != null && args.Cache != null){
+					BlogDalHelper helper = new BlogDalHelper();				
+					helper.SynchronyDescription2DB(args.Blog.BlogId, args.Cache.outerHtml());
+					helper.Close();
+				}				
 			}		
 		});
 		desc.setRenderCompleteHandler(new RenderCompleteHandler(){
@@ -805,6 +808,9 @@ public class BlogContentFragment extends Fragment{
     	if(getActivity() != null){
 			getActivity().runOnUiThread(new Runnable(){
 				public void run(){
+					if(mProgressDialog == null)
+						initProgressDialog(false);
+					
 					mProgressDialog.hide();
 					mProgressDialog.dismiss();
 				}
