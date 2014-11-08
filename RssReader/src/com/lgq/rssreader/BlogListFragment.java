@@ -352,6 +352,8 @@ public class BlogListFragment extends Fragment implements IXListViewListener {
     		public void onRightAutoClose(int position, View view){
     			Log.i("RssReader","设置已读未读");
     			
+    			if(view == null) return;
+    			
     			Blog entity = (Blog)adapter.getItem(position);
     			
     			RssAction action = entity.IsRead ? RssAction.AsUnread : RssAction.AsRead;
@@ -381,15 +383,20 @@ public class BlogListFragment extends Fragment implements IXListViewListener {
 					drawable.setBounds(btn.getCompoundDrawables()[0].getBounds());
 					btn.setCompoundDrawables(drawable, null, null, null);
 				}
+				
+				adapter.notifyDataSetChanged();
+				
     		}
     		
     		@Override 
     		public void onLeftAutoClose(int position, View view){
     			Log.i("RssReader","设置收藏相关");
     			
+    			if(view == null) return;
+    			
     			Blog entity = (Blog)adapter.getItem(position);
     			
-    			RssAction action = entity.IsStarred ? RssAction.AsUnstar : RssAction.AsUnstar;
+    			RssAction action = entity.IsStarred ? RssAction.AsUnstar : RssAction.AsStar;
 				entity.IsStarred = !entity.IsStarred;
 				markTag(entity, action);
 				
@@ -413,6 +420,8 @@ public class BlogListFragment extends Fragment implements IXListViewListener {
 					drawable.setBounds(btn.getCompoundDrawables()[0].getBounds());
 					btn.setCompoundDrawables(drawable, null, null, null);
 				}
+				
+				adapter.notifyDataSetChanged();
     		}
 		});
 
