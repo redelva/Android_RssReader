@@ -356,13 +356,14 @@ public class BlogListFragment extends Fragment implements IXListViewListener {
     			
     			Blog entity = (Blog)adapter.getItem(position);
     			
-    			RssAction action = entity.IsRead ? RssAction.AsUnread : RssAction.AsRead;
-				entity.IsRead = !entity.IsRead; 
-				markTag(entity, action);
-				
-				TextView btn = (TextView)view.findViewById(R.id.btnread);
+    			TextView btn = (TextView)view.findViewById(R.id.btnread);
 				ImageView img = (ImageView)btn.getTag(R.id.tag_first);
 				TextView title = (TextView)btn.getTag(R.id.tag_second);
+    			
+    			//RssAction action = entity.IsRead ? RssAction.AsUnread : RssAction.AsRead;
+    			RssAction action = title.getCurrentTextColor() == Color.GRAY ? RssAction.AsUnread : RssAction.AsRead;
+				entity.IsRead = title.getCurrentTextColor() == Color.BLACK; 
+				markTag(entity, action);
 				
 				if(entity.IsRead){
 					img.setVisibility(View.VISIBLE);
@@ -384,7 +385,7 @@ public class BlogListFragment extends Fragment implements IXListViewListener {
 					btn.setCompoundDrawables(drawable, null, null, null);
 				}
 				
-				adapter.notifyDataSetChanged();
+				//adapter.notifyDataSetChanged();
 				
     		}
     		
@@ -395,13 +396,13 @@ public class BlogListFragment extends Fragment implements IXListViewListener {
     			if(view == null) return;
     			
     			Blog entity = (Blog)adapter.getItem(position);
-    			
-    			RssAction action = entity.IsStarred ? RssAction.AsUnstar : RssAction.AsStar;
-				entity.IsStarred = !entity.IsStarred;
-				markTag(entity, action);
-				
-				TextView btn = (TextView)view.findViewById(R.id.btnstar);
+    			TextView btn = (TextView)view.findViewById(R.id.btnstar);
 				ImageView img = (ImageView)btn.getTag();
+    			
+    			//RssAction action = entity.IsStarred ? RssAction.AsUnstar : RssAction.AsStar;
+				RssAction action = img.getVisibility() == View.VISIBLE ? RssAction.AsUnstar : RssAction.AsStar;
+				entity.IsStarred = img.getVisibility() == View.GONE;//!entity.IsStarred;
+				markTag(entity, action);
 				
 				if(entity.IsStarred){
 					img.setVisibility(View.VISIBLE);
@@ -421,7 +422,7 @@ public class BlogListFragment extends Fragment implements IXListViewListener {
 					btn.setCompoundDrawables(drawable, null, null, null);
 				}
 				
-				adapter.notifyDataSetChanged();
+				//adapter.notifyDataSetChanged();
     		}
 		});
 

@@ -664,6 +664,7 @@ public class SwipeListViewTouchListener implements View.OnTouchListener {
 //                                    moveBack = swapRight ? -(int) (viewWidth - rightOffset) : -(int) (-viewWidth + leftOffset);
 //                                }
 //                            }
+                        	
                         	                        	
                         	animate(view)        		
                             .translationX(moveBack)                
