@@ -251,20 +251,20 @@ public class Readability {
             String unlikelyMatchString = node.hasAttr("class")? node.attr("class"): "" + node.attr("id");
         	if (s_unlikelyCandidates.matcher(unlikelyMatchString).find() &&
                 !s_okMaybeItsACandidate.matcher(unlikelyMatchString).find() &&
-                node.nodeName() != "body" &&
-                node.nodeName() != "html" &&
-                node.nodeName() != "head")
+                !node.nodeName().equals("body") &&
+                !node.nodeName().equals("html") &&
+                !node.nodeName().equals("head"))
             {
                 node.remove();
                 continue;
             }
 
-            if (node.nodeName() == "p" || node.nodeName() == "td" || node.nodeName() == "pre")
+            if (node.nodeName().equals("p") || node.nodeName().equals("td") || node.nodeName().equals("pre"))
             {
                 nodesToScore.add(node);
             }
 
-            if (node.nodeName() == "div")
+            if (node.nodeName().equals("div"))
             {
                 if (!s_divToPElements.matcher(node.html()).find())
                 {
@@ -303,9 +303,11 @@ public class Readability {
 
             if (parentNode == null) continue;
             
-            if (parentNode.nodeName() == "body") continue;
+            if (parentNode.nodeName().equals("body")) continue;
             
-            if (parentNode.nodeName() == "html") continue;
+            if (parentNode.nodeName().equals("html")) continue;
+            
+            if (parentNode.nodeName().equals("footer")) continue;
             
             if (parentNode != null && parentNode.hasAttr("class") && parentNode.attr("class").equals("copyright")) continue;
 
@@ -370,7 +372,7 @@ public class Readability {
                 topCandidate = cand;
             }
 
-            if (topCandidate == null || topCandidate.nodeName() == "body")
+            if (topCandidate == null || topCandidate.nodeName().equals("body"))
             {
                 topCandidate = doc.createElement("div");
                 topCandidate.html(body.html());
