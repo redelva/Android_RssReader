@@ -354,7 +354,7 @@ public class BlogListFragment extends Fragment implements IXListViewListener {
     			
     			if(view == null) return;
     			
-    			Blog entity = (Blog)adapter.getItem(position);
+    			Blog entity = (Blog)adapter.getItem(position- listView.getHeaderViewsCount());
     			
     			TextView btn = (TextView)view.findViewById(R.id.btnread);
 				ImageView img = (ImageView)btn.getTag(R.id.tag_first);
@@ -365,27 +365,27 @@ public class BlogListFragment extends Fragment implements IXListViewListener {
 				entity.IsRead = title.getCurrentTextColor() == Color.BLACK; 
 				markTag(entity, action);
 				
-				if(entity.IsRead){
-					img.setVisibility(View.VISIBLE);
-					img.setImageResource(R.drawable.keepread);
-					title.setTextColor(Color.GRAY);
-					//btn.setText(R.string.blog_setunread);
-					btn.setText(R.string.empty);
-					Drawable drawable = ReaderApp.getAppContext().getResources().getDrawable(R.drawable.setunread);
-					drawable.setBounds(btn.getCompoundDrawables()[0].getBounds());
-					btn.setCompoundDrawables(drawable, null, null, null);
-				}
-				else{
-					title.setTextColor(Color.BLACK);
-					img.setVisibility(View.GONE);
-					//btn.setText(R.string.blog_setread);
-					btn.setText(R.string.empty);
-					Drawable drawable = ReaderApp.getAppContext().getResources().getDrawable(R.drawable.setread);
-					drawable.setBounds(btn.getCompoundDrawables()[0].getBounds());
-					btn.setCompoundDrawables(drawable, null, null, null);
-				}
+//				if(entity.IsRead){
+//					img.setVisibility(View.VISIBLE);
+//					img.setImageResource(R.drawable.keepread);
+//					title.setTextColor(Color.GRAY);
+//					//btn.setText(R.string.blog_setunread);
+//					btn.setText(R.string.empty);
+//					Drawable drawable = ReaderApp.getAppContext().getResources().getDrawable(R.drawable.setunread);
+//					drawable.setBounds(btn.getCompoundDrawables()[0].getBounds());
+//					btn.setCompoundDrawables(drawable, null, null, null);
+//				}
+//				else{
+//					title.setTextColor(Color.BLACK);
+//					img.setVisibility(View.GONE);
+//					//btn.setText(R.string.blog_setread);
+//					btn.setText(R.string.empty);
+//					Drawable drawable = ReaderApp.getAppContext().getResources().getDrawable(R.drawable.setread);
+//					drawable.setBounds(btn.getCompoundDrawables()[0].getBounds());
+//					btn.setCompoundDrawables(drawable, null, null, null);
+//				}
 				
-				//adapter.notifyDataSetChanged();
+				adapter.notifyDataSetChanged();
 				
     		}
     		
@@ -395,7 +395,7 @@ public class BlogListFragment extends Fragment implements IXListViewListener {
     			
     			if(view == null) return;
     			
-    			Blog entity = (Blog)adapter.getItem(position);
+    			Blog entity = (Blog)adapter.getItem(position - listView.getHeaderViewsCount());
     			TextView btn = (TextView)view.findViewById(R.id.btnstar);
 				ImageView img = (ImageView)btn.getTag();
     			
@@ -404,25 +404,25 @@ public class BlogListFragment extends Fragment implements IXListViewListener {
 				entity.IsStarred = img.getVisibility() == View.GONE;//!entity.IsStarred;
 				markTag(entity, action);
 				
-				if(entity.IsStarred){
-					img.setVisibility(View.VISIBLE);
-					img.setImageResource(R.drawable.star);
-					//btn.setText(R.string.blog_setunstar);
-					btn.setText(R.string.empty);
-					Drawable drawable = ReaderApp.getAppContext().getResources().getDrawable(R.drawable.setstar);
-					drawable.setBounds(btn.getCompoundDrawables()[0].getBounds());
-					btn.setCompoundDrawables(drawable, null, null, null);
-				}
-				else{
-					img.setVisibility(View.GONE);					
-					//btn.setText(R.string.blog_setstar);
-					btn.setText(R.string.empty);					
-					Drawable drawable = ReaderApp.getAppContext().getResources().getDrawable(R.drawable.setunstar);
-					drawable.setBounds(btn.getCompoundDrawables()[0].getBounds());
-					btn.setCompoundDrawables(drawable, null, null, null);
-				}
+//				if(entity.IsStarred){
+//					img.setVisibility(View.VISIBLE);
+//					img.setImageResource(R.drawable.star);
+//					//btn.setText(R.string.blog_setunstar);
+//					btn.setText(R.string.empty);
+//					Drawable drawable = ReaderApp.getAppContext().getResources().getDrawable(R.drawable.setstar);
+//					drawable.setBounds(btn.getCompoundDrawables()[0].getBounds());
+//					btn.setCompoundDrawables(drawable, null, null, null);
+//				}
+//				else{
+//					img.setVisibility(View.GONE);					
+//					//btn.setText(R.string.blog_setstar);
+//					btn.setText(R.string.empty);					
+//					Drawable drawable = ReaderApp.getAppContext().getResources().getDrawable(R.drawable.setunstar);
+//					drawable.setBounds(btn.getCompoundDrawables()[0].getBounds());
+//					btn.setCompoundDrawables(drawable, null, null, null);
+//				}
 				
-				//adapter.notifyDataSetChanged();
+				adapter.notifyDataSetChanged();
     		}
 		});
 
@@ -500,16 +500,17 @@ public class BlogListFragment extends Fragment implements IXListViewListener {
 		feedly.markTag(b, action, new HttpResponseHandler(){
         	@Override
         	public <T> void onCallback(T action, boolean result, String msg){
-        		if(!result){
+				if(!result){
         			Log.i("RssReader", msg);
         			
-        			SyncStateDalHelper helper = new SyncStateDalHelper();
+SyncStateDalHelper helper = new SyncStateDalHelper();
         			
         			List<SyncState> states = new ArrayList<SyncState>();
         			        			
         			SyncState s = new SyncState();
         			
         			s.BlogOriginId = b.BlogId;
+        			
         			s.Status = (com.lgq.rssreader.enums.RssAction) action;
         			s.TimeStamp = new Date();
         			
@@ -518,7 +519,21 @@ public class BlogListFragment extends Fragment implements IXListViewListener {
         			helper.SynchronyData2DB(states);
         			
         			helper.Close();
+        			
+        			Toast.makeText(ReaderApp.getAppContext(), R.string.feedly_failedupdatestatus, Toast.LENGTH_SHORT).show();
         		}else{
+        			BlogDalHelper bHelper = new BlogDalHelper();
+        			if(action == RssAction.AsRead)
+        				bHelper.MarkAsRead(b.BlogId, true);
+        			if(action == RssAction.AsUnread)
+        				bHelper.MarkAsRead(b.BlogId, false);
+        			if(action == RssAction.AsStar)
+        				bHelper.MarkAsStar(b.BlogId, true);
+        			if(action == RssAction.AsUnstar)
+        				bHelper.MarkAsStar(b.BlogId, false);        			
+        			
+        			bHelper.Close();
+        			
         			Toast.makeText(ReaderApp.getAppContext(), msg, Toast.LENGTH_SHORT).show();
         		}
         	}
