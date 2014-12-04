@@ -647,7 +647,9 @@ public class SwipeListViewTouchListener implements View.OnTouchListener {
                             if (aux) {
                                 swipeListView.onOpened(position, swapRight);
                                 openedRight.set(position, swapRight);
+                                swipeListView.setSwipeOpend(true);
                             } else {
+                            	swipeListView.setSwipeOpend(false);
                                 swipeListView.onClosed(position, openedRight.get(position));
                             }
                                                         
@@ -776,14 +778,14 @@ public class SwipeListViewTouchListener implements View.OnTouchListener {
             int start = swipeListView.getFirstVisiblePosition();
             int end = swipeListView.getLastVisiblePosition();
             for (int i = start; i <= end; i++) {
-                if (opened.get(i)) {
+                if (opened.get(i)) {                	
                     closeAnimate(swipeListView.getChildAt(i - start).findViewById(swipeFrontView), i);
                 }
             }
         }
 
     }
-
+        
     /**
      * @see View.OnTouchListener#onTouch(android.view.View, android.view.MotionEvent)
      */
@@ -802,6 +804,9 @@ public class SwipeListViewTouchListener implements View.OnTouchListener {
                 if (paused && downPosition != ListView.INVALID_POSITION) {
                     return false;
                 }
+                
+                closeOpenedItems();
+                
                 swipeCurrentAction = SwipeListView.SWIPE_ACTION_NONE;
 
                 int childCount = swipeListView.getChildCount();
@@ -878,6 +883,8 @@ public class SwipeListViewTouchListener implements View.OnTouchListener {
                     swapRight = deltaX > 0;
                 }
                 generateAnimate(frontView, swap, swapRight, downPosition);
+                
+                
                 if (swipeCurrentAction == SwipeListView.SWIPE_ACTION_CHOICE) {
                     swapChoiceState(downPosition);
                 }
@@ -979,7 +986,10 @@ public class SwipeListViewTouchListener implements View.OnTouchListener {
 //                        	
 //                    	if(deltaX < 0)
 //                        	deltaX = Math.abs(deltaX) > viewWidth ? -viewWidth +280 : deltaX;
+                        
+                        
                     }
+                                        
                     move(deltaX);
                     
                     return true;

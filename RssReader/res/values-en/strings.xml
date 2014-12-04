@@ -27,8 +27,7 @@
     <string name="star">Star</string>
     <string name="gallery">Gallery</string>    
     <string name="setting">Settings</string>
-    <string name="search">Search</string>
-   	<!--<string name="download">Download</string>-->    
+    <string name="search">Search</string>   	
     <string name="more">More</string>
     
     <!-- 双击退出-->
@@ -39,8 +38,7 @@
     
     <!-- 上下文菜单 -->
     <string name="markAllitem">Mark all as read</string>
-	<string name="setasgallery">Set as gallery</string>
-	<string name="download">Offline download</string>
+	<string name="setasgallery">Set as gallery</string>	
 	<string name="unsubscribe">Unsubscribe</string>
 	<string name="moveitem">Move</string>
 	<string name="rename">Rename</string>
@@ -76,10 +74,7 @@
     <string name="xlistview_footer_hint_normal">Pull to refresh</string>
     <string name="xlistview_footer_hint_ready">Release to refresh</string>
     
-    <string name="blog_setunread">set unread</string>
-   	<string name="blog_setstar">add star</string>
-   	<string name="blog_setread">set read</string>
-   	<string name="blog_setunstar">set unstar</string>
+    
 
 	<!--离线下载-->
 	<string name="dialog_offline_bar_title">Offline download options</string>
@@ -184,7 +179,7 @@
 	<string name="content_immersiveon">Immersive mode On</string>
 	<string name="content_immersiveoff">Immersive mode Off</string>
 	
-	<string name="list_refreshtime">Refresh</string>
+	<string name="list_refreshtime"></string>
 	<string name="list_loadingmore">Loading more</string>
 	
 	<string name="recommend_title1">The Verge</string>

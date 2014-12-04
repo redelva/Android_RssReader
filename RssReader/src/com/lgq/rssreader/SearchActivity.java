@@ -89,9 +89,9 @@ public class SearchActivity extends BaseActivity
 		
 		Intent detailIntent = new Intent(this, BlogContentActivity.class);
         Bundle arguments = new Bundle();
-        arguments.putSerializable(BlogContentFragment.CURRENT, blog);
-        arguments.putSerializable(BlogContentFragment.ARG_TAB_ID, tab);
-        arguments.putSerializable(BlogContentFragment.KEYWORD,  getIntent().getExtras().getString(FeedListFragment.SEARCHTITLE));        
+        arguments.putSerializable(BlogContentActivity.CURRENT, blog);
+        arguments.putSerializable(BlogContentActivity.ARG_TAB_ID, tab);
+        arguments.putSerializable(BlogContentActivity.KEYWORD,  getIntent().getExtras().getString(FeedListFragment.SEARCHTITLE));        
         detailIntent.putExtras(arguments);
         startActivity(detailIntent);
 	}

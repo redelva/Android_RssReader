@@ -1,6 +1,8 @@
 package com.lgq.rssreader;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.Dictionary;
 import java.util.Hashtable;
@@ -8,7 +10,14 @@ import java.util.Iterator;
 import java.util.List;
 
 import com.google.gson.Gson;
+import com.kanak.emptylayout.EmptyLayout;
+import com.lgq.rssreader.adapter.BlogAdapter;
+import com.lgq.rssreader.controls.BaseSwipeListViewListener;
+import com.lgq.rssreader.controls.SwipeListView;
 import com.lgq.rssreader.controls.SystemBarTintManager;
+import com.lgq.rssreader.controls.XListView.IXListViewListener;
+import com.lgq.rssreader.core.ReaderApp;
+import com.lgq.rssreader.dal.BlogDalHelper;
 import com.lgq.rssreader.dal.SyncStateDalHelper;
 import com.lgq.rssreader.entity.Blog;
 import com.lgq.rssreader.entity.Channel;
@@ -16,6 +25,7 @@ import com.lgq.rssreader.entity.SyncState;
 import com.lgq.rssreader.enums.RssAction;
 import com.lgq.rssreader.parser.FeedlyParser;
 import com.lgq.rssreader.parser.HttpResponseHandler;
+import com.lgq.rssreader.utils.DateHelper;
 import com.lgq.rssreader.utils.Helper;
 
 import android.support.v4.app.Fragment;
@@ -25,6 +35,7 @@ import android.graphics.Color;
 import android.graphics.Rect;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.Message;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.NavUtils;
@@ -33,13 +44,17 @@ import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup.LayoutParams;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 /**
  * An activity representing a single Blog detail screen. This
@@ -50,11 +65,167 @@ import android.widget.TextView;
  * This activity is mostly just a 'shell' activity containing nothing
  * more than a {@link BlogContentFragment}.
  */
-public class BlogListActivity extends BaseActivity implements BlogListFragment.Callbacks  {
+public class BlogListActivity extends BaseActivity implements IXListViewListener {
 	
 	private boolean needUpdate;
-	private Channel c;
 
+	/**
+     * The serialization (saved instance state) Bundle key representing the
+     * activated item position. Only used on tablets.
+     */
+    private static final String STATE_ACTIVATED_POSITION = "activated_position";
+    
+    /**
+     * The fragment argument representing the item ID that this fragment
+     * represents.
+     */
+    public static final String ARG_ITEM_ID = "item_id";
+    
+    /**
+     * The fragment's listview, which support pull down to refresh
+     * clicks.
+     */
+    private SwipeListView listView;
+    
+    /**
+     * The fragment's title
+     * 
+     */
+    private TextView title;
+    
+    /**
+     * The listview adapter
+     */
+    private BlogAdapter adapter;
+    
+    /**
+     * The listview page index
+     */
+    private int pageIndex = 1;
+    
+    /**
+     * The blog list
+     */
+    private List<Blog> data;
+    
+    /**
+     * Empty view for listview
+     */
+    private EmptyLayout emptyLayout;
+    
+    /**
+     * The Channel which this fragment presents
+     */
+    private Channel channel;
+    
+    /**
+     * The current activated item position. Only used on tablets.
+     */
+    private int mActivatedPosition = ListView.INVALID_POSITION;
+    
+    public static final int LOADDATA = 1;
+    public static final int UPDATESTATE = 2;
+    public static final int UPDATECOUNT = 3;       
+    public static final int EMPTY = 4;
+    public static final int ONLOAD = 5;
+    public static final int SCROLLING = 6;
+    
+    public Handler myHandler = new Handler(){
+        @Override  
+        public void handleMessage(Message msg) {            
+            switch(msg.what){
+	            case LOADDATA :
+	            	if(adapter == null){
+	            		data = (List<Blog>) msg.obj;
+	            		adapter = new BlogAdapter(
+	                            BlogListActivity.this,
+	                            data,
+	                            listView);
+	            		listView.setAdapter(adapter);	            		
+	            	}else{
+	            		List<Blog> blogs = ((List<Blog>) msg.obj);
+	            		
+	            		for(Blog b : blogs){
+	            			if(!data.contains(b)){
+	            				data.add(b);
+	            			}
+	            		}
+	            		Collections.sort(data, new Comparator<Blog>(){
+	         	           public int compare(Blog arg0, Blog arg1) {   
+	         	               return (int)(arg1.TimeStamp - arg0.TimeStamp);
+	         	            }
+	         	        }); 
+	            	}
+	            	
+	            	adapter.clearPosition(-2);
+	            	adapter.notifyDataSetChanged();
+	            	
+	            	onLoad();
+	            	
+	            	break;
+	            case UPDATESTATE:
+	            	List<Blog> blogs = (List<Blog>)msg.obj;
+	            	if(data == null){
+	            		data = blogs;
+	            	}else{
+		            	for(Blog b : blogs){
+		            		int index = data.indexOf(b);
+		            		if(index != -1)
+		            			data.set(index, b);
+		            	}
+	            	}
+	            	Collections.sort(data, new Comparator<Blog>(){
+	         	           public int compare(Blog arg0, Blog arg1) {   
+	         	               return (int)(arg1.TimeStamp - arg0.TimeStamp);
+	         	            }
+	         	        });
+	            	if(adapter == null){
+	            		adapter = new BlogAdapter(
+	                            BlogListActivity.this,
+	                            data,
+	                            listView);
+	            		listView.setAdapter(adapter);	            		
+	            	}
+	            	
+	            	if(blogs.size() == 0){
+	            		emptyLayout.setEmptyMessage(BlogListActivity.this.getResources().getString(R.string.list_empty_view));
+	            		emptyLayout.getEmptyView().setOnClickListener(new View.OnClickListener(){        						
+							@Override
+							public void onClick(View v) {
+								onRefresh();
+							}
+    					});        					
+    					emptyLayout.showEmpty();
+	            	}
+	            	
+	            	adapter.notifyDataSetChanged();
+	            	break;
+	            case UPDATECOUNT:	            	
+	                title.setText(channel.Title + "-" + String.valueOf(msg.obj));
+	            	break;
+	            case EMPTY:
+	                emptyLayout.setEmptyMessage(BlogListActivity.this.getResources().getString(R.string.list_empty_view));	                
+            		emptyLayout.getEmptyView().setOnClickListener(new View.OnClickListener(){        						
+						@Override
+						public void onClick(View v) {
+							onEmpty();
+						}
+					});        					
+					emptyLayout.showEmpty();
+	            	break;
+	            case ONLOAD:
+	                onLoad();
+	            	break;
+	            case SCROLLING:
+	            	if(adapter != null)
+	            		adapter.clearPosition(-1);
+	            	break;
+            }
+            
+            super.handleMessage(msg);
+        }
+    };
+	
 	public BlogListActivity(){
 		super(R.drawable.translucent_status_bar);
 	} 
@@ -62,69 +233,177 @@ public class BlogListActivity extends BaseActivity implements BlogListFragment.C
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //this.requestWindowFeature(Window.FEATURE_NO_TITLE);
-//        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT){
-//        	getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
-//        	getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-//        }
         setContentView(R.layout.activity_blog_list);
         
-//        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT){
-////	        TextView textView = new TextView(this);
-////	        LinearLayout.LayoutParams lParams = new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, Helper.getStatusBarHeight());
-////	        //textView.setBackgroundColor(Color.parseColor("#D2D2D2"));
-////	        textView.setLayoutParams(lParams);
-////	        textView.setBackgroundResource(R.drawable.translucent_status_bar);
-////	        // 获得根视图并把TextView加进去。
-////	        ViewGroup view = (ViewGroup) getWindow().getDecorView();
-////	        view.addView(textView);
-//        	SystemBarTintManager manager = new SystemBarTintManager(this);
-//        	manager.setStatusBarTintEnabled(true);
-//        	manager.setStatusBarTintResource(R.drawable.translucent_status_bar);
-//        }
-
-        // Show the Up button in the action bar.
-        //getActionBar().setDisplayHomeAsUpEnabled(true);
-
-        // savedInstanceState is non-null when there is fragment state
-        // saved from previous configurations of this activity
-        // (e.g. when rotating the screen from portrait to landscape).
-        // In this case, the fragment will automatically be re-added
-        // to its container so we don't need to manually add it.
-        // For more information, see the Fragments API guide at:
-        //
-        // http://developer.android.com/guide/components/fragments.html
-        //
-        if (savedInstanceState == null) {
+        initViews();
+    }
+     
+    private void initViews(){
+        if(getIntent().getExtras().containsKey(ARG_ITEM_ID)){
+        	channel = (Channel)getIntent().getExtras().get(ARG_ITEM_ID);
         	
-            // Create the detail fragment and add it to the activity
-            // using a fragment transaction.
-            Bundle arguments = getIntent().getExtras();
-            
-            if(arguments.containsKey(BlogListFragment.ARG_ITEM_ID)){
-            	c = (Channel)arguments.get(BlogListFragment.ARG_ITEM_ID);                
-                
-                BlogListFragment fragment = new BlogListFragment();
-                fragment.setArguments(arguments);
-                getSupportFragmentManager().beginTransaction()
-                        .add(R.id.blog_list_container, fragment)
-                        .commit();
-            }            
-        }else{
-        	
-        	
-        	if(savedInstanceState.containsKey(BlogListFragment.ARG_ITEM_ID)){
-            	c = (Channel)savedInstanceState.get(BlogListFragment.ARG_ITEM_ID);
-            	
-            	if(getSupportFragmentManager().findFragmentById(R.id.blog_list_container) == null){
-                  BlogListFragment fragment = new BlogListFragment();
-                  fragment.setArguments(savedInstanceState);
-                  getSupportFragmentManager().beginTransaction()
-                          .add(R.id.blog_list_container, fragment)
-                          .commit();
-            	}
-            }
+        	new Thread(){  
+                @Override  
+                public void run() {  
+                    try {
+                    	
+                    	final BlogDalHelper helper = new BlogDalHelper();
+                    	
+                    	List<Blog> data = helper.GetBlogList(channel, 1, ReaderApp.getSettings().NumPerRequest, ReaderApp.getSettings().ShowAllItems);
+                    	
+                    	helper.Close();
+                    	
+                    	if(data.size() > 0){
+                    		Message m = myHandler.obtainMessage();                    				
+            	            m.what = LOADDATA;
+            	            m.obj = data;
+            	            m.arg1 = 0;
+            				myHandler.sendMessage(m);            				
+                    	}else{
+                    		onEmpty();
+                    	}
+                    } catch (Exception e) {
+                        e.printStackTrace();  
+                    }
+                }  
+        	}.start();
+        }        
+        
+        LinearLayout fragment_blog_list_layout = (LinearLayout)findViewById(R.id.fragment_blog_list_layout);
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT){
+        	fragment_blog_list_layout.setPadding(0, Helper.getStatusBarHeight(), 0, 0);
         }
+        
+        
+        listView = (SwipeListView)findViewById(R.id.blog_list);
+        listView.setPullLoadEnable(true);
+        listView.setPullRefreshEnable(true);
+        listView.setXListViewListener(this);
+        
+        emptyLayout = new EmptyLayout(this, listView);
+        emptyLayout.setLoadingMessage(getResources().getString(R.string.content_loading));
+        //emptyLayout.setLoadingAnimationViewId(emptyLayout.getLoadingAnimationViewId());
+        //emptyLayout.setLoadingAnimation(AnimationUtils.loadAnimation(getActivity(), R.anim.rotate));
+        emptyLayout.showLoading();
+        
+        title = (TextView)findViewById(R.id.bloglist_channel_title);
+        title.setText(channel.Title + "-" + channel.UnreadCount);
+        title.setOnClickListener(new OnClickListener(){
+        	@Override
+			public void onClick(View v) {
+        		listView.setSelection(0);
+			}
+        });
+                
+        if(channel.LastRefreshTime != null)
+        	listView.setRefreshTime(DateHelper.DateToChineseString(channel.LastRefreshTime));
+        else
+        	listView.setRefreshTime(DateHelper.DateToChineseString(channel.LastUpdateTime));
+    	
+    	if (Build.VERSION.SDK_INT >= 11) {
+    		listView.setChoiceMode(ListView.CHOICE_MODE_SINGLE);    		
+        }
+        
+    	listView.setSwipeListViewListener(new BaseSwipeListViewListener() {
+    		@Override
+			public void onClickFrontView(int position) {
+    			ListAdapter adapter = (ListAdapter) listView.getAdapter();
+    			
+    			Intent detailIntent = new Intent(BlogListActivity.this, BlogContentActivity.class);
+    	        Bundle arguments = new Bundle();        
+    	        
+	        	arguments.putSerializable(BlogContentActivity.CURRENT, (Blog)adapter.getItem(position));        
+    	        arguments.putSerializable(BlogContentActivity.CHANNEL, (Channel)getIntent().getExtras().get(BlogListActivity.ARG_ITEM_ID));
+    	        detailIntent.putExtras(arguments);
+    	        startActivityForResult(detailIntent, 0);
+    			
+//				Blog previous = position-1 >=0 ? (Blog)adapter.getItem(position-1) : null;
+//				Blog current = (Blog)adapter.getItem(position);
+//				Blog next = position+1 < adapter.getCount() ? (Blog)adapter.getItem(position+1) : null;
+			}
+    		
+    		@Override
+			public void onClosed(int position, boolean fromRight) {
+    			Log.i("RssReader","onClosed");
+			}
+    		
+    		@Override 
+    		public void onRightAutoClose(int position, View view){
+    			Log.i("RssReader","设置已读未读");
+    			
+    			if(view == null) return;
+    			
+    			Blog entity = (Blog)adapter.getItem(position- listView.getHeaderViewsCount());
+    			
+    			TextView btn = (TextView)view.findViewById(R.id.btnread);
+				ImageView img = (ImageView)btn.getTag(R.id.tag_first);
+				TextView title = (TextView)btn.getTag(R.id.tag_second);
+    			
+    			//RssAction action = entity.IsRead ? RssAction.AsUnread : RssAction.AsRead;
+    			RssAction action = title.getCurrentTextColor() == Color.GRAY ? RssAction.AsUnread : RssAction.AsRead;
+				entity.IsRead = title.getCurrentTextColor() == Color.BLACK; 
+				markTag(entity, action);
+				
+//				if(entity.IsRead){
+//					img.setVisibility(View.VISIBLE);
+//					img.setImageResource(R.drawable.keepread);
+//					title.setTextColor(Color.GRAY);
+//					//btn.setText(R.string.blog_setunread);
+//					btn.setText(R.string.empty);
+//					Drawable drawable = ReaderApp.getAppContext().getResources().getDrawable(R.drawable.setunread);
+//					drawable.setBounds(btn.getCompoundDrawables()[0].getBounds());
+//					btn.setCompoundDrawables(drawable, null, null, null);
+//				}
+//				else{
+//					title.setTextColor(Color.BLACK);
+//					img.setVisibility(View.GONE);
+//					//btn.setText(R.string.blog_setread);
+//					btn.setText(R.string.empty);
+//					Drawable drawable = ReaderApp.getAppContext().getResources().getDrawable(R.drawable.setread);
+//					drawable.setBounds(btn.getCompoundDrawables()[0].getBounds());
+//					btn.setCompoundDrawables(drawable, null, null, null);
+//				}
+				
+				adapter.notifyDataSetChanged();
+				
+    		}
+    		
+    		@Override 
+    		public void onLeftAutoClose(int position, View view){
+    			Log.i("RssReader","设置收藏相关");
+    			
+    			if(view == null) return;
+    			
+    			Blog entity = (Blog)adapter.getItem(position - listView.getHeaderViewsCount());
+    			TextView btn = (TextView)view.findViewById(R.id.btnstar);
+				ImageView img = (ImageView)btn.getTag();
+    			
+    			//RssAction action = entity.IsStarred ? RssAction.AsUnstar : RssAction.AsStar;
+				RssAction action = img.getVisibility() == View.VISIBLE ? RssAction.AsUnstar : RssAction.AsStar;
+				entity.IsStarred = img.getVisibility() == View.GONE;//!entity.IsStarred;
+				markTag(entity, action);
+				
+//				if(entity.IsStarred){
+//					img.setVisibility(View.VISIBLE);
+//					img.setImageResource(R.drawable.star);
+//					//btn.setText(R.string.blog_setunstar);
+//					btn.setText(R.string.empty);
+//					Drawable drawable = ReaderApp.getAppContext().getResources().getDrawable(R.drawable.setstar);
+//					drawable.setBounds(btn.getCompoundDrawables()[0].getBounds());
+//					btn.setCompoundDrawables(drawable, null, null, null);
+//				}
+//				else{
+//					img.setVisibility(View.GONE);					
+//					//btn.setText(R.string.blog_setstar);
+//					btn.setText(R.string.empty);					
+//					Drawable drawable = ReaderApp.getAppContext().getResources().getDrawable(R.drawable.setunstar);
+//					drawable.setBounds(btn.getCompoundDrawables()[0].getBounds());
+//					btn.setCompoundDrawables(drawable, null, null, null);
+//				}
+				
+				adapter.notifyDataSetChanged();
+    		}
+		});
     }
 
     public boolean onKeyDown(int keyCode, KeyEvent event) {
@@ -137,25 +416,13 @@ public class BlogListActivity extends BaseActivity implements BlogListFragment.C
 		
 		return super.onKeyDown(keyCode, event);
     }
-
-	@Override
-	public void onItemSelected(Blog p, Blog c, Blog n) {
-		// TODO Auto-generated method stub
-		Intent detailIntent = new Intent(this, BlogContentActivity.class);
-        Bundle arguments = new Bundle();        
-        if(c != null)
-        	arguments.putSerializable(BlogContentFragment.CURRENT, c);        
-        arguments.putSerializable(BlogContentFragment.CHANNEL, (Channel)getIntent().getExtras().get(BlogListFragment.ARG_ITEM_ID));
-        detailIntent.putExtras(arguments);
-        startActivityForResult(detailIntent, 0);
-	}
 	
 	@Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        if (c != null) {
+        if (channel != null) {
             // Serialize and persist the activated item position.
-            outState.putSerializable(BlogListFragment.ARG_ITEM_ID, c);
+            outState.putSerializable(BlogListActivity.ARG_ITEM_ID, channel);
         }
     }
 	
@@ -182,51 +449,25 @@ public class BlogListActivity extends BaseActivity implements BlogListFragment.C
 				final FeedlyParser feedly = new FeedlyParser();
 				
 				final int count = data.getIntExtra("Count", 0);
-				
-				final BlogListFragment fragment =(BlogListFragment)getSupportFragmentManager().findFragmentById(R.id.blog_list_container);
 	            
 	            if(blogs.size() > 0){
-	            	//final Blog b = blogs.get(0);
-	            	
-//	            	feedly.getCount(b.ChannelId, new HttpResponseHandler(){
-//		            	@Override
-//		            	public <Integer> void onCallback(Integer count, boolean result, String msg){
-//		            		if(result){
-//		            			
-//		            			BlogListFragment fragment =(BlogListFragment)getSupportFragmentManager(). findFragmentById(R.id.blog_list_container);
-//								
-//		            			if(fragment != null){
-//		            				Message m = fragment.myHandler.obtainMessage();
-//			        	            m.what = 3;
-//			        	            m.obj = count;
-//			        	            fragment.myHandler.sendMessage(m);
-//			        	            
-//			        	            needUpdate = true;
-//			        	            			        	            
-//			        	            Helper.updateChannels(b.ChannelId, (java.lang.Integer) count);
-//		            			}
-//		            		}
-//		            	}
-//		            });
-	            		            	
 					new Thread(){
 						public void run(){
+							Message m = myHandler.obtainMessage();
+	        	            m.what = BlogListActivity.UPDATECOUNT;
+	        	            m.obj = channel.UnreadCount - count > 0 ? channel.UnreadCount - count : 0 ;//blogs.size();
+	        	            myHandler.sendMessage(m);
+	        	            
+	        	            Message msg = myHandler.obtainMessage();
+				            msg.what = BlogListActivity.UPDATESTATE;
+				            msg.obj = blogs;
+				            myHandler.sendMessage(msg);
+	        	            
+	        	            needUpdate = true;
+	        	            			        	            
+	        	            channel.UnreadCount = channel.UnreadCount - count > 0 ? channel.UnreadCount - count : 0;
 							
-							//List<Channel> updates = new ArrayList<Channel>();							
-							
-							if(fragment != null){
-		        				Message m = fragment.myHandler.obtainMessage();
-		        	            m.what = BlogListFragment.UPDATECOUNT;
-		        	            m.obj = c.UnreadCount - count > 0 ? c.UnreadCount - count : 0 ;//blogs.size();
-		        	            fragment.myHandler.sendMessage(m);
-		        	            
-		        	            needUpdate = true;
-		        	            			        	            
-		        	            c.UnreadCount = c.UnreadCount - count > 0 ? c.UnreadCount - count : 0;
-		        	            //updates.add(c);
-		        			}
-							
-							if(c.IsDirectory){
+							if(channel.IsDirectory){
 								//need to update sub channel unread count
 								Hashtable<String, Integer> groups = new Hashtable<String, Integer>(); 
 								for(Blog b : blogs){									
@@ -240,7 +481,7 @@ public class BlogListActivity extends BaseActivity implements BlogListFragment.C
 							        String id = it.next(); 
 							        Integer count = groups.get(id);
 							        
-									for(Channel child : c.Children){
+									for(Channel child : channel.Children){
 										if(child.Id.equals(id)){
 											child.UnreadCount = child.UnreadCount - count;
 											break;
@@ -249,22 +490,242 @@ public class BlogListActivity extends BaseActivity implements BlogListFragment.C
 								}
 							}
 							
-							Helper.updateChannels(c.Id, c.UnreadCount);
+							Helper.updateChannels(channel.Id, channel.UnreadCount);
 						}
 					}.start();	            	
 	            }
-						
-	            new Thread(){
-					public void run(){
-						Message m = fragment.myHandler.obtainMessage();
-			            m.what = BlogListFragment.UPDATESTATE;
-			            m.obj = blogs;
-			            fragment.myHandler.sendMessage(m);
-					}
-				}.start();				
 				break;
 			default:
 				break;
 		}
+	}
+		
+    /**
+     * Turns on activate-on-click mode. When this mode is on, list items will be
+     * given the 'activated' state when touched.
+     */
+    public void setActivateOnItemClick(boolean activateOnItemClick) {
+        // When setting CHOICE_MODE_SINGLE, ListView will automatically
+        // give items the 'activated' state when touched.
+        listView.setChoiceMode(activateOnItemClick
+                ? ListView.CHOICE_MODE_SINGLE
+                : ListView.CHOICE_MODE_NONE);
+    }
+
+    private void setActivatedPosition(int position) {
+        if (position == ListView.INVALID_POSITION) {
+        	listView.setItemChecked(mActivatedPosition, false);
+        } else {
+        	listView.setItemChecked(position, true);
+        }
+
+        mActivatedPosition = position;
+    }
+
+    private void onLoad() {
+    	listView.stopRefresh();
+    	listView.stopLoadMore();
+    	channel.LastRefreshTime = new Date();
+    	Helper.updateChannels(channel.Id, channel.LastRefreshTime);
+    	listView.setRefreshTime(DateHelper.getDaysBeforeNow(channel.LastRefreshTime) + ReaderApp.getAppContext().getResources().getString(R.string.list_refreshtime));
+	}
+    
+    private void markTag(final Blog b, RssAction action){
+    	final FeedlyParser feedly = new FeedlyParser();
+		
+		feedly.markTag(b, action, new HttpResponseHandler(){
+        	@Override
+        	public <T> void onCallback(T action, boolean result, String msg){
+				if(!result){
+        			Log.i("RssReader", msg);
+        			
+        			SyncStateDalHelper helper = new SyncStateDalHelper();
+        			
+        			List<SyncState> states = new ArrayList<SyncState>();
+        			        			
+        			SyncState s = new SyncState();
+        			
+        			s.BlogOriginId = b.BlogId;
+        			
+        			s.Status = (com.lgq.rssreader.enums.RssAction) action;
+        			s.TimeStamp = new Date();
+        			
+        			states.add(s);
+        			
+        			helper.SynchronyData2DB(states);
+        			
+        			helper.Close();
+        			
+        			Toast.makeText(ReaderApp.getAppContext(), R.string.feedly_failedupdatestatus, Toast.LENGTH_SHORT).show();
+        		}else{
+        			BlogDalHelper bHelper = new BlogDalHelper();
+        			if(action == RssAction.AsRead)
+        				bHelper.MarkAsRead(b.BlogId, true);
+        			if(action == RssAction.AsUnread)
+        				bHelper.MarkAsRead(b.BlogId, false);
+        			if(action == RssAction.AsStar)
+        				bHelper.MarkAsStar(b.BlogId, true);
+        			if(action == RssAction.AsUnstar)
+        				bHelper.MarkAsStar(b.BlogId, false);        			
+        			
+        			bHelper.Close();
+        			
+        			Toast.makeText(ReaderApp.getAppContext(), msg, Toast.LENGTH_SHORT).show();
+        		}
+        	}
+        });
+    } 
+    
+    private void onEmpty(){
+    	final FeedlyParser feedly = new FeedlyParser();             
+        
+		Blog tmp = new Blog();
+		tmp.TimeStamp = 0;
+		tmp.PubDate = new Date();
+		
+        feedly.getRssBlog(channel, tmp, 30, new HttpResponseHandler(){
+        	@Override
+        	public <Blog> void onCallback(List<Blog> blogs, boolean result, String msg, boolean hasMore){
+        		if(result){
+        			BlogDalHelper helper = new BlogDalHelper();
+        			
+        			helper.SynchronyData2DB((List<com.lgq.rssreader.entity.Blog>) blogs);
+        			
+        			helper.Close();
+        			
+        			if(blogs.size() > 0){
+        				Message m = myHandler.obtainMessage();
+        	            m.what = LOADDATA;
+        	            m.obj = blogs;
+        				myHandler.sendMessage(m);
+        			}
+        			
+        			Helper.sound();
+        		}else{
+        			Message m = myHandler.obtainMessage();
+    	            m.what = EMPTY;
+    	            m.obj = blogs;    	            
+    				myHandler.sendMessage(m);
+        			Toast.makeText(ReaderApp.getAppContext(), msg, Toast.LENGTH_SHORT).show();
+        		}
+        	}
+        });
+    }
+    
+	@Override
+	public void onRefresh() {
+		Blog b = (Blog)adapter.getItem(0);
+		
+		listView.setSelection(0);
+		
+		Helper.pulldown();
+		
+		FeedlyParser parser = new FeedlyParser();
+		
+		parser.getRssBlog(channel, b, ReaderApp.getSettings().NumPerRequest, new HttpResponseHandler(){
+        	@Override
+        	public <Blog> void onCallback(final List<Blog> blogs, boolean result, String msg, boolean hasMore){
+        		if(result){
+        			BlogDalHelper helper = new BlogDalHelper();
+        			helper.SynchronyData2DB((List<com.lgq.rssreader.entity.Blog>) blogs);
+        			helper.Close();        			
+        			
+        			if(hasMore){
+        				Toast.makeText(ReaderApp.getAppContext(), ReaderApp.getAppContext().getResources().getString(R.string.list_loadingmore), Toast.LENGTH_SHORT).show();
+        			}else{        				
+        				Message m = myHandler.obtainMessage();
+        	            m.what = ONLOAD;        	            
+        				myHandler.sendMessage(m);        				
+        				Helper.sound();
+        				
+        				Message s = myHandler.obtainMessage();
+        	            s.what = SCROLLING;        	            
+        				myHandler.sendMessage(s);
+        			}
+        			
+        			//only first page show in UI thread
+        			if(blogs.size() > 0){
+        				Message m = myHandler.obtainMessage();
+        	            m.what = LOADDATA;
+        	            m.obj = blogs;
+        				myHandler.sendMessage(m);
+        			}
+        			
+        		}else{
+        			Message m = myHandler.obtainMessage();
+    	            m.what = ONLOAD;        	                    	           
+    				myHandler.sendMessage(m);
+        			Toast.makeText(ReaderApp.getAppContext(), msg, Toast.LENGTH_SHORT).show();        			
+        		}
+        	}
+		});
+	}
+
+	@Override
+	public void onLoadMore() {
+		
+		new Thread(){
+			public void run(){
+			final BlogDalHelper helper = new BlogDalHelper();
+			
+			pageIndex = pageIndex + 1;
+			
+			List<Blog> blogs = helper.GetBlogList(channel, pageIndex, ReaderApp.getSettings().NumPerRequest, ReaderApp.getSettings().ShowAllItems);
+			helper.Close();
+			
+			if(blogs.size()>0){
+				Message m = myHandler.obtainMessage();                    				
+	            m.what = LOADDATA;
+	            m.obj = blogs;	            
+				myHandler.sendMessage(m);
+				
+				Message s = myHandler.obtainMessage();
+	            s.what = SCROLLING;        	            
+				myHandler.sendMessage(s);
+				
+			}else{
+				Blog b = (Blog)adapter.getItem(adapter.getCount() - 1);
+				
+				b.TimeStamp = -b.TimeStamp; 
+				
+				FeedlyParser parser = new FeedlyParser();
+				
+				parser.getRssBlog(channel, b, ReaderApp.getSettings().NumPerRequest, new HttpResponseHandler(){
+		        	@Override
+		        	public <Blog> void onCallback(final List<Blog> blogs, boolean result, String msg, boolean hasMore){
+		        		if(result){
+		        			
+		        			final BlogDalHelper save = new BlogDalHelper();
+        					save.SynchronyData2DB((List<com.lgq.rssreader.entity.Blog>) blogs);
+        					save.Close();
+		        			
+		        			if(hasMore){
+		        				Toast.makeText(BlogListActivity.this, getResources().getString(R.string.list_loadingmore), Toast.LENGTH_SHORT).show();
+		        			}
+		        			else{
+		        				Message s = myHandler.obtainMessage();
+		        	            s.what = SCROLLING;        	            
+		        				myHandler.sendMessage(s);
+		        				Helper.sound();
+		        			}
+		        			
+		        			if(blogs.size() > 0){
+		        				Message m = myHandler.obtainMessage();                    				
+		        	            m.what = LOADDATA;
+		        	            m.obj = blogs;		        	            
+		        				myHandler.sendMessage(m);
+		        			}
+		        			
+		        		}else{ 
+		        			Toast.makeText(BlogListActivity.this, msg, Toast.LENGTH_SHORT).show();        			
+		        		}
+		        		
+		        		//onLoad();
+		        	}
+				});
+			}
+		}}.start();
+		
+		//onLoad();
 	}
 }

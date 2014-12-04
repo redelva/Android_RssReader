@@ -8,8 +8,6 @@ import java.util.List;
 
 import com.google.gson.Gson;
 import com.lgq.rssreader.BlogContentActivity;
-import com.lgq.rssreader.BlogContentFragment;
-import com.lgq.rssreader.BlogListFragment;
 import com.lgq.rssreader.R;
 import com.lgq.rssreader.core.Config;
 import com.lgq.rssreader.core.ReaderApp;
@@ -132,9 +130,9 @@ public class RssWidgetService extends RemoteViewsService{
             
             Bundle extras = new Bundle();
             extras.putInt("EXTRA_ITEM", position);
-            extras.putString(BlogContentFragment.CURRENT, new Gson().toJson(mBlogs.get(position)));
+            extras.putString(BlogContentActivity.CURRENT, new Gson().toJson(mBlogs.get(position)));
             if(c != null)
-            	extras.putString(BlogContentFragment.CHANNEL, new Gson().toJson(c));
+            	extras.putString(BlogContentActivity.CHANNEL, new Gson().toJson(c));
             Intent fillInIntent = new Intent();
             fillInIntent.putExtras(extras);
             // Make it possible to distinguish the individual on-click

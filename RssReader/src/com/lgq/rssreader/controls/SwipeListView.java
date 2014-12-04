@@ -108,9 +108,16 @@ public class SwipeListView extends XListView {
      * State scrolling y position
      */
     private final static int TOUCH_STATE_SCROLLING_Y = 2;
+    
+    /**
+     * State scroll and opened
+     */
+    private final static int TOUCH_STATE_SCROLLING_O = 3;
 
     private int touchState = TOUCH_STATE_REST;
 
+    private boolean mOpened = false;
+    
     private float lastMotionX;
     private float lastMotionY;
     private int touchSlop;
@@ -537,6 +544,20 @@ public class SwipeListView extends XListView {
     public void resetScrolling() {
         touchState = TOUCH_STATE_REST;
     }
+    
+    /**
+     * return some items opened or not
+     */
+    public boolean getSwipeOpend(){
+    	return mOpened;
+    }
+    
+    /**
+     * set touch state as opened
+     */
+    public void setSwipeOpend(boolean v){
+    	mOpened = v;
+    }
 
     /**
      * Set offset on right
@@ -639,26 +660,43 @@ public class SwipeListView extends XListView {
 
         if (isEnabled() && touchListener.isSwipeEnabled()) {
 
-            if (touchState == TOUCH_STATE_SCROLLING_X) {
+//            if (getSwipeOpend()){
+//            	closeOpenedItems();
+//            	return false;
+//            }
+//            else{
+            	if(touchState == TOUCH_STATE_SCROLLING_X)
                 return touchListener.onTouch(this, ev);
-            }
+//            }
 
             switch (action) {
                 case MotionEvent.ACTION_MOVE:
                     checkInMoving(x, y);
-                    return touchState == TOUCH_STATE_SCROLLING_Y;
+                    
+                    //if(getSwipeOpend())
+                    //	return !(touchState == TOUCH_STATE_SCROLLING_Y);
+                    //else
+                    	return touchState == TOUCH_STATE_SCROLLING_Y;
                 case MotionEvent.ACTION_DOWN:
-                    touchListener.onTouch(this, ev);
-                    touchState = TOUCH_STATE_REST;
+                    
+                    //if(!getSwipeOpend()){
+                    	touchState = TOUCH_STATE_REST;                    
+                    	touchListener.onTouch(this, ev);                    	
+                    //}
                     lastMotionX = x;
-                    lastMotionY = y;
+                	lastMotionY = y;
                     return false;
                 case MotionEvent.ACTION_CANCEL:
-                    touchState = TOUCH_STATE_REST;
+                	//if(!getSwipeOpend())
+                		touchState = TOUCH_STATE_REST;
                     break;
-                case MotionEvent.ACTION_UP:
-                    touchListener.onTouch(this, ev);
-                    return touchState == TOUCH_STATE_SCROLLING_Y;
+                case MotionEvent.ACTION_UP:                    
+                    //if(getSwipeOpend())
+                    //	return false;
+                    //else{
+                    	touchListener.onTouch(this, ev);
+                    	return touchState == TOUCH_STATE_SCROLLING_Y;
+                    //}
                 default:
                     break;
             }

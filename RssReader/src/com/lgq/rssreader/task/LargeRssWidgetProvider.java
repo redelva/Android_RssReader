@@ -6,8 +6,6 @@ import java.util.List;
 
 import com.google.gson.Gson;
 import com.lgq.rssreader.BlogContentActivity;
-import com.lgq.rssreader.BlogContentFragment;
-import com.lgq.rssreader.BlogListFragment;
 import com.lgq.rssreader.MainActivity;
 import com.lgq.rssreader.R;
 import com.lgq.rssreader.controls.XListView;

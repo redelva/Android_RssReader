@@ -457,45 +457,28 @@ public class MainActivity extends SlidingFragmentActivity
     public void onItemSelected(Object obj, RssTab tab) {
     	Serializable s = null;
     	    	
-        if (mTwoPane) {
-            // In two-pane mode, show the detail view in this activity by
-            // adding or replacing the detail fragment using a
-            // fragment transaction.
+    	if(obj instanceof Blog){
+    		blog = (Blog)obj;
+    		s = blog;
+    		
+    		Intent detailIntent = new Intent(this, BlogContentActivity.class);
             Bundle arguments = new Bundle();
-            arguments.putSerializable(BlogContentFragment.ARG_ITEM_ID, s);
-            BlogContentFragment fragment = new BlogContentFragment();
-            fragment.setArguments(arguments);
-            getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.blog_detail_container, fragment)
-                    .commit();
-
-        } else {
-            // In single-pane mode, simply start the detail activity
-            // for the selected item ID.
-        	
-        	if(obj instanceof Blog){
-        		blog = (Blog)obj;
-        		s = blog;
-        		
-        		Intent detailIntent = new Intent(this, BlogContentActivity.class);
-                Bundle arguments = new Bundle();
-                arguments.putSerializable(BlogContentFragment.CURRENT, s);
-                arguments.putSerializable(BlogContentFragment.ARG_TAB_ID, tab);                
-                detailIntent.putExtras(arguments);
-                startActivity(detailIntent);
-        	}
-        	if(obj instanceof Channel){
-        		channel = (Channel)obj;
-        		s = channel;
-        		
-        		Intent detailIntent = new Intent(this, BlogListActivity.class);
-                Bundle arguments = new Bundle();
-                arguments.putSerializable(BlogListFragment.ARG_ITEM_ID, s);
-                detailIntent.putExtras(arguments);
-                //startActivity(detailIntent);
-                startActivityForResult(detailIntent, 1);
-        	}
-        }
+            arguments.putSerializable(BlogContentActivity.CURRENT, s);
+            arguments.putSerializable(BlogContentActivity.ARG_TAB_ID, tab);                
+            detailIntent.putExtras(arguments);
+            startActivity(detailIntent);
+    	}
+    	if(obj instanceof Channel){
+    		channel = (Channel)obj;
+    		s = channel;
+    		
+    		Intent detailIntent = new Intent(this, BlogListActivity.class);
+            Bundle arguments = new Bundle();
+            arguments.putSerializable(BlogContentActivity.ARG_ITEM_ID, s);
+            detailIntent.putExtras(arguments);
+            //startActivity(detailIntent);
+            startActivityForResult(detailIntent, 1);
+    	}
     }
     
     public boolean IsShowQuitHints=false;

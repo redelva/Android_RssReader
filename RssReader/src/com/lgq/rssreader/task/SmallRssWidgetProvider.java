@@ -4,9 +4,7 @@ import java.util.Calendar;
 
 import com.google.gson.Gson;
 import com.lgq.rssreader.BlogContentActivity;
-import com.lgq.rssreader.BlogContentFragment;
 import com.lgq.rssreader.BlogListActivity;
-import com.lgq.rssreader.BlogListFragment;
 import com.lgq.rssreader.MainActivity;
 import com.lgq.rssreader.R;
 import com.lgq.rssreader.controls.XListView;
@@ -68,7 +66,7 @@ public class SmallRssWidgetProvider extends AppWidgetProvider{
         
         Bundle extras = new Bundle();
         if(c != null)
-        	extras.putString(BlogListFragment.ARG_ITEM_ID, new Gson().toJson(c));
+        	extras.putString(BlogListActivity.ARG_ITEM_ID, new Gson().toJson(c));
         toastIntent.putExtras(extras);
         
         PendingIntent toastPendingIntent = PendingIntent.getActivity(context, 0, toastIntent, PendingIntent.FLAG_UPDATE_CURRENT);

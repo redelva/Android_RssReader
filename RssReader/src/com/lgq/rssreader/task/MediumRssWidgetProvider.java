@@ -6,8 +6,6 @@ import java.util.List;
 
 import com.google.gson.Gson;
 import com.lgq.rssreader.BlogContentActivity;
-import com.lgq.rssreader.BlogContentFragment;
-import com.lgq.rssreader.BlogListFragment;
 import com.lgq.rssreader.MainActivity;
 import com.lgq.rssreader.R;
 import com.lgq.rssreader.controls.XListView;
@@ -99,9 +97,9 @@ public class MediumRssWidgetProvider extends AppWidgetProvider{
         toastIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
         toastIntent.setData(Uri.parse(toastIntent.toUri(Intent.URI_INTENT_SCHEME)));
         Bundle extras = new Bundle();
-        extras.putString(BlogContentFragment.CURRENT, new Gson().toJson(b));
+        extras.putString(BlogContentActivity.CURRENT, new Gson().toJson(b));
         if(c != null)
-        	extras.putString(BlogContentFragment.CHANNEL, new Gson().toJson(c));
+        	extras.putString(BlogContentActivity.CHANNEL, new Gson().toJson(c));
         toastIntent.putExtras(extras);
         PendingIntent toastPendingIntent = PendingIntent.getActivity(context, 0, toastIntent, PendingIntent.FLAG_UPDATE_CURRENT);
         views.setOnClickPendingIntent(R.id.mediumlayout, toastPendingIntent);
