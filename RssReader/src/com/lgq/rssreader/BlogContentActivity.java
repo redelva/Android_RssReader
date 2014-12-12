@@ -455,11 +455,11 @@ public class BlogContentActivity extends SherlockFragmentActivity  {
 			public void onPageFinished(WebView view, String url) {		            
 	            super.onPageFinished(view, url);
 	            
-	            if(url.equals("file://" + android.os.Environment.getExternalStorageDirectory().getAbsolutePath() + 
-	            		Config.HTML_LOCATION + Config.HTML_NAME) && !isPageLoaded){
-	            	isPageLoaded = true;
-	            	new Thread(){public void run(){desc.Render(current);}}.start();
-	            }
+//	            if(url.equals("file://" + android.os.Environment.getExternalStorageDirectory().getAbsolutePath() + 
+//	            		Config.HTML_LOCATION + Config.HTML_NAME) && !isPageLoaded){
+//	            	isPageLoaded = true;
+//	            	new Thread(){public void run(){desc.Render(current);}}.start();
+//	            }
 	        }
 		});
         
@@ -725,6 +725,8 @@ public class BlogContentActivity extends SherlockFragmentActivity  {
     	
     	if(args.equals("init")){
     		loadEvent.set();
+    		
+    		new Thread(){public void run(){desc.Render(current);}}.start();
     	}
     	else if(args.equals("content")){
     		hideProgressbar();

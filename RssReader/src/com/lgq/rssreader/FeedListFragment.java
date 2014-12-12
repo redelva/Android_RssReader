@@ -243,11 +243,12 @@ public class FeedListFragment extends Fragment {
         public void handleMessage(Message msg) {            
             switch(msg.what){
             	case HOME:
-            		if(getView() != null){
+            		//if(getView() != null)
+            		{
             			
             			if(msg.obj instanceof List){
             				channels = (List<Channel>)msg.obj;
-            				if(channels.size() > 0){
+            				if(listView != null && channels.size() > 0){
 	            				if(listView.getAdapter() == null){
 	            					List<Channel> list = new ArrayList<Channel>();
 	            					if(!ReaderApp.getSettings().ShowAllFeeds){	            						
@@ -297,21 +298,23 @@ public class FeedListFragment extends Fragment {
                 						}
                 	        		};
                 					
-                					AlertDialog dialog = new AlertDialog.Builder(getActivity())  
-    			   	                         .setIcon(android.R.drawable.btn_star_big_on)  
-    			   	                         .setTitle(getActivity().getResources().getString(R.string.recommend_add))
-    			   	                         .setMultiChoiceItems(recommends, chsBools, multiClick)
-    			   	                         .setPositiveButton(getActivity().getResources().getString(R.string.yes), new OnClickListener(){
-    			   	                        	 	@Override
-    			   		    						public void onClick(DialogInterface dialog, int which) {
-    			   	                        	 		dialog.dismiss();
-    			   	                        	 		dialog.cancel();
-    			   	                        	 		loadChannel();			   	                        	 		
-    			   		    						}
-    			   		            			})
-    			   	                         .setNegativeButton(getActivity().getResources().getString(R.string.no),  null).create();
-    			   	                dialog.show();
-            					}            					
+                	        		if(getActivity() != null){
+                	        			AlertDialog dialog = new AlertDialog.Builder(getActivity())  
+			   	                         .setIcon(android.R.drawable.btn_star_big_on)  
+			   	                         .setTitle(ReaderApp.getAppContext().getResources().getString(R.string.recommend_add))
+			   	                         .setMultiChoiceItems(recommends, chsBools, multiClick)
+			   	                         .setPositiveButton(ReaderApp.getAppContext().getResources().getString(R.string.yes), new OnClickListener(){
+			   	                        	 	@Override
+			   		    						public void onClick(DialogInterface dialog, int which) {
+			   	                        	 		dialog.dismiss();
+			   	                        	 		dialog.cancel();
+			   	                        	 		loadChannel();			   	                        	 		
+			   		    						}
+			   		            			})
+			   	                         .setNegativeButton(ReaderApp.getAppContext().getResources().getString(R.string.no),  null).create();
+                	        			dialog.show();
+                	        		}                					
+            					}
             				}
             			}
             			
@@ -320,23 +323,25 @@ public class FeedListFragment extends Fragment {
             				
             				MainActivity main = (MainActivity)getActivity();
             				
-        	            	TextView nickName = (TextView)main.mSlidingMenu.findViewById(R.id.nickNameTextView);
-        	            	TextView accountText = (TextView)main.mSlidingMenu.findViewById(R.id.accountText);
-        	            	final ImageView head = (ImageView)main.mSlidingMenu.findViewById(R.id.headImageView);
-            				
-            				if(p.LocalPicture != null && p.LocalPicture.length() != 0){
-            					File SDFile = android.os.Environment.getExternalStorageDirectory();            					
-            					Bitmap bm = BitmapFactory.decodeFile(SDFile.getAbsolutePath() +  p.LocalPicture);		
-            					if(bm != null)
-            	    				 head.setImageBitmap(bm);
-            	    			 else
-            	    				 new ProfileTask(head).execute(p);
-            				}else{
-            					new ProfileTask(head).execute(p);
-            				}
-        	            	
-        	       		 	nickName.setText(p.FamilyName + p.GivenName);
-        	       		 	accountText.setText(p.Account);
+            				if(main != null && main.mSlidingMenu != null){
+            					TextView nickName = (TextView)main.mSlidingMenu.findViewById(R.id.nickNameTextView);
+            	            	TextView accountText = (TextView)main.mSlidingMenu.findViewById(R.id.accountText);
+            	            	final ImageView head = (ImageView)main.mSlidingMenu.findViewById(R.id.headImageView);
+                				
+                				if(p.LocalPicture != null && p.LocalPicture.length() != 0){
+                					File SDFile = android.os.Environment.getExternalStorageDirectory();            					
+                					Bitmap bm = BitmapFactory.decodeFile(SDFile.getAbsolutePath() +  p.LocalPicture);		
+                					if(bm != null)
+                	    				 head.setImageBitmap(bm);
+                	    			 else
+                	    				 new ProfileTask(head).execute(p);
+                				}else{
+                					new ProfileTask(head).execute(p);
+                				}
+            	            	
+            	       		 	nickName.setText(p.FamilyName + p.GivenName);
+            	       		 	accountText.setText(p.Account);
+            				}            				
             			}
             		}
                 	break;
@@ -552,22 +557,11 @@ public class FeedListFragment extends Fragment {
 
     	switch(tab){
     		case Home:
-    	        if(getActivity() != null){
-//    	        	MainActivity main = (MainActivity)getActivity();
-//    	        	if(!main.isLoaded){
-//    	        		ImageButton v =((ImageButton) getActivity().findViewById(R.id.ivTitleBtnRight));
-//    	        		Animation anim = AnimationUtils.loadAnimation(getActivity(), R.anim.rotate);    	        
-//    	    	        v.startAnimation(anim);
-//    	        		loadChannel();
-//    	        		main.isLoaded = true;
-//    	        	}else{
-    	        		Message m = myHandler.obtainMessage();                    				
-        				m.what = RssTab.Home.ordinal();
-        	            m.obj = Helper.getChannels();
-        	            m.arg1 = LOCAL;
-        				myHandler.sendMessage(m);
-    	        	//}
-    	        }
+        		Message m = myHandler.obtainMessage();                    				
+				m.what = RssTab.Home.ordinal();
+	            m.obj = Helper.getChannels();
+	            m.arg1 = LOCAL;
+				myHandler.sendMessage(m);    	        
     			listView.setPullLoadEnable(false);
     			listView.setPullRefreshEnable(false);
     			break;
@@ -580,10 +574,10 @@ public class FeedListFragment extends Fragment {
     			listView.setPullRefreshEnable(true);
     			break;
     		case Search:
-        		Message m = myHandler.obtainMessage();
-	            m.what = tab.ordinal();
-	            m.obj = helper.GetBlogListByKeyword(title, 1, 30);;
-				myHandler.sendMessage(m);
+        		Message msg = myHandler.obtainMessage();
+	            msg.what = tab.ordinal();
+	            msg.obj = helper.GetBlogListByKeyword(title, 1, 30);;
+				myHandler.sendMessage(msg);
 				listView.setPullLoadEnable(true);
     			listView.setPullRefreshEnable(false);
     			break;
@@ -610,6 +604,10 @@ public class FeedListFragment extends Fragment {
     	helper.Close();
     	
     	return rootView;
+    }
+    
+    public void setCallbacks(Callbacks callback){
+    	this.mCallbacks = callback;
     }
     
     public void loadData(){
@@ -1103,7 +1101,7 @@ public class FeedListFragment extends Fragment {
             // Serialize and persist the activated item position.
             outState.putInt(STATE_ACTIVATED_POSITION, mActivatedPosition);
             outState.putInt(STATE_TAB, tab.ordinal());            
-        }
+        }                
     }
         
     /**

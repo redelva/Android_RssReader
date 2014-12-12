@@ -108,6 +108,8 @@ public class LoginActivity extends BaseActivity {
         	        			        	 
         	        			Intent intent = new Intent();
     	        				setResult(Activity.RESULT_OK, intent);
+    	        				
+    	        				LoginActivity.this.finish();
         	        		}
         	        	});
         			}

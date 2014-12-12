@@ -235,13 +235,17 @@ public class MainActivity extends SlidingFragmentActivity
         }
         
         loadChannel();
-    }    
+    }
 
 	private void loadChannel(){
     	ViewPager pager = (ViewPager)findViewById(R.id.pager);
 		PivotPagerAdapter pivot = (PivotPagerAdapter)pager.getAdapter();
 
+		//pivot.instantiateItem(pager, RssTab.Home.ordinal());
+		
 		FeedListFragment channel = (FeedListFragment)pivot.getItem(RssTab.Home.ordinal());
+		
+		channel.setCallbacks(this);
 		
 		channel.loadChannel();
 		
