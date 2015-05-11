@@ -50,6 +50,7 @@ getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,WindowManager.La
 				RedirectMainActivity();
 			}
 		},3000);
+        
 	}
 	/**
 	 * ��ת

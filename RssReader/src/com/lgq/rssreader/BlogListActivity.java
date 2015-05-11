@@ -12,8 +12,14 @@ import java.util.List;
 import com.google.gson.Gson;
 import com.kanak.emptylayout.EmptyLayout;
 import com.lgq.rssreader.adapter.BlogAdapter;
-import com.lgq.rssreader.controls.BaseSwipeListViewListener;
-import com.lgq.rssreader.controls.SwipeListView;
+import com.lgq.rssreader.adapter.RecyclerBlogAdapter;
+import com.lgq.rssreader.adapter.RecyclerItemClickListener;
+import com.lgq.rssreader.controls.SwipeMenu;
+import com.lgq.rssreader.controls.SwipeMenuAdapter;
+import com.lgq.rssreader.controls.SwipeMenuCreator;
+import com.lgq.rssreader.controls.SwipeMenuItem;
+import com.lgq.rssreader.controls.SwipeMenuListView;
+import com.lgq.rssreader.controls.SwipeMenuView;
 import com.lgq.rssreader.controls.SystemBarTintManager;
 import com.lgq.rssreader.controls.XListView.IXListViewListener;
 import com.lgq.rssreader.core.ReaderApp;
@@ -31,15 +37,21 @@ import com.lgq.rssreader.utils.Helper;
 import android.support.v4.app.Fragment;
 import android.app.Activity;
 import android.content.Intent;
+import android.content.pm.ApplicationInfo;
 import android.graphics.Color;
 import android.graphics.Rect;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.NavUtils;
+import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.View;
@@ -48,6 +60,8 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup.LayoutParams;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -85,7 +99,10 @@ public class BlogListActivity extends BaseActivity implements IXListViewListener
      * The fragment's listview, which support pull down to refresh
      * clicks.
      */
-    private SwipeListView listView;
+    private SwipeMenuListView listView;
+    //private RecyclerView listView;
+    
+    private SwipeRefreshLayout mSwipeRefreshLayout;
     
     /**
      * The fragment's title
@@ -141,7 +158,7 @@ public class BlogListActivity extends BaseActivity implements IXListViewListener
 	                            BlogListActivity.this,
 	                            data,
 	                            listView);
-	            		listView.setAdapter(adapter);	            		
+	            		listView.setAdapter(adapter);
 	            	}else{
 	            		List<Blog> blogs = ((List<Blog>) msg.obj);
 	            		
@@ -156,8 +173,7 @@ public class BlogListActivity extends BaseActivity implements IXListViewListener
 	         	            }
 	         	        }); 
 	            	}
-	            	
-	            	adapter.clearPosition(-2);
+	            		            	
 	            	adapter.notifyDataSetChanged();
 	            	
 	            	onLoad();
@@ -272,28 +288,150 @@ public class BlogListActivity extends BaseActivity implements IXListViewListener
         LinearLayout fragment_blog_list_layout = (LinearLayout)findViewById(R.id.fragment_blog_list_layout);
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT){
         	fragment_blog_list_layout.setPadding(0, Helper.getStatusBarHeight(), 0, 0);
-        }
+        }        
         
+        listView = (SwipeMenuListView)findViewById(R.id.blog_list);
         
-        listView = (SwipeListView)findViewById(R.id.blog_list);
+        SwipeMenuCreator creator = new SwipeMenuCreator() {
+
+			@Override
+			public void create(SwipeMenu menu, int position) {
+				
+				Blog entity = (Blog)adapter.getItem(position);
+				
+											
+				// create "open" item
+				SwipeMenuItem openItem = new SwipeMenuItem(getApplicationContext());
+				// set item background
+				openItem.setBackground(new ColorDrawable(Color.rgb(0x2D, 0xBD, 0x69)));
+				// set item width
+				openItem.setWidth(dp2px(90));
+				// set item icon
+				//openItem.setIcon(R.drawable.fav);
+//				if(!entity.IsStarred){
+//					openItem.setIcon(R.drawable.fav);
+//					openItem.setTitle("Fav");
+//				}
+//    			else{
+//    				openItem.setIcon(R.drawable.unstar);
+//    				openItem.setTitle("Unstar");
+//    			}
+				// add to menu
+				menu.addMenuItem(openItem);
+				
+				SwipeMenuItem seerateItem = new SwipeMenuItem(getApplicationContext());
+				// set item background
+				seerateItem.setBackground(R.color.white);
+				// set item width
+				seerateItem.setWidth(dp2px(1));
+				// add to menu
+				menu.addMenuItem(seerateItem);
+
+
+				// create "delete" item
+				SwipeMenuItem deleteItem = new SwipeMenuItem(
+						getApplicationContext());
+				// set item background
+				deleteItem.setBackground(new ColorDrawable(Color.rgb(0x2D, 0xBD, 0x69)));
+				// set item width
+				deleteItem.setWidth(dp2px(90));
+				// set item icon
+				//deleteItem.setIcon(R.drawable.read);
+//				if(!entity.IsRead){
+//					deleteItem.setIcon(R.drawable.read);
+//					deleteItem.setTitle("read");
+//				}
+//    			else{
+//    				deleteItem.setIcon(R.drawable.unread);
+//    				deleteItem.setTitle("unread");
+//    			}
+				// add to menu
+				menu.addMenuItem(deleteItem);
+			}
+		};
+		// set creator
+		listView.setMenuCreator(creator);
+        
+        //listView = (RecyclerView)findViewById(R.id.blog_list);
+        
+        //listView.setHasFixedSize(true);
+
+        //final LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+        //listView.setLayoutManager(layoutManager);
+        
+        //mSwipeRefreshLayout = (SwipeRefreshLayout)findViewById(R.id.swipeRefreshLayout);
+        
+        //mSwipeRefreshLayout.setColorSchemeResources(R.color.green);
+        
+//        mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {  
+//            @Override
+//            public void onRefresh() {
+//                // Refresh items
+//                refreshItems();
+//            }
+//        });
+        
         listView.setPullLoadEnable(true);
         listView.setPullRefreshEnable(true);
         listView.setXListViewListener(this);
         
-        emptyLayout = new EmptyLayout(this, listView);
-        emptyLayout.setLoadingMessage(getResources().getString(R.string.content_loading));
-        //emptyLayout.setLoadingAnimationViewId(emptyLayout.getLoadingAnimationViewId());
-        //emptyLayout.setLoadingAnimation(AnimationUtils.loadAnimation(getActivity(), R.anim.rotate));
-        emptyLayout.showLoading();
+//        emptyLayout = new EmptyLayout(this, listView);
+//        emptyLayout.setLoadingMessage(getResources().getString(R.string.content_loading));
+//        //emptyLayout.setLoadingAnimationViewId(emptyLayout.getLoadingAnimationViewId());
+//        //emptyLayout.setLoadingAnimation(AnimationUtils.loadAnimation(getActivity(), R.anim.rotate));
+//        emptyLayout.showLoading();
         
         title = (TextView)findViewById(R.id.bloglist_channel_title);
         title.setText(channel.Title + "-" + channel.UnreadCount);
         title.setOnClickListener(new OnClickListener(){
         	@Override
 			public void onClick(View v) {
-        		listView.setSelection(0);
+        		//listView.setSelection(0);
+        		listView.smoothScrollToPosition(0);        		
 			}
         });
+        
+//        listView.addOnItemTouchListener(
+//    	    new RecyclerItemClickListener(getBaseContext(), new RecyclerItemClickListener.OnItemClickListener() {
+//    	        @Override public void onItemClick(View view, int position) {
+//    	        	RecyclerBlogAdapter adapter = (RecyclerBlogAdapter) listView.getAdapter();
+//        			
+//        			Intent detailIntent = new Intent(BlogListActivity.this, BlogContentActivity.class);
+//        	        Bundle arguments = new Bundle();
+//        	        
+//    	        	arguments.putSerializable(BlogContentActivity.CURRENT, (Blog)adapter.getItem(position));        
+//        	        arguments.putSerializable(BlogContentActivity.CHANNEL, (Channel)getIntent().getExtras().get(BlogListActivity.ARG_ITEM_ID));
+//        	        detailIntent.putExtras(arguments);
+//        	        startActivityForResult(detailIntent, 0);    	        	
+//	        	}
+//    	    })
+//		);
+//        
+//        listView.setOnScrollListener(new RecyclerView.OnScrollListener() 
+//        {
+//            @Override
+//            public void onScrolled(RecyclerView recyclerView, int dx,int dy)
+//            {
+//                super.onScrolled(recyclerView, dx, dy); 
+//            }
+//
+//            @Override
+//            public void onScrollStateChanged(RecyclerView recyclerView,int newState) 
+//            {
+//                int totalItemCount = layoutManager.getItemCount();
+//                int lastVisibleItem = layoutManager.findLastVisibleItemPosition();
+//
+//                if (totalItemCount> 1) 
+//                {
+//                    if (lastVisibleItem >= totalItemCount - 1) 
+//                    {
+//                        // End has been reached
+//                        // do something 
+//                    	onLoadMore();
+//                    }
+//                }          
+//            }
+//        });  
                 
         if(channel.LastRefreshTime != null)
         	listView.setRefreshTime(DateHelper.DateToChineseString(channel.LastRefreshTime));
@@ -302,12 +440,141 @@ public class BlogListActivity extends BaseActivity implements IXListViewListener
     	
     	if (Build.VERSION.SDK_INT >= 11) {
     		listView.setChoiceMode(ListView.CHOICE_MODE_SINGLE);    		
-        }
+        }        
+    	
+    	listView.setOnSwipeListener(new com.lgq.rssreader.controls.SwipeMenuListView.OnSwipeListener() {
+			
+			@Override
+			public void onSwipeStart(SwipeMenuView menuView, int position) {
+				// swipe start				
+				
+				//View view = listView.getChildAt(position);
+				Blog entity = (Blog)adapter.getItem(position - listView.getHeaderViewsCount());
+				
+				//Toast.makeText(getApplicationContext(), entity.Title, Toast.LENGTH_SHORT).show();
+				
+				if(entity != null){
+					//SwipeMenuView menuView = (SwipeMenuView)view.getTag();
+					
+					SwipeMenu menu = menuView.getMenu();
+					
+					if(menu != null){
+						SwipeMenuItem openItem = menu.getMenuItem(0);
+						SwipeMenuItem deleteItem = menu.getMenuItem(2);
+						
+						if(!entity.IsStarred){
+							openItem.setIcon(R.drawable.fav);
+							openItem.setTitle("Fav");
+						}
+		    			else{
+		    				openItem.setIcon(R.drawable.unstar);
+		    				openItem.setTitle("Unstar");
+		    			}
+						
+						if(!entity.IsRead){
+							deleteItem.setIcon(R.drawable.read);
+							deleteItem.setTitle("read");
+						}
+		    			else{
+		    				deleteItem.setIcon(R.drawable.unread);
+		    				deleteItem.setTitle("unread");
+		    			}
+												
+						menuView.setMenu(menu);						
+					}					
+				}						
+			}
+			
+			@Override
+			public void onSwipeEnd(SwipeMenuView menuView, int position) {
+				// swipe end
+			}
+		});
+    	
+    	// step 2. listener item click event
+		listView.setOnMenuItemClickListener(new com.lgq.rssreader.controls.SwipeMenuListView.OnMenuItemClickListener() {
+			@Override
+			public boolean onMenuItemClick(int position, SwipeMenuView menuView, int index) {
+				Blog entity = (Blog)adapter.getItem(position);
+				RssAction action;
+				
+				//Toast.makeText(getApplicationContext(), entity.Title, Toast.LENGTH_SHORT).show();
+				
+				SwipeMenu menu = menuView.getMenu();
+				
+				if(menu != null){
+					SwipeMenuItem openItem = menu.getMenuItem(0);
+					SwipeMenuItem deleteItem = menu.getMenuItem(2);
+										
+					switch (index) 
+					{
+						case 0:
+							
+							Log.i("RssReader","设置收藏未收藏");
+			    			
+			    			if(menu == null) 
+			    				return false;;
+			    			
+			    			
+			    			action = deleteItem.getTitle().equals("Fav") ? RssAction.AsUnstar : RssAction.AsStar;
+			    			//RssAction action = title.getCurrentTextColor() == Color.GRAY ? RssAction.AsUnread : RssAction.AsRead;
+							//entity.IsRead = title.getCurrentTextColor() == Color.BLACK;
+			    			if(action.equals(RssAction.AsStar)){
+			    				openItem.setIcon(R.drawable.fav);
+								openItem.setTitle("Fav");
+								entity.IsStarred = true;
+			    			}
+			    			else{
+			    				openItem.setIcon(R.drawable.unstar);
+			    				openItem.setTitle("Unstar");
+			    				entity.IsStarred = false;
+			    			}
+							markTag(entity, action);					
+							
+							adapter.notifyDataSetChanged();
+							
+							break;
+						case 2:
+							Log.i("RssReader","设置已读未读");
+			    			
+			    			if(menu == null) 
+			    				return false;;
+			    				
+			    				//Toast.makeText(getApplicationContext(), "before" + entity.IsRead, Toast.LENGTH_SHORT).show();
+			    			
+			    			action = deleteItem.getTitle().equals("read") ? RssAction.AsUnread : RssAction.AsRead;
+			    			//RssAction action = title.getCurrentTextColor() == Color.GRAY ? RssAction.AsUnread : RssAction.AsRead;
+							//entity.IsRead = title.getCurrentTextColor() == Color.BLACK;
+			    			if(entity.IsRead){
+			    				deleteItem.setIcon(R.drawable.read);
+								deleteItem.setTitle("read");
+		    				}		    			
+			    			else{
+			    				deleteItem.setIcon(R.drawable.unread);
+								deleteItem.setTitle("unread");								
+			    			}
+			    			
+							markTag(entity, action);
+							
+							entity.IsRead = !entity.IsRead;
+							
+							adapter.notifyDataSetChanged();
+							break;
+					}
+					
+					//Toast.makeText(getApplicationContext(), "after" + entity.IsRead, Toast.LENGTH_SHORT).show();
+					
+					menuView.setMenu(menu);
+				}
+				return false;
+			}
+		});
         
-    	listView.setSwipeListViewListener(new BaseSwipeListViewListener() {
-    		@Override
-			public void onClickFrontView(int position) {
-    			ListAdapter adapter = (ListAdapter) listView.getAdapter();
+		listView.setOnItemClickListener(new OnItemClickListener(){
+
+			@Override
+			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+				ListAdapter adapter = (ListAdapter) listView.getAdapter();
     			
     			Intent detailIntent = new Intent(BlogListActivity.this, BlogContentActivity.class);
     	        Bundle arguments = new Bundle();        
@@ -316,95 +583,92 @@ public class BlogListActivity extends BaseActivity implements IXListViewListener
     	        arguments.putSerializable(BlogContentActivity.CHANNEL, (Channel)getIntent().getExtras().get(BlogListActivity.ARG_ITEM_ID));
     	        detailIntent.putExtras(arguments);
     	        startActivityForResult(detailIntent, 0);
-    			
-//				Blog previous = position-1 >=0 ? (Blog)adapter.getItem(position-1) : null;
-//				Blog current = (Blog)adapter.getItem(position);
-//				Blog next = position+1 < adapter.getCount() ? (Blog)adapter.getItem(position+1) : null;
-			}
-    		
-    		@Override
-			public void onClosed(int position, boolean fromRight) {
-    			Log.i("RssReader","onClosed");
-			}
-    		
-    		@Override 
-    		public void onRightAutoClose(int position, View view){
-    			Log.i("RssReader","设置已读未读");
-    			
-    			if(view == null) return;
-    			
-    			Blog entity = (Blog)adapter.getItem(position- listView.getHeaderViewsCount());
-    			
-    			TextView btn = (TextView)view.findViewById(R.id.btnread);
-				ImageView img = (ImageView)btn.getTag(R.id.tag_first);
-				TextView title = (TextView)btn.getTag(R.id.tag_second);
-    			
-    			//RssAction action = entity.IsRead ? RssAction.AsUnread : RssAction.AsRead;
-    			RssAction action = title.getCurrentTextColor() == Color.GRAY ? RssAction.AsUnread : RssAction.AsRead;
-				entity.IsRead = title.getCurrentTextColor() == Color.BLACK; 
-				markTag(entity, action);
 				
-//				if(entity.IsRead){
-//					img.setVisibility(View.VISIBLE);
-//					img.setImageResource(R.drawable.keepread);
-//					title.setTextColor(Color.GRAY);
-//					//btn.setText(R.string.blog_setunread);
-//					btn.setText(R.string.empty);
-//					Drawable drawable = ReaderApp.getAppContext().getResources().getDrawable(R.drawable.setunread);
-//					drawable.setBounds(btn.getCompoundDrawables()[0].getBounds());
-//					btn.setCompoundDrawables(drawable, null, null, null);
-//				}
-//				else{
-//					title.setTextColor(Color.BLACK);
-//					img.setVisibility(View.GONE);
-//					//btn.setText(R.string.blog_setread);
-//					btn.setText(R.string.empty);
-//					Drawable drawable = ReaderApp.getAppContext().getResources().getDrawable(R.drawable.setread);
-//					drawable.setBounds(btn.getCompoundDrawables()[0].getBounds());
-//					btn.setCompoundDrawables(drawable, null, null, null);
-//				}
-				
-				adapter.notifyDataSetChanged();
-				
-    		}
-    		
-    		@Override 
-    		public void onLeftAutoClose(int position, View view){
-    			Log.i("RssReader","设置收藏相关");
-    			
-    			if(view == null) return;
-    			
-    			Blog entity = (Blog)adapter.getItem(position - listView.getHeaderViewsCount());
-    			TextView btn = (TextView)view.findViewById(R.id.btnstar);
-				ImageView img = (ImageView)btn.getTag();
-    			
-    			//RssAction action = entity.IsStarred ? RssAction.AsUnstar : RssAction.AsStar;
-				RssAction action = img.getVisibility() == View.VISIBLE ? RssAction.AsUnstar : RssAction.AsStar;
-				entity.IsStarred = img.getVisibility() == View.GONE;//!entity.IsStarred;
-				markTag(entity, action);
-				
-//				if(entity.IsStarred){
-//					img.setVisibility(View.VISIBLE);
-//					img.setImageResource(R.drawable.star);
-//					//btn.setText(R.string.blog_setunstar);
-//					btn.setText(R.string.empty);
-//					Drawable drawable = ReaderApp.getAppContext().getResources().getDrawable(R.drawable.setstar);
-//					drawable.setBounds(btn.getCompoundDrawables()[0].getBounds());
-//					btn.setCompoundDrawables(drawable, null, null, null);
-//				}
-//				else{
-//					img.setVisibility(View.GONE);					
-//					//btn.setText(R.string.blog_setstar);
-//					btn.setText(R.string.empty);					
-//					Drawable drawable = ReaderApp.getAppContext().getResources().getDrawable(R.drawable.setunstar);
-//					drawable.setBounds(btn.getCompoundDrawables()[0].getBounds());
-//					btn.setCompoundDrawables(drawable, null, null, null);
-//				}
-				
-				adapter.notifyDataSetChanged();
-    		}
-		});
+			}});
+//    		
+//    		@Override 
+//    		public void onRightAutoClose(int position, View view){
+//    			Log.i("RssReader","设置已读未读");
+//    			
+//    			if(view == null) return;
+//    			
+//    			Blog entity = (Blog)adapter.getItem(position- listView.getHeaderViewsCount());
+//    			
+//    			TextView btn = (TextView)view.findViewById(R.id.btnread);
+//				ImageView img = (ImageView)btn.getTag(R.id.tag_first);
+//				TextView title = (TextView)btn.getTag(R.id.tag_second);
+//    			
+//    			//RssAction action = entity.IsRead ? RssAction.AsUnread : RssAction.AsRead;
+//    			RssAction action = title.getCurrentTextColor() == Color.GRAY ? RssAction.AsUnread : RssAction.AsRead;
+//				entity.IsRead = title.getCurrentTextColor() == Color.BLACK; 
+//				markTag(entity, action);
+//				
+////				if(entity.IsRead){
+////					img.setVisibility(View.VISIBLE);
+////					img.setImageResource(R.drawable.keepread);
+////					title.setTextColor(Color.GRAY);
+////					//btn.setText(R.string.blog_setunread);
+////					btn.setText(R.string.empty);
+////					Drawable drawable = ReaderApp.getAppContext().getResources().getDrawable(R.drawable.setunread);
+////					drawable.setBounds(btn.getCompoundDrawables()[0].getBounds());
+////					btn.setCompoundDrawables(drawable, null, null, null);
+////				}
+////				else{
+////					title.setTextColor(Color.BLACK);
+////					img.setVisibility(View.GONE);
+////					//btn.setText(R.string.blog_setread);
+////					btn.setText(R.string.empty);
+////					Drawable drawable = ReaderApp.getAppContext().getResources().getDrawable(R.drawable.setread);
+////					drawable.setBounds(btn.getCompoundDrawables()[0].getBounds());
+////					btn.setCompoundDrawables(drawable, null, null, null);
+////				}
+//				
+//				adapter.notifyDataSetChanged();
+//				
+//    		}
+//    		
+//    		@Override 
+//    		public void onLeftAutoClose(int position, View view){
+//    			Log.i("RssReader","设置收藏相关");
+//    			
+//    			if(view == null) return;
+//    			
+//    			Blog entity = (Blog)adapter.getItem(position - listView.getHeaderViewsCount());
+//    			TextView btn = (TextView)view.findViewById(R.id.btnstar);
+//				ImageView img = (ImageView)btn.getTag();
+//    			
+//    			//RssAction action = entity.IsStarred ? RssAction.AsUnstar : RssAction.AsStar;
+//				RssAction action = img.getVisibility() == View.VISIBLE ? RssAction.AsUnstar : RssAction.AsStar;
+//				entity.IsStarred = img.getVisibility() == View.GONE;//!entity.IsStarred;
+//				markTag(entity, action);
+//				
+////				if(entity.IsStarred){
+////					img.setVisibility(View.VISIBLE);
+////					img.setImageResource(R.drawable.star);
+////					//btn.setText(R.string.blog_setunstar);
+////					btn.setText(R.string.empty);
+////					Drawable drawable = ReaderApp.getAppContext().getResources().getDrawable(R.drawable.setstar);
+////					drawable.setBounds(btn.getCompoundDrawables()[0].getBounds());
+////					btn.setCompoundDrawables(drawable, null, null, null);
+////				}
+////				else{
+////					img.setVisibility(View.GONE);					
+////					//btn.setText(R.string.blog_setstar);
+////					btn.setText(R.string.empty);					
+////					Drawable drawable = ReaderApp.getAppContext().getResources().getDrawable(R.drawable.setunstar);
+////					drawable.setBounds(btn.getCompoundDrawables()[0].getBounds());
+////					btn.setCompoundDrawables(drawable, null, null, null);
+////				}
+//				
+//				adapter.notifyDataSetChanged();
+//    		}
+		//});
     }
+    
+    private int dp2px(int dp) {
+		return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp,
+				getResources().getDisplayMetrics());
+	}
 
     public boolean onKeyDown(int keyCode, KeyEvent event) {
 		if (keyCode == KeyEvent.KEYCODE_BACK ) {
@@ -527,6 +791,7 @@ public class BlogListActivity extends BaseActivity implements IXListViewListener
     	listView.stopLoadMore();
     	channel.LastRefreshTime = new Date();
     	Helper.updateChannels(channel.Id, channel.LastRefreshTime);
+    	//mSwipeRefreshLayout.setRefreshing(false);
     	listView.setRefreshTime(DateHelper.getDaysBeforeNow(channel.LastRefreshTime) + ReaderApp.getAppContext().getResources().getString(R.string.list_refreshtime));
 	}
     
@@ -616,7 +881,7 @@ public class BlogListActivity extends BaseActivity implements IXListViewListener
 	public void onRefresh() {
 		Blog b = (Blog)adapter.getItem(0);
 		
-		listView.setSelection(0);
+		//listView.setSelection(0);
 		
 		Helper.pulldown();
 		
@@ -628,7 +893,7 @@ public class BlogListActivity extends BaseActivity implements IXListViewListener
         		if(result){
         			BlogDalHelper helper = new BlogDalHelper();
         			helper.SynchronyData2DB((List<com.lgq.rssreader.entity.Blog>) blogs);
-        			helper.Close();        			
+        			helper.Close();
         			
         			if(hasMore){
         				Toast.makeText(ReaderApp.getAppContext(), ReaderApp.getAppContext().getResources().getString(R.string.list_loadingmore), Toast.LENGTH_SHORT).show();

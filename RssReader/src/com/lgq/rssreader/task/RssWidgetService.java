@@ -113,6 +113,7 @@ public class RssWidgetService extends RemoteViewsService{
             }
             RemoteViews views = new RemoteViews(mContext.getPackageName(), R.layout.widget_blog_list_item);  
             views.setTextViewText(R.id.widget_blog_subtitle, mBlogs.get(position).SubsTitle);
+            views.setTextColor(R.id.widget_blog_subtitle, mContext.getResources().getColor(R.color.black));
             if(mBlogs.get(position).IsStarred)
             	views.setImageViewResource(R.id.widget_blog_star, R.drawable.star);
             else
@@ -125,6 +126,7 @@ public class RssWidgetService extends RemoteViewsService{
             	views.setImageViewResource(R.id.widget_blog_read, View.GONE);
             	views.setTextColor(R.id.widget_blog_title, mContext.getResources().getColor(R.color.black));
             }
+            views.setTextColor(R.id.widget_blog_date, mContext.getResources().getColor(R.color.black));
             views.setTextViewText(R.id.widget_blog_date, DateHelper.getDaysBeforeNow(mBlogs.get(position).PubDate));
             views.setTextViewText(R.id.widget_blog_title, mBlogs.get(position).Title);
             

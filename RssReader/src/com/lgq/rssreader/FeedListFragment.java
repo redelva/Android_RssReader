@@ -96,7 +96,7 @@ import com.lgq.rssreader.enums.RssTab;
  * Activities containing this fragment MUST implement the {@link Callbacks}
  * interface.
  */
-public class FeedListFragment extends Fragment {
+public class FeedListFragment extends BaseFragment {
 
     /**
      * The serialization (saved instance state) Bundle key representing the
@@ -244,6 +244,11 @@ public class FeedListFragment extends Fragment {
             switch(msg.what){
             	case HOME:
             		//if(getView() != null)
+            		
+            		Log.i("RssReader", "getView() != null " + String.valueOf(getView() != null));
+            		Log.i("RssReader", "listView != null " + String.valueOf(listView != null));
+            		if(listView != null)
+            			Log.i("RssReader", "listView.getAdapter() != null " + String.valueOf(listView.getAdapter() != null));
             		{
             			
             			if(msg.obj instanceof List){
@@ -286,7 +291,7 @@ public class FeedListFragment extends Fragment {
             				}else{
             					// need to recommend some feeds
             					
-            					if(msg.arg1 == SYNC){
+            					if(msg.arg1 == SYNC && channels.size() == 0){
             						OnMultiChoiceClickListener multiClick = new OnMultiChoiceClickListener(){
                 				    	
                 						@Override
@@ -298,12 +303,12 @@ public class FeedListFragment extends Fragment {
                 						}
                 	        		};
                 					
-                	        		if(getActivity() != null){
-                	        			AlertDialog dialog = new AlertDialog.Builder(getActivity())  
+                	        		//if(getActivity() != null){
+                	        			AlertDialog dialog = new AlertDialog.Builder(mContext)  
 			   	                         .setIcon(android.R.drawable.btn_star_big_on)  
-			   	                         .setTitle(ReaderApp.getAppContext().getResources().getString(R.string.recommend_add))
+			   	                         .setTitle(mContext.getResources().getString(R.string.recommend_add))
 			   	                         .setMultiChoiceItems(recommends, chsBools, multiClick)
-			   	                         .setPositiveButton(ReaderApp.getAppContext().getResources().getString(R.string.yes), new OnClickListener(){
+			   	                         .setPositiveButton(mContext.getResources().getString(R.string.yes), new OnClickListener(){
 			   	                        	 	@Override
 			   		    						public void onClick(DialogInterface dialog, int which) {
 			   	                        	 		dialog.dismiss();
@@ -311,9 +316,9 @@ public class FeedListFragment extends Fragment {
 			   	                        	 		loadChannel();			   	                        	 		
 			   		    						}
 			   		            			})
-			   	                         .setNegativeButton(ReaderApp.getAppContext().getResources().getString(R.string.no),  null).create();
+			   	                         .setNegativeButton(mContext.getResources().getString(R.string.no),  null).create();
                 	        			dialog.show();
-                	        		}                					
+                	        		//}                					
             					}
             				}
             			}
@@ -491,7 +496,7 @@ public class FeedListFragment extends Fragment {
         
         emptyLayout = new EmptyLayout(this.getActivity(), listView);
         emptyLayout.setLoadingMessage(getActivity().getResources().getString(R.string.content_loading));
-        //emptyLayout.setLoadingAnimationViewId(emptyLayout.getLoadingAnimationViewId());
+        //emptyLayout.setLoadingAnimationViewId(emptyLayout.getLoadingAnimationViewId());        
         //emptyLayout.setLoadingAnimation(AnimationUtils.loadAnimation(getActivity(), R.anim.rotate));
         emptyLayout.showLoading();
         
@@ -602,6 +607,9 @@ public class FeedListFragment extends Fragment {
     	}
     	
     	helper.Close();
+    	
+    	if(tab == RssTab.Home)
+    		loadChannel();
     	
     	return rootView;
     }

@@ -7,6 +7,8 @@ import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
@@ -84,6 +86,12 @@ public class FeedlyParser extends RssParser {
     private static final String SEARCHSUBSURL = "https://cloud.feedly.com/reader/directory/search?q={0}&ck={1}&client=scroll&start={2}";
     private static final String SYNCUNREADURL = "https://cloud.feedly.com/reader/atom/user/-/state/com.google/read?n=1000";
     private static final String SORTLISTURL = "https://cloud.feedly.com/reader/api/0/preference/stream/list?output=json";
+    
+    
+    // 获取img标签正则  
+    private static final String IMGURL_REG = "<img.*src=(.*?)[^>]*?>";  
+    // 获取src路径的正则  
+    private static final String IMGSRC_REG = "http:\"?(.*?)(\"|>|\\s+)";
     
     // Tags, Subscription, SortOrder and Unread
     private List<Tag> Tags;
@@ -1572,7 +1580,17 @@ public class FeedlyParser extends RssParser {
         						b.SubsTitle = item.getJSONObject("origin").has("title") ? item.getJSONObject("origin").getString("title") : "";
         						b.TimeStamp = item.getLong("published");
         						b.IsRead = item.has("unread") ? !item.getBoolean("unread") : false;
-        						b.Avatar = "";
+        						        						
+        						Matcher m = Pattern.compile(IMGURL_REG).matcher(b.Description);
+        				        if (m.find()) {            		            	
+            		            	Matcher matcher = Pattern.compile(IMGSRC_REG).matcher(m.group());  
+            		                while (matcher.find()) {  
+            		                	b.Avatar = matcher.group().substring(0, matcher.group().length() - 1);  
+            		                }
+            		            }
+            		            else{
+            		            	b.Avatar = "";
+            		            }        						
         			
         						if (item.has("tags"))
         						{

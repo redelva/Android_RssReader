@@ -100,7 +100,9 @@ public class LargeRssWidgetProvider extends AppWidgetProvider{
         ComponentName cmpName = new ComponentName(context, LargeRssWidgetProvider.class);
         final int[] appWidgetIds = appWidgetManager.getAppWidgetIds(cmpName);
         
-        int mAppWidgetId = intent.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, 0);
+        for(int mAppWidgetId : appWidgetIds){
+        
+        //int mAppWidgetId = intent.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, 0);
         
         if(intent.getAction().equals(REFRESH)){
         	
@@ -156,6 +158,6 @@ public class LargeRssWidgetProvider extends AppWidgetProvider{
         }else if(intent.getAction().equals(ITEM)){
 
         }
-        
+        }
     } 
 }

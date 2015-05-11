@@ -234,14 +234,17 @@ public class MainActivity extends SlidingFragmentActivity
         	startActivityForResult(i, 0);
         }
         
-        loadChannel();
+        //loadChannel();
+        
+        Animation anim = AnimationUtils.loadAnimation(MainActivity.this, R.anim.rotate);    	        
+		findViewById(R.id.ivTitleBtnRight).startAnimation(anim);
     }
 
-	private void loadChannel(){
+	private void loadChannel(){		
     	ViewPager pager = (ViewPager)findViewById(R.id.pager);
 		PivotPagerAdapter pivot = (PivotPagerAdapter)pager.getAdapter();
 
-		//pivot.instantiateItem(pager, RssTab.Home.ordinal());
+		//FeedListFragment channel = (FeedListFragment)pivot.instantiateItem(pager, RssTab.Home.ordinal());
 		
 		FeedListFragment channel = (FeedListFragment)pivot.getItem(RssTab.Home.ordinal());
 		
@@ -333,28 +336,32 @@ public class MainActivity extends SlidingFragmentActivity
     	RssTab[] values = new RssTab[CONTENT.size()]; 
 		CONTENT.values().toArray(values);
     	
-    	FeedListFragment home = new FeedListFragment();
+    	FeedListFragment home = new FeedListFragment();    	
 		Bundle h = new Bundle();
+		home.setInflater(this);		
 		h.putInt(FeedListFragment.STATE_TAB, values[0].ordinal());
 		home.setArguments(h);
 		
 		FeedListFragment all = new FeedListFragment();
 		Bundle a = new Bundle();
+		all.setInflater(this);
 		a.putInt(FeedListFragment.STATE_TAB, values[1].ordinal());
 		all.setArguments(a);
 		
 		FeedListFragment unread = new FeedListFragment();
 		Bundle u = new Bundle();
+		unread.setInflater(this);
 		u.putInt(FeedListFragment.STATE_TAB, values[2].ordinal());
 		unread.setArguments(u);
 		
 		FeedListFragment star = new FeedListFragment();
 		Bundle s = new Bundle();
+		star.setInflater(this);
 		s.putInt(FeedListFragment.STATE_TAB, values[3].ordinal());
 		star.setArguments(s);
 		
 		ImageListFragment gallery = new ImageListFragment();
-		Bundle g = new Bundle();
+		Bundle g = new Bundle();		
 		g.putInt(FeedListFragment.STATE_TAB, values[4].ordinal());
 		gallery.setArguments(g);
 		

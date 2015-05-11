@@ -328,7 +328,7 @@ public class BlogDalHelper {
 			entity.IsStarred = cursor.getString(cursor.getColumnIndex("IsStarred")).equals("1");;
 			entity.IsRecommend = cursor.getString(cursor.getColumnIndex("IsRecommend")).equals("1");;
 			entity.OriginId = cursor.getString(cursor.getColumnIndex("TagId"));
-			entity.Avatar = cursor.getString(cursor.getColumnIndex("TagId"));			
+			entity.Avatar = cursor.getString(cursor.getColumnIndex("Avatar"));			
 			list.add(entity);
 		}
 		cursor.close();
@@ -450,7 +450,7 @@ public class BlogDalHelper {
 			entity.IsStarred = cursor.getString(cursor.getColumnIndex("IsStarred")).equals("1");;
 			entity.IsRecommend = cursor.getString(cursor.getColumnIndex("IsRecommend")).equals("1");;
 			entity.OriginId = cursor.getString(cursor.getColumnIndex("TagId"));
-			entity.Avatar = cursor.getString(cursor.getColumnIndex("TagId"));			
+			entity.Avatar = cursor.getString(cursor.getColumnIndex("Avatar"));			
 			listBlog.add(entity);
 		}
 		cursor.close();

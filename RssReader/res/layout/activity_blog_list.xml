@@ -25,29 +25,47 @@
 	    tools:context=".BlogContentFragment"/>
 	     -->
 	     
-	     <LinearLayout     
-    android:layout_width="fill_parent"
-	android:gravity="center"  	
-	android:orientation="vertical"
-	android:layout_height="fill_parent">
-     <com.lgq.rssreader.controls.SwipeListView
-            android:id="@+id/blog_list"
-            android:listSelector="#00000000"
-            android:layout_width="match_parent"
-	    	android:layout_height="match_parent"
-            swipe:swipeFrontView="@+id/front"
-            swipe:swipeAutoClose = "false"
-            swipe:swipeBackView="@+id/back"
-            swipe:swipeActionLeft="reveal"
-            swipe:swipeActionRight="reveal"
-            swipe:swipeDrawableChecked="@drawable/choice_selected"
-            swipe:swipeDrawableUnchecked="@drawable/choice_unselected"
-            swipe:swipeCloseAllItemsWhenMoveList="true"
-            swipe:swipeMode="both"
-            swipe:swipeOpenOnLongPress="false"
-            swipe:swipeOffsetLeft = "280dp"
-            swipe:swipeOffsetRight = "280dp"
-            swipe:swipeAutoCloseThreshold = "0.3"
-            />
-     </LinearLayout>     
+<!-- 	     <LinearLayout      -->
+<!--     android:layout_width="fill_parent" -->
+<!-- 	android:gravity="center"  	 -->
+<!-- 	android:orientation="vertical" -->
+<!-- 	android:layout_height="fill_parent"> -->
+<!--      <com.lgq.rssreader.controls.SwipeListView -->
+<!--             android:id="@+id/blog_list" -->
+<!--             android:listSelector="#00000000" -->
+<!--             android:layout_width="match_parent" -->
+<!-- 	    	android:layout_height="match_parent" -->
+<!--             swipe:swipeFrontView="@+id/front" -->
+<!--             swipe:swipeAutoClose = "false" -->
+<!--             swipe:swipeBackView="@+id/back" -->
+<!--             swipe:swipeActionLeft="reveal" -->
+<!--             swipe:swipeActionRight="reveal" -->
+<!--             swipe:swipeDrawableChecked="@drawable/choice_selected" -->
+<!--             swipe:swipeDrawableUnchecked="@drawable/choice_unselected" -->
+<!--             swipe:swipeCloseAllItemsWhenMoveList="true" -->
+<!--             swipe:swipeMode="both" -->
+<!--             swipe:swipeOpenOnLongPress="false" -->
+<!--             swipe:swipeOffsetLeft = "280dp" -->
+<!--             swipe:swipeOffsetRight = "280dp" -->
+<!--             swipe:swipeAutoCloseThreshold = "0.3" -->
+<!--             /> -->
+
+<com.lgq.rssreader.controls.SwipeMenuListView
+        android:id="@+id/blog_list"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+<!-- 	<android.support.v4.widget.SwipeRefreshLayout  
+    android:id="@+id/swipeRefreshLayout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+		<android.support.v7.widget.RecyclerView
+        android:id="@+id/blog_list"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scrollbars="horizontal" 
+        />
+	</android.support.v4.widget.SwipeRefreshLayout>  
+     </LinearLayout>      -->
 </LinearLayout>

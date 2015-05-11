@@ -30,7 +30,7 @@ import android.widget.Toast;
 import com.lgq.rssreader.R;
 import com.lgq.rssreader.cache.AsyncImageLoader;
 import com.lgq.rssreader.cache.AsyncImageLoader.ImageCallback;
-import com.lgq.rssreader.controls.SwipeListView;
+import com.lgq.rssreader.controls.SwipeMenuListView;
 import com.lgq.rssreader.core.ReaderApp;
 import com.lgq.rssreader.dal.SyncStateDalHelper;
 import com.lgq.rssreader.entity.Blog;
@@ -63,11 +63,7 @@ public class BlogAdapter extends BaseAdapter {
 		ViewHolder viewHolder = null;
 		final Blog entity = list.get(position);
 		if (convertView != null) {
-			viewHolder = (ViewHolder) convertView.getTag();	
-			
-			if(this.listView instanceof SwipeListView){
-				((SwipeListView)this.listView).closeOpenedItems();
-			}
+			viewHolder = (ViewHolder) convertView.getTag();					
 			
 		} else {
 			viewHolder = new ViewHolder();
@@ -77,8 +73,8 @@ public class BlogAdapter extends BaseAdapter {
 			viewHolder.blog_date = (TextView) convertView.findViewById(R.id.blog_date);
 			viewHolder.blog_subtitle = (TextView) convertView.findViewById(R.id.blog_subtitle);
 			viewHolder.blog_title = (TextView) convertView.findViewById(R.id.blog_title);
-			viewHolder.btn_readstatus = (TextView) convertView.findViewById(R.id.btnread);
-			viewHolder.btn_starstatus = (TextView) convertView.findViewById(R.id.btnstar);
+			//viewHolder.btn_readstatus = (TextView) convertView.findViewById(R.id.btnread);
+			//viewHolder.btn_starstatus = (TextView) convertView.findViewById(R.id.btnstar);
 			
 			viewHolder.blog_readlistener = new View.OnClickListener(){
 				@Override
@@ -143,11 +139,11 @@ public class BlogAdapter extends BaseAdapter {
 				}
 			};
 			
-			viewHolder.btn_readstatus.setTag(R.id.tag_first, viewHolder.blog_read);
-			viewHolder.btn_readstatus.setTag(R.id.tag_second, viewHolder.blog_title);
-			viewHolder.btn_starstatus.setTag(viewHolder.blog_star);
-			viewHolder.btn_readstatus.setOnClickListener(viewHolder.blog_readlistener);
-			viewHolder.btn_starstatus.setOnClickListener(viewHolder.blog_starlistener);
+			//viewHolder.btn_readstatus.setTag(R.id.tag_first, viewHolder.blog_read);
+			//viewHolder.btn_readstatus.setTag(R.id.tag_second, viewHolder.blog_title);
+			//viewHolder.btn_starstatus.setTag(viewHolder.blog_star);
+			//viewHolder.btn_readstatus.setOnClickListener(viewHolder.blog_readlistener);
+			//viewHolder.btn_starstatus.setOnClickListener(viewHolder.blog_starlistener);
 		}
 
 		viewHolder.blog_date.setText(DateHelper.getDaysBeforeNow(new Date(entity.TimeStamp)).toString());
@@ -157,47 +153,47 @@ public class BlogAdapter extends BaseAdapter {
 			viewHolder.blog_read.setImageResource(R.drawable.keepread);
 			viewHolder.blog_title.setTextColor(Color.GRAY);
 			//viewHolder.btn_readstatus.setText(R.string.blog_setunread);
-			viewHolder.btn_readstatus.setText(R.string.empty);
-			Drawable drawable = mContext.getResources().getDrawable(R.drawable.setunread);
-			drawable.setBounds(viewHolder.btn_readstatus.getCompoundDrawables()[0].getBounds());
-			viewHolder.btn_readstatus.setCompoundDrawables(drawable, null, null, null);			
+//			viewHolder.btn_readstatus.setText(R.string.empty);
+//			Drawable drawable = mContext.getResources().getDrawable(R.drawable.setunread);
+//			drawable.setBounds(viewHolder.btn_readstatus.getCompoundDrawables()[0].getBounds());
+//			viewHolder.btn_readstatus.setCompoundDrawables(drawable, null, null, null);			
 		}
 		else{
 			viewHolder.blog_title.setTextColor(Color.BLACK);
 			viewHolder.blog_read.setVisibility(View.GONE);
 			//viewHolder.btn_readstatus.setText(R.string.blog_setread);
-			viewHolder.btn_readstatus.setText(R.string.empty);
-			Drawable drawable = mContext.getResources().getDrawable(R.drawable.setread);
-			drawable.setBounds(viewHolder.btn_readstatus.getCompoundDrawables()[0].getBounds());
-			viewHolder.btn_readstatus.setCompoundDrawables(drawable, null, null, null);		
+			//viewHolder.btn_readstatus.setText(R.string.empty);
+//			Drawable drawable = mContext.getResources().getDrawable(R.drawable.setread);
+//			drawable.setBounds(viewHolder.btn_readstatus.getCompoundDrawables()[0].getBounds());
+//			viewHolder.btn_readstatus.setCompoundDrawables(drawable, null, null, null);		
 		}
 		if(entity.IsStarred){
 			viewHolder.blog_star.setVisibility(View.VISIBLE);
 			viewHolder.blog_star.setImageResource(R.drawable.star);
 			//viewHolder.btn_starstatus.setText(R.string.blog_setunstar);
-			viewHolder.btn_starstatus.setText(R.string.empty);
-			Drawable drawable = mContext.getResources().getDrawable(R.drawable.setunstar);
-			drawable.setBounds(viewHolder.btn_starstatus.getCompoundDrawables()[0].getBounds());
-			viewHolder.btn_starstatus.setCompoundDrawables(drawable, null, null, null);
+//			viewHolder.btn_starstatus.setText(R.string.empty);
+//			Drawable drawable = mContext.getResources().getDrawable(R.drawable.setunstar);
+//			drawable.setBounds(viewHolder.btn_starstatus.getCompoundDrawables()[0].getBounds());
+//			viewHolder.btn_starstatus.setCompoundDrawables(drawable, null, null, null);
 		}
 		else{
 			viewHolder.blog_star.setVisibility(View.GONE);
 			//viewHolder.btn_starstatus.setText(R.string.blog_setstar);
-			viewHolder.btn_starstatus.setText(R.string.empty);
-			Drawable drawable = mContext.getResources().getDrawable(R.drawable.setstar);
-			drawable.setBounds(viewHolder.btn_starstatus.getCompoundDrawables()[0].getBounds());
-			viewHolder.btn_starstatus.setCompoundDrawables(drawable, null, null, null);
+//			viewHolder.btn_starstatus.setText(R.string.empty);
+//			Drawable drawable = mContext.getResources().getDrawable(R.drawable.setstar);
+//			drawable.setBounds(viewHolder.btn_starstatus.getCompoundDrawables()[0].getBounds());
+//			viewHolder.btn_starstatus.setCompoundDrawables(drawable, null, null, null);
 		}
 		viewHolder.blog_title.setText(String.valueOf(entity.Title));
 		viewHolder.blog_subtitle.setText(String.valueOf(entity.SubsTitle));
 
 		convertView.setTag(viewHolder);
 		
-		if(lastPosition != -2){
-			Animation animation = AnimationUtils.loadAnimation(mContext, (position > lastPosition) ? R.anim.up_from_bottom : R.anim.down_from_top);
-			convertView.startAnimation(animation);
-			lastPosition = position;
-		}
+//		if(lastPosition != -2){
+//			Animation animation = AnimationUtils.loadAnimation(mContext, (position > lastPosition) ? R.anim.up_from_bottom : R.anim.down_from_top);
+//			convertView.startAnimation(animation);
+//			lastPosition = position;
+//		}
 		
 		return convertView;
 	}
@@ -238,7 +234,7 @@ public class BlogAdapter extends BaseAdapter {
     }   
 
 	/**
-	 * �õ����
+	 * 锟矫碉拷锟斤拷锟�
 	 * 
 	 * @return
 	 */
@@ -247,7 +243,7 @@ public class BlogAdapter extends BaseAdapter {
 	}
 	
 	/**
-	 * �������
+	 * 锟斤拷锟斤拷锟斤拷锟�
 	 * 
 	 * @return
 	 */
@@ -255,7 +251,7 @@ public class BlogAdapter extends BaseAdapter {
 		list = data;
 	}
 	/**
-	 * ����
+	 * 锟斤拷锟斤拷
 	 * 
 	 * @param list
 	 */
@@ -272,7 +268,7 @@ public class BlogAdapter extends BaseAdapter {
 		this.notifyDataSetChanged();
 	}
 	/**
-	 * �������
+	 * 锟斤拷锟斤拷锟斤拷锟�
 	 * 
 	 * @param list
 	 */
