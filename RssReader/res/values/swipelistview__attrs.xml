@@ -18,6 +18,10 @@
 
 <resources>
 
+    <declare-styleable name="DraggableFlagView">
+        <attr name="color" format="color"/>
+    </declare-styleable>
+    
     <declare-styleable name="SwipeListView">
         <attr name="swipeOpenOnLongPress" format="boolean"/>
         <attr name="swipeAutoClose" format="boolean"/>

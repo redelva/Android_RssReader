@@ -25,6 +25,7 @@ import com.lgq.rssreader.R;
 import com.lgq.rssreader.cache.AsyncImageLoader;
 import com.lgq.rssreader.cache.AsyncImageLoader.ImageCallback;
 import com.lgq.rssreader.cache.ImageCacher;
+import com.lgq.rssreader.controls.DraggableFlagView;
 import com.lgq.rssreader.core.ReaderApp;
 import com.lgq.rssreader.entity.*;
 import com.lgq.rssreader.enums.RssTab;
@@ -37,13 +38,19 @@ public class ChannelAdapter extends BaseAdapter {
 	private LayoutInflater mInflater;
 	private ListView listView;
 	private AsyncImageLoader asyncImageLoader;
+	//DraggableFlagView.OnDraggableFlagViewListener listener;
 
 	public ChannelAdapter(Context context, List<Channel> list, ListView listView) {		
 		this.list = list;		
 		this.listView = listView;
 		asyncImageLoader = new AsyncImageLoader();
-		this.mInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+		this.mInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);		
 	}
+	
+//	public void setDraggableFlagViewListener(DraggableFlagView.OnDraggableFlagViewListener listener){
+//		this.listener = listener;
+//	}
+	
 	public View getView(int position, View convertView, ViewGroup parent) {
 		ViewHolder viewHolder = null;
 		Channel entity = list.get(position);
@@ -54,7 +61,11 @@ public class ChannelAdapter extends BaseAdapter {
 			convertView = mInflater.inflate(R.layout.channel_list_item, null);
 			viewHolder.channel_icon = (ImageView) convertView.findViewById(R.id.channel_icon);
 			viewHolder.channel_title = (TextView) convertView.findViewById(R.id.channel_title);
-			viewHolder.channel_count = (TextView) convertView.findViewById(R.id.channel_count);			
+			viewHolder.channel_count = (TextView) convertView.findViewById(R.id.channel_count);
+//			DraggableFlagView draggableFlagView = (DraggableFlagView)convertView.findViewById(R.id.channel_count);
+//			draggableFlagView.setOnDraggableFlagViewListener(listener);
+//			draggableFlagView.setTag(entity);
+//			viewHolder.channel_count = draggableFlagView;
 		}
 
 		viewHolder.channel_count.setText(String.valueOf(entity.UnreadCount));		
@@ -159,6 +170,7 @@ public class ChannelAdapter extends BaseAdapter {
 	public class ViewHolder {
 		ImageView channel_icon;
 		TextView channel_title;
-		TextView channel_count;		
+		TextView channel_count;
+		//DraggableFlagView channel_count;
 	}	
 }

@@ -220,7 +220,7 @@ public class BlogListActivity extends BaseActivity implements IXListViewListener
 	                title.setText(channel.Title + "-" + String.valueOf(msg.obj));
 	            	break;
 	            case EMPTY:
-	                emptyLayout.setEmptyMessage(BlogListActivity.this.getResources().getString(R.string.list_empty_view));	                
+	                emptyLayout.setEmptyMessage(ReaderApp.getAppContext().getResources().getString(R.string.list_empty_view));	                
             		emptyLayout.getEmptyView().setOnClickListener(new View.OnClickListener(){        						
 						@Override
 						public void onClick(View v) {

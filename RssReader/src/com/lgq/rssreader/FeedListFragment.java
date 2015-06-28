@@ -69,6 +69,7 @@ import com.lgq.rssreader.R.id;
 import com.lgq.rssreader.adapter.BlogAdapter;
 import com.lgq.rssreader.adapter.ResultAdapter;
 import com.lgq.rssreader.adapter.ChannelAdapter;
+import com.lgq.rssreader.controls.DraggableFlagView;
 import com.lgq.rssreader.controls.PullToRefreshListView;
 import com.lgq.rssreader.controls.XListView;
 import com.lgq.rssreader.controls.XListView.IXListViewListener;
@@ -158,6 +159,58 @@ public class FeedListFragment extends BaseFragment {
     private EmptyLayout emptyLayout;      
     
     public XListView getListView(){return listView;}
+    
+    private DraggableFlagView.OnDraggableFlagViewListener listener = new DraggableFlagView.OnDraggableFlagViewListener(){
+
+		@Override
+		public void onFlagDismiss(DraggableFlagView view) {
+			
+			Toast.makeText(ReaderApp.getAppContext(), "onFlagDismiss", 10).show();
+			
+			FeedlyParser parser = new FeedlyParser();
+			
+			final Channel c = (Channel)view.getTag();
+			
+			parser.markTag(c, RssAction.AllAsRead, new HttpResponseHandler(){
+    			@Override
+    			public <RssAction> void onCallback(RssAction data, boolean result, String msg){
+    				if(result){
+						HeaderViewListAdapter headerViewAdapter = (HeaderViewListAdapter)listView.getAdapter();
+    					
+    					ChannelAdapter adapter = (ChannelAdapter) headerViewAdapter.getWrappedAdapter();
+    					
+    					if(adapter != null){
+    						int index = adapter.GetData().indexOf(c);
+    						
+    						if(index != -1){
+    							if(c.IsDirectory){
+    								for(Channel child : c.Children){
+    									child.UnreadCount = 0;
+    								}
+    							}
+    							
+    							c.UnreadCount = 0;
+    							
+    							Message m = myHandler.obtainMessage();                    				
+    							m.what = MARKTAG;
+    							m.obj = c;
+    							m.arg1 = index;
+                				myHandler.sendMessage(m);
+    							
+    							BlogDalHelper helper = new BlogDalHelper();
+    							helper.MarkAsRead(c, true);
+    							helper.Close();
+    							
+    							Toast.makeText(getActivity(), ReaderApp.getAppContext().getString(R.string.feedly_successupdatestatus), Toast.LENGTH_SHORT).show();
+    						}
+    					}
+    				}else{
+    					Toast.makeText(ReaderApp.getAppContext(), msg, Toast.LENGTH_SHORT).show();
+    				}
+    			}
+			});
+		}    	
+    }; 
     
     /**
      * The current tab which this list presents.
@@ -270,6 +323,7 @@ public class FeedListFragment extends BaseFragment {
 	    	                                getActivity(),
 	    	                                list,
 	    	                                listView);
+	            					//((ChannelAdapter) adapter).setDraggableFlagViewListener(listener);
 		                			listView.setAdapter(adapter);
 	            					adapter.notifyDataSetChanged();
 	            				}else{
